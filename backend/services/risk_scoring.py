@@ -89,10 +89,14 @@ class HybridRiskScorer:
             
             if final_score > 20: # Only create alerts for scores above a threshold
                 all_scores.append({
+                    'alert_id': f"ALT-{len(all_scores)+1:03d}",
                     'person_id': person_id,
                     'full_name': person['full_name'],
                     'final_risk_score': int(final_score),
-                    'summary': self._generate_summary(scores)
+                    'risk_score': int(final_score),  # Add this for compatibility
+                    'timestamp': pd.Timestamp.now().isoformat(),
+                    'summary': self._generate_summary(scores),
+                    'status': 'active'
                 })
         
         # Save the results to the class attribute and a CSV file
@@ -100,8 +104,10 @@ class HybridRiskScorer:
         self.risk_scores_df = results_df
         
         # Persist the results for future sessions
-        output_path = os.path.join(os.path.dirname(__file__), '..', 'generated-data', 'AlertScores.csv')
+        output_path = os.path.join(os.path.dirname(__file__), '..', '..', 'generated-data', 'AlertScores.csv')
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
         self.risk_scores_df.to_csv(output_path, index=False)
+        print(f"Saved {len(self.risk_scores_df)} alerts to {output_path}")
         
         return self.risk_scores_df.to_dict(orient='records')
 
