@@ -227,11 +227,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 For questions, issues, or contributions, please:
 
 - Open an issue on GitHub
-- Contact the development team
 - Check the documentation in each module's README
 
 ---
-
-<div align="center">
-<strong>Built with ❤️ for financial crime investigators worldwide</strong>
-</div>
