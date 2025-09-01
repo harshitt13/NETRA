@@ -1,1 +1,201 @@
- 
+cin,company_name,registered_address,incorporation_date,company_status,paid_up_capital_inr
+CIN00001,"Chaudhry, Agate and Mani Ltd","H.No. 57, Tripathi Chowk, Udupi-603647",2016-05-24,Active,5910346
+CIN00002,"Kale, Bahri and Krish PLC","H.No. 93, Bhavsar, Durgapur 445975",2020-10-04,Active,5746666
+CIN00003,Keer LLC Ltd,"57/15, Venkatesh Street, Adoni-461837",2024-07-25,Active,804280
+CIN00004,Chadha-Roy Ltd,"07/723, Taneja Nagar, Bhilwara-066367",2019-03-27,Active,342314
+CIN00005,"Swamy, Rattan and Bhatti PLC","55/253, Krishnan Circle, Morena 193880",2018-04-30,Active,9595128
+CIN00006,Choudhary Group Inc,"06/134, Bajwa Circle, Aurangabad-145370",2020-11-13,Active,8378307
+CIN00007,Shenoy Inc Inc,"H.No. 39, Hayre Street, Kozhikode 101273",2015-12-30,Active,4842309
+CIN00008,Kohli-Dalal and Sons,"H.No. 89, Bhakta Path, Guna-507606",2019-02-13,Active,6633529
+CIN00009,Uppal-Ramanathan and Sons,"16, Kalla Circle, Bhimavaram 663258",2025-08-30,Active,137154
+CIN00010,"Ramesh, Soman and Comar Inc","H.No. 899, Kant Road, Gandhinagar-275592",2023-09-18,Active,7252285
+CIN00011,"Balasubramanian, Sarma and Sarna Inc","H.No. 585, Jayaraman, Jaunpur-432442",2020-12-14,Active,3342337
+CIN00012,Acharya LLC LLC,"79/185, Brahmbhatt Ganj, Kottayam 032779",2022-07-23,Active,7880584
+CIN00013,"Agrawal, Chopra and Tank PLC","53/29, Kade Road, Munger 204938",2023-03-05,Active,5952333
+CIN00014,Konda LLC and Sons,"032, Gandhi Circle, Shivpuri 407788",2020-05-19,Active,196906
+CIN00015,"Deep, Sastry and Sahota and Sons","28, Gaba Road, Siwan-581755",2020-09-30,Active,3257323
+CIN00016,Behl LLC and Sons,"H.No. 951, Dey Nagar, Davanagere-502834",2016-11-25,Active,4285116
+CIN00017,Bala-Goel Inc,"H.No. 79, Bath Chowk, Pali 351069",2017-08-02,Active,8133261
+CIN00018,Brahmbhatt-Grewal LLC,"87/945, Borah Marg, Guna 576526",2024-06-23,Active,1285046
+CIN00019,"Ramesh, Karnik and Handa Ltd","H.No. 19, Jain Circle, Ajmer 184914",2019-06-04,Active,7778885
+CIN00020,Mangat-Jhaveri and Sons,"H.No. 38, Dora Zila, Ajmer-957509",2015-12-16,Active,1755245
+CIN00021,"Kothari, Jani and Soman PLC","H.No. 625, Ravi Circle, Tadepalligudem-891897",2021-07-12,Active,5584861
+CIN00022,Ganesan-Borah and Sons,"77, Sharma Zila, Mau 399037",2020-04-06,Active,330174
+CIN00023,Setty PLC Inc,"68, Ahluwalia, Bahraich 430951",2020-08-12,Active,938615
+CIN00024,"Sani, Gopal and Kurian Ltd","43/925, Rama Zila, Nadiad 444650",2023-04-04,Active,4056056
+CIN00025,"Yohannan, Loyal and Sarraf Group","H.No. 031, Andra Nagar, Giridih-609115",2021-11-17,Active,7418178
+CIN00026,"Agarwal, Majumdar and Chaudhry PLC","745, Bains Chowk, Kamarhati-891367",2023-11-01,Active,8695628
+CIN00027,Soni-Bala Inc,"073, Grover, Sambhal 119592",2019-06-29,Active,7544621
+CIN00028,Singhal Ltd PLC,"80/14, Bail, Chinsurah 609141",2023-03-31,Active,5934938
+CIN00029,Chokshi Group LLC,"19, Sura Road, Kalyan-Dombivli 658131",2022-03-20,Active,4008733
+CIN00030,Gopal-Shankar PLC,"08/654, Datta Circle, Vijayanagaram-878753",2020-07-19,Active,5838040
+CIN00031,Deep Inc Group,"00, Toor Road, Kalyan-Dombivli-493021",2025-08-03,Active,3155125
+CIN00032,Bhasin-Varghese Ltd,"H.No. 225, Deep, Vijayanagaram-761348",2021-10-17,Active,9995375
+CIN00033,"Handa, Sabharwal and Bal and Sons","510, Barad Marg, Bhilai 609978",2020-09-02,Active,6783626
+CIN00034,Sawhney Group and Sons,"18/844, Rau Street, Karnal-165554",2019-01-03,Active,6198862
+CIN00035,Solanki-Lala Group,"16/96, Tripathi Chowk, Indore 362916",2017-08-24,Active,4726831
+CIN00036,"Bera, Bansal and Deshmukh LLC","79, Balay Path, Thoothukudi 067615",2019-03-30,Active,7878845
+CIN00037,Solanki Ltd Group,"H.No. 90, Sengupta Zila, Mumbai-857314",2025-08-30,Active,120405
+CIN00038,Acharya-Gandhi Ltd,"H.No. 16, Suresh Nagar, Eluru 626141",2021-08-21,Active,9003844
+CIN00039,Halder-Sandal PLC,"285, Raju Street, Bharatpur-890962",2021-12-26,Active,4443666
+CIN00040,"Thakkar, Khosla and Aggarwal PLC","H.No. 279, Sahni Marg, Guntakal-971226",2021-03-22,Active,3369798
+CIN00041,Reddy-Sheth and Sons,"H.No. 799, Rama Path, Danapur-735449",2021-02-15,Active,8364366
+CIN00042,Biswas-Sane and Sons,"81/48, Gour Road, Kadapa-589378",2016-01-08,Active,2511465
+CIN00043,"Butala, Bala and Khatri Inc","30, Karpe Nagar, Surendranagar Dudhrej 358501",2019-11-02,Active,7138255
+CIN00044,"Brahmbhatt, Barad and Virk Inc","516, Sane Marg, Nangloi Jat-361262",2015-10-16,Active,543415
+CIN00045,Borde Group Inc,"177, Kaul Circle, Sambalpur 322937",2025-08-30,Active,271008
+CIN00046,Batta and Sons Inc,"76/14, Agarwal Road, Kumbakonam-233214",2025-08-30,Active,390450
+CIN00047,"Grewal, Madan and Ramanathan LLC","64, Rastogi Ganj, Kirari Suleman Nagar-257982",2023-12-01,Active,317069
+CIN00048,Vala-Vyas Group,"H.No. 919, Banerjee Marg, Howrah-652134",2016-04-19,Active,421653
+CIN00049,Taneja and Sons PLC,"H.No. 337, Bath Path, Coimbatore-398114",2020-07-14,Active,3126383
+CIN00050,Ghose LLC PLC,"16, Ramesh Circle, Gopalpur-705877",2018-12-11,Active,2283686
+CIN00051,Sami-Dewan LLC,"H.No. 96, Loyal Road, Erode 884777",2025-08-30,Active,268847
+CIN00052,Keer PLC and Sons,"04/267, Barman Nagar, Adoni-850420",2025-06-11,Active,1416626
+CIN00053,Kapadia-Acharya Ltd,"30/64, Dixit Circle, Raurkela Industrial Township-454235",2023-02-19,Active,172990
+CIN00054,"Saraf, Borde and Dey and Sons","978, Vaidya Circle, Khammam-876222",2015-10-30,Active,5811038
+CIN00055,Bandi-Sachdev and Sons,"H.No. 464, Kadakia Street, Guwahati 877876",2025-07-19,Active,6938282
+CIN00056,Rout Inc Group,"640, Loke Chowk, Sultan Pur Majra 504138",2024-07-16,Active,4804363
+CIN00057,Babu-Bava Ltd,"86/27, Kala Street, Deoghar-394371",2017-09-17,Active,4952980
+CIN00058,Sharma Group and Sons,"H.No. 20, Dugar Ganj, Loni-263894",2023-01-30,Active,2323795
+CIN00059,Rajagopalan LLC Group,"H.No. 102, Das Zila, Nellore-606338",2023-05-19,Active,6021141
+CIN00060,Ramachandran PLC Inc,"37, Dhawan Path, Bhatpara-014150",2024-09-19,Active,5152996
+CIN00061,Brahmbhatt PLC and Sons,"15/931, Yohannan Nagar, Karaikudi 751954",2022-11-02,Active,3401698
+CIN00062,"Chaudhuri, Atwal and Tripathi Group","H.No. 21, Dugar Nagar, Surendranagar Dudhrej-563558",2016-11-09,Active,251019
+CIN00063,"Madan, Arya and Sachdeva Ltd","91/765, Bhalla Circle, Bihar Sharif-406694",2025-08-30,Active,385712
+CIN00064,Dhar LLC LLC,"93/760, Sane, Mumbai-373321",2021-05-05,Active,6624631
+CIN00065,Sama-Loyal and Sons,"30, Sengupta Path, Amaravati-816238",2024-08-13,Active,3154840
+CIN00066,"Kothari, Grover and Deo PLC","H.No. 56, Handa Ganj, Dhanbad-362620",2015-09-11,Active,9404698
+CIN00067,"Dey, Lall and Vaidya and Sons","60/515, Khosla Chowk, Loni 846725",2019-08-10,Active,6943438
+CIN00068,Goyal-Kurian LLC,"779, Jaggi Circle, Tiruchirappalli-447720",2023-03-03,Active,4948595
+CIN00069,Khurana Inc Inc,"645, Bumb Circle, Agra 712845",2020-10-15,Active,5070914
+CIN00070,Bajwa-Lalla LLC,"H.No. 976, Shetty Path, Bahraich 999391",2019-10-13,Active,7645091
+CIN00071,Choudhary-Kalla and Sons,"95, Sundaram Marg, Sagar-347052",2019-02-05,Active,1422935
+CIN00072,"Sarma, Das and Saini LLC","H.No. 42, Chakrabarti Road, Ludhiana 188857",2015-10-18,Active,4252494
+CIN00073,"Dugal, Ray and Chacko Group","H.No. 891, Chowdhury Ganj, Serampore-300306",2017-06-28,Active,6022869
+CIN00074,Raju LLC LLC,"84/934, Bala Path, Bihar Sharif 594898",2021-05-16,Active,4252858
+CIN00075,"Apte, Bhat and Kade Group","092, Agate Circle, Jamalpur 079968",2020-10-06,Active,6695128
+CIN00076,"Hora, Deep and Sangha Group","H.No. 858, Ganguly, Moradabad-324088",2016-08-26,Active,4214878
+CIN00077,"Savant, Thakkar and Jha Inc","H.No. 957, Mander Ganj, Motihari-966019",2019-05-13,Active,8970475
+CIN00078,Desai and Sons and Sons,"04, Iyengar Nagar, Chandigarh 149266",2023-07-19,Active,1039202
+CIN00079,Sen-Chawla and Sons,"94/89, Bakshi Street, Bhiwandi 451190",2016-10-08,Active,1951315
+CIN00080,Sen-Soni Group,"H.No. 50, Tiwari Road, Bokaro 414714",2025-08-14,Active,8631155
+CIN00081,Ravi-Comar Group,"82/91, Jain Path, Ambattur-707935",2024-04-27,Active,7241002
+CIN00082,Sidhu LLC Ltd,"03/44, Chauhan Path, Tirupati 022401",2024-09-06,Active,5764811
+CIN00083,"Ramaswamy, Chauhan and Maharaj Inc","61/701, Kata Street, North Dumdum 822250",2025-06-19,Active,6603885
+CIN00084,"Taneja, Bahri and Bajwa Inc","72/83, Chana Ganj, North Dumdum 657821",2017-05-15,Active,4546321
+CIN00085,Dubey Group PLC,"H.No. 21, Wason Road, Agartala 994082",2018-05-09,Active,8241184
+CIN00086,"Dave, Deo and Sule PLC","93/051, Borah Path, Ichalkaranji 067494",2015-11-04,Active,8841270
+CIN00087,"Sidhu, Suri and Sodhi and Sons","H.No. 011, Arya Marg, Cuttack 685482",2022-04-05,Active,257579
+CIN00088,"Bhatti, Lala and Mani Inc","083, Chandran Ganj, Kulti-555407",2022-08-21,Active,5001129
+CIN00089,Sathe-Kari Inc,"47/797, Rana Zila, Dhule-869801",2025-08-30,Active,192045
+CIN00090,"Acharya, Swaminathan and Uppal Group","27/387, Hari Nagar, Gandhidham 328075",2023-09-26,Active,1109558
+CIN00091,"Manda, Bawa and Raman and Sons","832, Saran Nagar, Morbi-483259",2025-04-21,Active,9692039
+CIN00092,Kumar LLC PLC,"59/87, Ganesan Path, Srinagar-403564",2020-12-19,Active,7619670
+CIN00093,"Chand, Wable and Banerjee and Sons","51/26, Jhaveri Street, Khammam 333463",2021-11-30,Active,1954735
+CIN00094,Sahni Inc PLC,"H.No. 245, Solanki Nagar, Muzaffarnagar 798034",2023-09-27,Active,490074
+CIN00095,"Vala, Andra and Sarraf PLC","57/372, Mallick Path, Nadiad 519701",2019-01-20,Active,9511072
+CIN00096,Chaudhry-Chauhan PLC,"H.No. 878, Das, Faridabad 272433",2016-02-12,Active,7477558
+CIN00097,Dhillon PLC and Sons,"06/699, Lalla Ganj, Bharatpur 679779",2016-07-12,Active,1723885
+CIN00098,"Chada, Rana and Gopal Ltd","219, Gaba Road, Sonipat-862530",2021-10-07,Active,4909122
+CIN00099,"Balan, Brar and Sunder Inc","H.No. 11, Kata, Pali-984260",2016-05-17,Active,5074435
+CIN00100,Sethi-Upadhyay Group,"H.No. 00, Jhaveri Chowk, Kochi 764697",2023-12-20,Active,7176770
+CIN00101,Gala-Sridhar Group,"095, Bansal, Tirupati 287451",2019-12-03,Active,8023519
+CIN00102,Bhattacharyya-Warrior and Sons,"565, Dugal Chowk, Kochi 289591",2021-04-10,Active,6117756
+CIN00103,Bhatt-Tara PLC,"H.No. 89, Walla Path, Tumkur-334489",2021-01-13,Active,9859730
+CIN00104,Sarma Ltd Ltd,"H.No. 538, Ganguly Chowk, Karawal Nagar-562692",2021-02-09,Active,3879791
+CIN00105,"Sagar, Varghese and Divan LLC","16, Khalsa Chowk, Siliguri-396736",2016-07-29,Active,435941
+CIN00106,Salvi Group LLC,"29, Sankar Marg, Adoni-783414",2024-09-17,Active,1956106
+CIN00107,"Saraf, Sandal and Jaggi Inc","18/09, Bir, Durgapur-186405",2016-01-05,Active,6544423
+CIN00108,"Barman, Dhawan and Chandran PLC","58/617, Chaudhary Circle, Ahmednagar-641435",2022-06-09,Active,7483369
+CIN00109,"Deep, Bhavsar and Bhasin Ltd","H.No. 944, Dhingra Nagar, Kurnool-206283",2025-05-22,Active,6667710
+CIN00110,"Tella, Garg and Goel PLC","34/47, Yadav Zila, Jaunpur-919616",2017-05-01,Active,6399138
+CIN00111,"Deshpande, Dua and Chaudhary PLC","70, Viswanathan Nagar, Durgapur-142674",2025-08-30,Active,399156
+CIN00112,Taneja Group and Sons,"861, Gokhale Nagar, Panvel 549980",2019-06-30,Active,6416181
+CIN00113,Bhattacharyya-Ahuja PLC,"34, Rao Circle, Aligarh 575848",2022-07-20,Active,4498554
+CIN00114,"Mand, Dhillon and Dhaliwal PLC","80/165, Sekhon Street, Mangalore 041287",2021-02-11,Active,2001669
+CIN00115,Loyal PLC Ltd,"H.No. 05, Sastry, Danapur-224715",2016-12-27,Active,6400965
+CIN00116,Tara-Din Group,"83/623, Sridhar Road, Panipat 733284",2023-09-12,Active,1459156
+CIN00117,Bhatia Inc LLC,"10/659, Sanghvi, Visakhapatnam-288478",2022-05-26,Active,4811547
+CIN00118,"Taneja, Bedi and Sura and Sons","41, Dugal Ganj, Sirsa 610065",2018-09-01,Active,9283855
+CIN00119,"Sami, Suri and Kota and Sons","H.No. 584, Raja Marg, Pondicherry-783855",2019-05-13,Active,8850108
+CIN00120,Dutt Inc Group,"76/496, Jain Marg, Guntakal-619981",2019-06-04,Active,5493696
+CIN00121,Kakar Ltd and Sons,"H.No. 911, Lall Marg, Bidhannagar 779720",2025-08-30,Active,189085
+CIN00122,"Suri, Handa and Bera Group","H.No. 822, Bala Zila, Dewas-719864",2020-06-15,Active,424424
+CIN00123,Salvi-Goyal Inc,"46/99, Sami Nagar, Ongole-175787",2022-08-29,Active,6512729
+CIN00124,Walla Group and Sons,"03/791, Sundaram Nagar, Sasaram-235214",2025-08-30,Active,186220
+CIN00125,Biswas Group PLC,"H.No. 568, Varkey Marg, Bhavnagar 442802",2020-06-11,Active,1951649
+CIN00126,"Hegde, Khalsa and Lanka LLC","51, Dash Chowk, Jamalpur 322768",2025-08-30,Active,141879
+CIN00127,Rana Inc Group,"H.No. 68, Kala Road, Fatehpur 014157",2025-05-10,Active,4227383
+CIN00128,"Basak, Lala and Mandal and Sons","H.No. 21, Chakrabarti Nagar, Berhampore-620631",2022-07-10,Active,290937
+CIN00129,Master LLC Ltd,"62/307, Vyas, Phusro 891940",2018-12-10,Active,1733344
+CIN00130,Sibal Ltd Inc,"29/892, Shukla, Katni 516330",2020-08-31,Active,885092
+CIN00131,"Tailor, Ratta and Chaudhry LLC","83/449, Reddy Nagar, Raipur-578696",2018-10-17,Active,2028757
+CIN00132,Seth Ltd and Sons,"236, Bala Circle, Jehanabad-132927",2021-01-20,Active,9651568
+CIN00133,Iyengar-Shanker and Sons,"05/310, Garg Ganj, Tenali-984765",2022-05-28,Active,186862
+CIN00134,Kapoor-Choudhary Ltd,"H.No. 012, Deep Path, Mira-Bhayandar-550707",2020-07-01,Active,721129
+CIN00135,"Sant, Tiwari and Sheth PLC","46/58, Chandra Zila, Mirzapur-181238",2018-12-14,Active,5801024
+CIN00136,"Sunder, Bal and Manne LLC","H.No. 209, Iyer Street, Ramgarh 671698",2018-11-07,Active,7664814
+CIN00137,Sankaran-Kala LLC,"H.No. 33, Chana Path, Sirsa 055165",2020-04-16,Active,1040174
+CIN00138,"Das, Shroff and Dyal LLC","49/018, Amble Path, Rampur-907570",2017-05-24,Active,2713105
+CIN00139,Barad Group Inc,"42, Dugar Ganj, Tenali 031372",2018-11-17,Active,7945789
+CIN00140,"Bedi, Arora and Chakrabarti Inc","H.No. 491, Manne Zila, Pondicherry-535006",2016-05-13,Active,6472200
+CIN00141,Banerjee PLC LLC,"H.No. 748, Buch Path, Varanasi-786102",2023-06-21,Active,420279
+CIN00142,"Jayaraman, Mand and Dara PLC","10/97, Saxena Ganj, Kollam 391671",2016-12-05,Active,4046504
+CIN00143,Basu and Sons Inc,"H.No. 47, Sehgal Circle, Sultan Pur Majra-045333",2017-01-31,Active,8705046
+CIN00144,Loke-Bajwa Ltd,"321, Bose Marg, Sasaram-139526",2024-12-05,Active,9822525
+CIN00145,Tara Group Ltd,"76, Bhatnagar Nagar, Amravati 610327",2024-01-23,Active,1442187
+CIN00146,Mani Group Inc,"07/23, Roy Street, Rajahmundry-294656",2020-11-29,Active,2267063
+CIN00147,"Chauhan, Dass and Jhaveri Inc","69, Varughese Nagar, Narasaraopet-533711",2023-09-06,Active,7168954
+CIN00148,Gokhale and Sons Ltd,"01, Bassi Road, Ratlam-970182",2018-10-10,Active,2532971
+CIN00149,"Bakshi, Thakkar and Choudhry Group","H.No. 02, Dubey Circle, Jabalpur-681331",2020-03-26,Active,1824999
+CIN00150,Bassi Group and Sons,"43, Rana Circle, Hosur-026227",2023-03-14,Active,7971459
+CIN00151,Goswami-Kaul and Sons,"40, Ganesan Street, Asansol 917085",2017-05-13,Active,1769951
+CIN00152,Yohannan-Khanna Ltd,"45/16, Zacharia Ganj, Malda-748642",2019-12-31,Active,383441
+CIN00153,Ram-Dayal Inc,"H.No. 55, Kara Chowk, Kota-813064",2024-03-03,Active,1441907
+CIN00154,Kata-Joshi Ltd,"88, Solanki Path, Kurnool-468868",2024-06-10,Active,1229320
+CIN00155,Taneja Ltd and Sons,"764, Saran Chowk, Jammu 143734",2021-09-17,Active,4306284
+CIN00156,"Subramanian, Khare and Ratti and Sons","90/21, Swaminathan Marg, Sambalpur 725755",2024-08-21,Active,3663778
+CIN00157,Shenoy and Sons PLC,"H.No. 388, Subramaniam, Solapur 578311",2017-05-01,Active,7112092
+CIN00158,"Bakshi, Sidhu and Boase Group","H.No. 48, Bhasin Street, Sambhal-943165",2019-09-19,Active,9017161
+CIN00159,Khatri-Loyal LLC,"58, Chaudry Circle, Bidhannagar 721401",2022-10-13,Active,8214283
+CIN00160,Chanda-Bahl and Sons,"687, Chanda Circle, Pondicherry 148064",2015-11-19,Active,6947531
+CIN00161,Anne PLC and Sons,"84, Chahal Road, Pimpri-Chinchwad 182201",2016-11-13,Active,9234691
+CIN00162,Subramanian Group LLC,"H.No. 68, Deshpande Street, Kumbakonam 021045",2019-03-15,Active,4428828
+CIN00163,Tiwari Ltd Inc,"67, Amble Path, Kalyan-Dombivli-845319",2023-12-13,Active,3670844
+CIN00164,"Krishnamurthy, Jha and Ravi LLC","646, Sarkar Nagar, Ballia 714474",2022-10-10,Active,3690555
+CIN00165,Krishnamurthy Ltd LLC,"06/35, Ganguly Chowk, Bulandshahr 751165",2025-03-06,Active,2062186
+CIN00166,Rana-Mangal and Sons,"33/066, Grover Street, Bhubaneswar 766118",2023-09-06,Active,9389647
+CIN00167,Andra-Shankar and Sons,"22/558, Upadhyay Circle, Bijapur-629110",2017-10-17,Active,5246680
+CIN00168,Sachar-Mahal LLC,"31, Magar, Surendranagar Dudhrej-939440",2024-03-22,Active,5659763
+CIN00169,Kaur-Chaudhari PLC,"86, Dugar Chowk, Coimbatore-005433",2020-06-20,Active,8058071
+CIN00170,Mani PLC Ltd,"70/675, Dara Circle, Mirzapur-492617",2017-10-17,Active,9668846
+CIN00171,Sarin-Kibe LLC,"H.No. 222, Divan Nagar, Medininagar-484577",2017-06-27,Active,7638162
+CIN00172,"Hayre, Gole and Barad Inc","69/66, Sibal Ganj, Gudivada-405480",2022-04-03,Active,3931770
+CIN00173,"Manne, Mann and Boase Inc","66/919, Taneja, Barasat-866421",2024-04-17,Active,1557577
+CIN00174,Rau-Ravi Inc,"24/879, Sampath Ganj, Ghaziabad 537677",2024-07-18,Active,1441520
+CIN00175,Randhawa-Ravel PLC,"73, Wali Nagar, Akola-591758",2025-08-10,Active,9944546
+CIN00176,Soman LLC Group,"30/71, Keer Circle, Bhilwara-929573",2025-05-26,Active,6601539
+CIN00177,Gandhi-Baria Group,"H.No. 06, Kumar Ganj, Narasaraopet-234099",2024-01-14,Active,1923391
+CIN00178,"Ravel, Deep and Loyal PLC","86/91, Gandhi Street, Ramagundam-276880",2017-03-17,Active,5627980
+CIN00179,"Gupta, Ramachandran and Bhandari LLC","H.No. 799, Lala Path, Mango-587368",2019-10-10,Active,6067612
+CIN00180,Baria-Kunda Inc,"683, Vala, Ahmednagar-076836",2017-02-19,Active,2090437
+CIN00181,"Kala, Saha and Swaminathan Inc","701, Seth Nagar, Thane-866232",2019-03-17,Active,4228661
+CIN00182,"Garg, Sandhu and Mann Ltd","31/374, Shenoy Marg, Rourkela-814595",2021-06-19,Active,654615
+CIN00183,Dani PLC Group,"90/27, Talwar Road, Rampur 504024",2024-11-26,Active,5342241
+CIN00184,"Malhotra, Kamdar and Dua Inc","H.No. 41, Master Street, Malegaon 733084",2018-03-14,Active,1736341
+CIN00185,"Bhasin, Som and Manda Ltd","H.No. 070, Basak Road, Bellary-070837",2022-06-22,Active,965135
+CIN00186,Dugar LLC LLC,"67/30, Ahluwalia Ganj, Bongaigaon 830157",2016-08-09,Active,3893418
+CIN00187,Char LLC PLC,"79/13, Sandal Nagar, Chapra 180257",2023-09-10,Active,6709174
+CIN00188,Mani-Chandran LLC,"01, Gara Marg, Kolkata 926477",2018-07-11,Active,9455618
+CIN00189,"Ranganathan, Dora and Bansal PLC","46/140, Chakraborty Nagar, Avadi 759261",2016-12-28,Active,6777552
+CIN00190,Shukla Ltd PLC,"83, Dutta Marg, Madhyamgram 143415",2017-02-28,Active,9184764
+CIN00191,"Ramesh, Sengupta and Issac Inc","38, Vasa Nagar, Surendranagar Dudhrej-706659",2021-12-29,Active,7242044
+CIN00192,"Mangat, Shan and Bala LLC","780, Swamy Marg, Thiruvananthapuram 112110",2024-06-03,Active,7053363
+CIN00193,Gupta Group Inc,"673, Mahajan Path, Burhanpur 693564",2025-03-09,Active,1566927
+CIN00194,Sethi Ltd Inc,"H.No. 74, Shetty Road, Mysore-609111",2016-11-24,Active,4729410
+CIN00195,"Wason, Acharya and Vala Group","663, Sood Street, Shimla 910649",2023-04-21,Active,3631351
+CIN00196,Dixit Group PLC,"H.No. 48, Raman Marg, Dewas-615687",2019-03-06,Active,1126793
+CIN00197,Shukla LLC and Sons,"84, Varma Nagar, Bhubaneswar 967242",2018-06-02,Active,8468783
+CIN00198,"Wable, Gole and Ravel Ltd","H.No. 072, Dave Street, Ratlam-253744",2024-07-11,Active,4357366
+CIN00199,Bumb-Dara PLC,"00/837, Luthra Marg, Chennai 373402",2024-10-23,Active,7579729
+CIN00200,"Sur, Kapoor and Bhasin Group","02, Kalita Marg, Jabalpur 244692",2018-09-17,Active,1778130
