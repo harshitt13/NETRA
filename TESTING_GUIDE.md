@@ -3,6 +3,7 @@
 ## 🚀 Quick Setup Summary
 
 ### Backend Setup (✅ COMPLETED)
+
 ```bash
 # 1. Navigate to backend directory
 cd backend
@@ -34,6 +35,7 @@ python app.py
 ```
 
 ### Frontend Setup (✅ COMPLETED)
+
 ```bash
 # 1. Navigate to frontend directory
 cd frontend
@@ -54,18 +56,21 @@ npm run dev
 ## 📊 Testing the Application
 
 ### 1. Authentication Testing
+
 - Visit http://localhost:3000/
 - You'll see the login page
 - Firebase authentication is configured and ready
 - Create a test account or sign in
 
 ### 2. Dashboard Testing
+
 - After login, you'll access the main dashboard
 - **Alerts Panel**: Shows high-priority financial alerts
 - **Priority Filter**: Filter alerts by risk level
 - **Alert Cards**: Display risk scores and summaries
 
 ### 3. Investigation Workspace Testing
+
 - Click on any alert to open the investigation workspace
 - **Network Graph**: Interactive visualization of financial relationships
 - **Entity Details**: Shows person/company information
@@ -73,6 +78,7 @@ npm run dev
 - **Notes Panel**: Add investigation notes
 
 ### 4. Triage Testing
+
 - Access the triage page to review cases
 - **Risk Factor Summary**: AI-generated risk assessment
 - **Triage Actions**: Escalate, investigate, or close cases
@@ -80,6 +86,7 @@ npm run dev
 ### 5. Backend API Testing
 
 #### Test Endpoints:
+
 ```bash
 # Get all alerts
 curl http://127.0.0.1:5001/api/alerts
@@ -99,6 +106,7 @@ curl -X POST http://127.0.0.1:5001/api/risk-score -H "Content-Type: application/
 The system includes realistic synthetic data:
 
 ### Data Files (located in /generated-data):
+
 - **Persons.csv**: 1,000 individuals with realistic names and IDs
 - **Companies.csv**: 300 companies with various business types
 - **BankAccounts.csv**: 2,000 bank accounts linked to persons/companies
@@ -109,6 +117,7 @@ The system includes realistic synthetic data:
 - **AlertScores.csv**: Pre-calculated risk scores
 
 ### Money Laundering Patterns Included:
+
 1. **Structuring**: Multiple small transactions below reporting thresholds
 2. **Shell Companies**: Complex corporate structures for fund layering
 3. **Mule Accounts**: Accounts used for fund movement
@@ -119,11 +128,13 @@ The system includes realistic synthetic data:
 ## 🤖 AI & ML Features
 
 ### Trained Models:
+
 - **Isolation Forest**: Anomaly detection for transactions
 - **Risk Scoring**: Hybrid ML + rule-based scoring
 - **Pattern Recognition**: Embedded laundering pattern detection
 
 ### AI Services:
+
 - **Google Gemini**: Case narrative generation
 - **Automated Summarization**: Investigation summaries
 - **Risk Assessment**: AI-powered risk factor analysis
@@ -131,6 +142,7 @@ The system includes realistic synthetic data:
 ## 🗄️ Database Systems
 
 ### Neo4j Graph Database (Optional)
+
 ```bash
 # If you have Neo4j installed, load the data:
 cd backend/data-generation
@@ -138,6 +150,7 @@ python load_to_neo4j.py
 ```
 
 ### Firebase (Active)
+
 - **Authentication**: User management
 - **Firestore**: Case data storage
 - **Real-time sync**: Live updates
@@ -147,16 +160,19 @@ python load_to_neo4j.py
 ### Common Issues:
 
 1. **Backend won't start**:
+
    - Ensure virtual environment is activated
    - Check all dependencies are installed
    - Verify .env file configuration
 
 2. **Frontend compilation errors**:
+
    - Run `npm install` again
    - Clear node_modules: `rm -rf node_modules && npm install`
    - Check Node.js version compatibility
 
 3. **API connection issues**:
+
    - Verify backend is running on port 5001
    - Check CORS configuration in app.py
    - Ensure frontend API calls point to correct backend URL
@@ -167,6 +183,7 @@ python load_to_neo4j.py
    - Ensure authentication methods are enabled
 
 ### Performance Testing:
+
 - **Data Volume**: 20K+ transactions, 1K+ persons
 - **API Response Time**: < 500ms for most endpoints
 - **Graph Visualization**: Handles 100+ nodes efficiently
@@ -175,6 +192,7 @@ python load_to_neo4j.py
 ## 📈 Advanced Testing Scenarios
 
 ### Investigation Workflow:
+
 1. Start with high-risk alert on dashboard
 2. Open investigation workspace
 3. Analyze network graph for suspicious connections
@@ -184,12 +202,14 @@ python load_to_neo4j.py
 7. Create PDF report
 
 ### Risk Scoring Validation:
+
 1. Test with known high-risk person ID
 2. Verify ML anomaly detection results
 3. Check pattern recognition accuracy
 4. Validate rule-based scoring components
 
 ### Data Pipeline Testing:
+
 1. Generate new synthetic data
 2. Retrain ML models
 3. Load into databases
@@ -206,6 +226,7 @@ python load_to_neo4j.py
 ## 📋 Production Checklist
 
 Before deploying to production:
+
 - [ ] Update Firebase configuration with production credentials
 - [ ] Set production Neo4j database
 - [ ] Configure production Gemini API key
@@ -220,6 +241,7 @@ Before deploying to production:
 ## 🎯 Success Indicators
 
 If everything is working correctly, you should see:
+
 - ✅ Frontend loads at http://localhost:3000/
 - ✅ Backend API responding at http://127.0.0.1:5001
 - ✅ Firebase authentication working

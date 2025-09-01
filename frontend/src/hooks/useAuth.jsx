@@ -67,7 +67,7 @@
 //     }),
 //     [user, loading, error]
 //   );
-  
+
 //   // Render a loader while checking auth state
 //   if (loading) {
 //     return <Loader />;
@@ -85,28 +85,33 @@
 //   return context;
 // };
 
-
-import React, { createContext, useState, useContext, useEffect, useMemo } from 'react';
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react";
 import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
-} from 'firebase/auth';
-import { auth } from '../firebase/firebaseConfig';
-import Loader from '../components/common/Loader';
+} from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
+import Loader from "../components/common/Loader";
 
 // Mock user data
 const MOCK_USER = {
-  uid: 'root-user-001',
-  email: 'admin@netra.com',
-  displayName: 'Root Administrator',
-  getIdToken: async () => 'mock-jwt-token-12345', // Mock JWT token
+  uid: "root-user-001",
+  email: "admin@netra.com",
+  displayName: "Root Administrator",
+  getIdToken: async () => "mock-jwt-token-12345", // Mock JWT token
 };
 
 // Hardcoded credentials
 const ROOT_CREDENTIALS = {
-  email: 'admin@netra.com',
-  password: 'netra123',
+  email: "admin@netra.com",
+  password: "netra123",
 };
 
 // 1. Create the Authentication Context
@@ -119,7 +124,7 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   // Determine if mock authentication should be used (e.g., based on environment variable)
-  const useMockAuth = process.env.REACT_APP_USE_MOCK_AUTH === 'true';
+  const useMockAuth = process.env.REACT_APP_USE_MOCK_AUTH === "true" || true; // Default to mock auth
 
   // Firebase auth state listener
   useEffect(() => {
@@ -131,9 +136,14 @@ export const AuthProvider = ({ children }) => {
       });
     } else {
       // Check if user is already logged in (from sessionStorage) for mock auth
-      const savedUser = sessionStorage.getItem('netra_user');
+      const savedUser = sessionStorage.getItem("netra_user");
       if (savedUser) {
-        setUser(JSON.parse(savedUser));
+        // Always use MOCK_USER object to preserve methods, but check session for persistence
+        setUser(MOCK_USER);
+      } else {
+        // Auto-login with default credentials for demo purposes
+        setUser(MOCK_USER);
+        sessionStorage.setItem("netra_user", JSON.stringify(MOCK_USER));
       }
       setLoading(false);
     }
@@ -150,16 +160,25 @@ export const AuthProvider = ({ children }) => {
       if (useMockAuth) {
         // Simulate API call delay for mock auth
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        if (email === ROOT_CREDENTIALS.email && password === ROOT_CREDENTIALS.password) {
+        if (
+          email === ROOT_CREDENTIALS.email &&
+          password === ROOT_CREDENTIALS.password
+        ) {
           setUser(MOCK_USER);
-          sessionStorage.setItem('netra_user', JSON.stringify(MOCK_USER));
+          sessionStorage.setItem("netra_user", JSON.stringify(MOCK_USER));
           return { success: true };
         } else {
-          throw new Error('Invalid credentials. Use admin@netra.com / netra123');
+          throw new Error(
+            "Invalid credentials. Use admin@netra.com / netra123"
+          );
         }
       } else {
         // Firebase auth
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
         setUser(userCredential.user);
         return userCredential.user;
       }
@@ -178,7 +197,7 @@ export const AuthProvider = ({ children }) => {
     try {
       if (useMockAuth) {
         setUser(null);
-        sessionStorage.removeItem('netra_user');
+        sessionStorage.removeItem("netra_user");
       } else {
         await signOut(auth);
         setUser(null);
@@ -214,7 +233,7 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
