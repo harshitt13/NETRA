@@ -316,61 +316,68 @@ def get_alerts():
         
         # Check if there's actual data (more than just header)
         if len(alerts_df) == 0:
-            print("No alert data found, returning mock data")
-            # Return mock alert data for demonstration
-            mock_alerts = [
-                {
-                    "alert_id": "ALT-001",
-                    "person_id": "PER-001",
-                    "full_name": "Rohan Mehra",
-                    "final_risk_score": 92,
-                    "risk_score": 92,
-                    "timestamp": "2025-08-31T12:34:56Z",
-                    "summary": "High-value property purchase inconsistent with declared income and links to shell companies.",
-                    "status": "active"
-                },
-                {
-                    "alert_id": "ALT-002", 
-                    "person_id": "PER-002",
-                    "full_name": "Priya Sharma",
-                    "final_risk_score": 87,
-                    "risk_score": 87,
-                    "timestamp": "2025-08-30T09:15:22Z",
-                    "summary": "Multiple cash deposits under reporting threshold detected (Structuring).",
-                    "status": "active"
-                },
-                {
-                    "alert_id": "ALT-003",
-                    "person_id": "PER-003", 
-                    "full_name": "Vikram Singh",
-                    "final_risk_score": 75,
-                    "risk_score": 75,
-                    "timestamp": "2025-08-29T16:42:11Z",
-                    "summary": "Transactions identified with newly incorporated company with low paid-up capital.",
-                    "status": "active"
-                },
-                {
-                    "alert_id": "ALT-004",
-                    "person_id": "PER-004",
-                    "full_name": "Anjali Verma", 
-                    "final_risk_score": 81,
-                    "risk_score": 81,
-                    "timestamp": "2025-08-28T14:18:33Z",
-                    "summary": "Unusual international wire transfers to high-risk jurisdictions without clear business purpose.",
-                    "status": "active"
-                },
-                {
-                    "alert_id": "ALT-005",
-                    "person_id": "PER-005",
-                    "full_name": "Rajesh Gupta",
-                    "final_risk_score": 69,
-                    "risk_score": 69, 
-                    "timestamp": "2025-08-27T11:55:17Z",
-                    "summary": "Complex layered transactions through multiple shell companies to obscure fund origins.",
-                    "status": "active"
-                }
-            ]
-            return jsonify(mock_alerts), 200
+            # Check if demo mode is requested
+            demo_mode = request.args.get('demo', 'false').lower() == 'true'
+            
+            if demo_mode:
+                print("No alert data found, returning mock data for demo")
+                # Return mock alert data for demonstration
+                mock_alerts = [
+                    {
+                        "alert_id": "ALT-001",
+                        "person_id": "PER-001",
+                        "full_name": "Rohan Mehra",
+                        "final_risk_score": 92,
+                        "risk_score": 92,
+                        "timestamp": "2025-08-31T12:34:56Z",
+                        "summary": "High-value property purchase inconsistent with declared income and links to shell companies.",
+                        "status": "active"
+                    },
+                    {
+                        "alert_id": "ALT-002", 
+                        "person_id": "PER-002",
+                        "full_name": "Priya Sharma",
+                        "final_risk_score": 87,
+                        "risk_score": 87,
+                        "timestamp": "2025-08-30T09:15:22Z",
+                        "summary": "Multiple cash deposits under reporting threshold detected (Structuring).",
+                        "status": "active"
+                    },
+                    {
+                        "alert_id": "ALT-003",
+                        "person_id": "PER-003", 
+                        "full_name": "Vikram Singh",
+                        "final_risk_score": 75,
+                        "risk_score": 75,
+                        "timestamp": "2025-08-29T16:42:11Z",
+                        "summary": "Transactions identified with newly incorporated company with low paid-up capital.",
+                        "status": "active"
+                    },
+                    {
+                        "alert_id": "ALT-004",
+                        "person_id": "PER-004",
+                        "full_name": "Anjali Verma", 
+                        "final_risk_score": 81,
+                        "risk_score": 81,
+                        "timestamp": "2025-08-28T14:18:33Z",
+                        "summary": "Unusual international wire transfers to high-risk jurisdictions without clear business purpose.",
+                        "status": "active"
+                    },
+                    {
+                        "alert_id": "ALT-005",
+                        "person_id": "PER-005",
+                        "full_name": "Rajesh Gupta",
+                        "final_risk_score": 69,
+                        "risk_score": 69, 
+                        "timestamp": "2025-08-27T11:55:17Z",
+                        "summary": "Complex layered transactions through multiple shell companies to obscure fund origins.",
+                        "status": "active"
+                    }
+                ]
+                return jsonify(mock_alerts), 200
+            else:
+                print("No alert data found, returning empty array")
+                return jsonify([]), 200
         
         # Get limit parameter
         limit = int(request.args.get('limit', 50))
