@@ -584,13 +584,6 @@ npm run dev -- --force
 - Check CORS settings in Flask backend
 - Verify API endpoints in `src/services/api.js`
 
-### Development Tips
-
-- Use React Developer Tools for debugging
-- Enable detailed error messages in development
-- Use browser Network tab to debug API calls
-- Check console for JavaScript errors
-
 ## 🤝 Contributing
 
 ### Development Setup
@@ -601,34 +594,8 @@ npm run dev -- --force
 4. Run linting and tests
 5. Submit a pull request
 
-### Code Style
-
-- Use ESLint configuration provided
-- Follow React best practices
-- Write descriptive commit messages
-- Add comments for complex logic
-
-### Pull Request Process
-
-1. Update documentation if needed
-2. Add tests for new features
-3. Ensure all checks pass
-4. Request review from maintainers
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
 
-## 🙏 Acknowledgments
-
-- **React Team** - For the amazing framework
-- **Vite Team** - For the lightning-fast build tool
-- **Tailwind CSS** - For the utility-first CSS framework
-- **Firebase** - For authentication and backend services
-- **Open Source Community** - For the incredible ecosystem
-
 ---
-
-<div align="center">
-<strong>Built with ❤️ for financial crime investigators worldwide</strong>
-</div>
