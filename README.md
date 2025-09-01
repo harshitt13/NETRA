@@ -36,6 +36,7 @@ Project Netra (Sanskrit for "eye") is a next-generation financial investigation 
 ## 🏗️ Architecture
 
 ### Backend (`/backend/`)
+
 - **Framework**: Flask (Python)
 - **Database**: Neo4j (graph), Firebase Firestore (documents), CSV (synthetic data)
 - **AI/ML**: Google Gemini API, Scikit-learn
@@ -47,6 +48,7 @@ Project Netra (Sanskrit for "eye") is a next-generation financial investigation 
   - PDF report generation
 
 ### Frontend (`/frontend/`)
+
 - **Framework**: React 18 with Vite
 - **Styling**: Tailwind CSS
 - **Authentication**: Firebase Auth
@@ -54,6 +56,7 @@ Project Netra (Sanskrit for "eye") is a next-generation financial investigation 
 - **State Management**: Custom hooks and context
 
 ### Data Generation (`/data-generation/`)
+
 - **Synthetic Data**: Faker-based generation with embedded money laundering patterns
 - **Neo4j Integration**: Automated data loading scripts
 - **Pattern Detection**: Structuring, shell company layering, mule account patterns
@@ -61,18 +64,21 @@ Project Netra (Sanskrit for "eye") is a next-generation financial investigation 
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Python 3.10+
 - Node.js 18.x+
 - Neo4j Desktop or Cloud instance
 - Firebase project (for authentication and case management)
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/AnuragWaskle/project-NETRA.git
 cd project-NETRA
 ```
 
 ### 2. Backend Setup
+
 ```bash
 cd backend
 
@@ -95,6 +101,7 @@ python app.py
 ```
 
 ### 3. Frontend Setup
+
 ```bash
 cd frontend
 
@@ -109,6 +116,7 @@ npm run dev
 ```
 
 ### 4. Data Setup
+
 ```bash
 # Generate synthetic data
 cd data-generation
@@ -162,6 +170,7 @@ project-NETRA/
 ## 🧪 Development
 
 ### Running Tests
+
 ```bash
 # Backend tests
 cd backend
@@ -173,6 +182,7 @@ npm test
 ```
 
 ### Building for Production
+
 ```bash
 # Frontend build
 cd frontend
@@ -215,6 +225,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For questions, issues, or contributions, please:
+
 - Open an issue on GitHub
 - Contact the development team
 - Check the documentation in each module's README
