@@ -250,10 +250,8 @@ from services.case_manager import CaseManager
 app = Flask(__name__)
 
 # Configure CORS for production and development
-frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
-allowed_origins = [
-    'http://localhost:3000',
-    'http://localhost:5173',  # Vite dev server
+frontend_url = os.environ.get('FRONTEND_URL', 'https://netra-ai.vercel.app/')
+allowed_origins = [  # Vite dev server
     frontend_url
 ]
 

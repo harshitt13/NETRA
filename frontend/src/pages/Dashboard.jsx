@@ -36,7 +36,7 @@ const Dashboard = () => {
         
         try {
             const token = await user.getIdToken();
-            const response = await fetch('http://localhost:5001/api/run-analysis', {
+            const response = await fetch('https://netra-8j8n.onrender.com/api/run-analysis', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

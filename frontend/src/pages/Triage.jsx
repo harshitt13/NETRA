@@ -63,7 +63,7 @@ const Triage = () => {
 
         try {
             const token = await user.getIdToken();
-            const response = await fetch('http://localhost:5001/api/cases', {
+            const response = await fetch('https://netra-8j8n.onrender.com/api/cases', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

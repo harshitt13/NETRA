@@ -85,7 +85,7 @@ import { useState, useEffect, useCallback } from 'react';
 // We are now using the useAuth hook to get the authenticated user state
 import { useAuth } from './useAuth.jsx';
 
-const API_BASE_URL = 'http://localhost:5001/api';
+const API_BASE_URL = 'https://netra-8j8n.onrender.com/api';
 
 /**
  * A custom React hook for fetching data from the backend API.

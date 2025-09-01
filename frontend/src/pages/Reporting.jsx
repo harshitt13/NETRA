@@ -19,7 +19,7 @@ const Reporting = () => {
             if (!user) throw new Error("Authentication required.");
             const token = await user.getIdToken();
 
-            const response = await fetch(`http://localhost:5001/api/report/${caseId}`, {
+            const response = await fetch(`https://netra-8j8n.onrender.com/api/report/${caseId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
