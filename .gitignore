@@ -54,6 +54,23 @@ serviceAccountKey.json
 *.pkl
 *.tmp
 
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated reports
+/backend/reports/*.pdf
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Deployment specific
+.vercel
+.railway
+
 # Neo4j data (if running locally)
 neo4j-data/
 
@@ -61,3 +78,6 @@ neo4j-data/
 .vscode/settings.json
 .vscode/launch.json
 .vscode/extensions.json
+
+# Jupyter Notebook
+.ipynb_checkpoints

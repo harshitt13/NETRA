@@ -1,6 +1,6 @@
-// // The base URL for our Flask API.
-// // This should be in a .env file in a real production app.
-// const API_BASE_URL = 'http://localhost:5000/api';
+// The base URL for our Flask API
+// Use environment variable for production deployment
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
 // /**
 //  * A generic helper function to handle API requests.
@@ -90,9 +90,9 @@
 
 
 
-// The base URL for our Flask API.
-// Note: Your latest app.py uses port 5001.
-const API_BASE_URL = 'http://localhost:5001/api';
+// The base URL for our Flask API
+// Use environment variable for production deployment
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
 /**
  * A generic helper function to handle API requests with authentication.
