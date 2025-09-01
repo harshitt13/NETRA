@@ -52,10 +52,11 @@ Data Visualization: React-Force-Graph-2D, Recharts
 Styling: Tailwind CSS
 
 System Flow
+
 1. Data Generation --> 2. ML Model Training --> 3. Flask Backend API --> 4. React Frontend
-      |                     |                        | (serves data)        | (visualizes data)
-      +-----> Neo4j & CSVs  +-----> .pkl Model       +-----> Gemini API     +-----> User Interaction
-                                                     +-----> Firebase
+   | | | (serves data) | (visualizes data)
+   +-----> Neo4j & CSVs +-----> .pkl Model +-----> Gemini API +-----> User Interaction
+   +-----> Firebase
 
 A detailed architecture diagram is available in frontend/docs/Project_Architecture.png.
 
@@ -70,7 +71,7 @@ Node.js: Version 18.x or later (with npm)
 Neo4j Desktop: The easiest way to run a local Neo4j graph database. Download here.
 
 1. Configuration & Setup
-Before running the application, you need to set up your environment variables and Firebase credentials.
+   Before running the application, you need to set up your environment variables and Firebase credentials.
 
 A. Clone the Repository
 
@@ -98,41 +99,50 @@ Navigate to the backend directory: cd backend
 Create a file named .flaskenv and paste the following content into it. You will need to get your own API keys.
 
 # Flask Configuration
+
 FLASK_APP=app.py
 FLASK_ENV=development
 
 # Neo4j Database Credentials (update with your local instance details)
+
 NEO4J_URI="bolt://localhost:7687"
 NEO4J_USER="neo4j"
 NEO4J_PASSWORD="your_neo4j_password"
 
 # Google Gemini API Key for AI Summaries
+
 # Get your key from Google AI Studio: [https://aistudio.google.com/](https://aistudio.google.com/)
+
 GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
 
 2. Installation
-A. Backend Dependencies
+   A. Backend Dependencies
 
 # Navigate to the backend directory if you aren't already there
+
 cd backend
 
 # Create and activate a virtual environment
+
 python -m venv venv
-source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+source venv/bin/activate # On Windows, use `venv\Scripts\activate`
 
 # Install all required Python packages
+
 pip install -r requirements.txt
 
 B. Frontend Dependencies
 
 # Navigate to the frontend directory from the root
+
 cd ../frontend
 
 # Install all required Node.js packages
+
 npm install
 
 3. Running the Application
-This is a multi-step process. You will need multiple terminal windows open.
+   This is a multi-step process. You will need multiple terminal windows open.
 
 Step 1: Start Neo4j
 
@@ -192,6 +202,5 @@ You can now access and test the full Project Netra application!
 |-- README.md
 
 A more detailed file-by-file breakdown is available in the project documentation.
-
 
 I hope this helps you to win the hackathon.
