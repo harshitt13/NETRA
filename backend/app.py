@@ -248,7 +248,19 @@ from services.case_manager import CaseManager
 
 # --- APPLICATION SETUP & SERVICE INITIALIZATION ---
 app = Flask(__name__)
-CORS(app)
+
+# Configure CORS for production and development
+frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+allowed_origins = [
+    'http://localhost:3000',
+    'http://localhost:5173',  # Vite dev server
+    frontend_url
+]
+
+# Remove duplicates and None values
+allowed_origins = list(set(filter(None, allowed_origins)))
+
+CORS(app, origins=allowed_origins, supports_credentials=True)
 
 print("Initializing Project Netra Backend Services...")
 DATA_PATH = os.path.join(os.path.dirname(__file__), '..', 'generated-data')
@@ -535,5 +547,8 @@ def internal_server_error(error):
 
 # --- MAIN EXECUTION ---
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    # Use environment variables for production deployment
+    port = int(os.environ.get('PORT', 5001))
+    debug = os.environ.get('FLASK_ENV') == 'development'
+    app.run(host='0.0.0.0', port=port, debug=debug)
 
