@@ -135,16 +135,9 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
       });
     } else {
-      // Check if user is already logged in (from sessionStorage) for mock auth
-      const savedUser = sessionStorage.getItem("netra_user");
-      if (savedUser) {
-        // Always use MOCK_USER object to preserve methods, but check session for persistence
-        setUser(MOCK_USER);
-      } else {
-        // Auto-login with default credentials for demo purposes
-        setUser(MOCK_USER);
-        sessionStorage.setItem("netra_user", JSON.stringify(MOCK_USER));
-      }
+      // For testing: Clear any existing session and start fresh
+      sessionStorage.removeItem("netra_user");
+      setUser(null);
       setLoading(false);
     }
 
@@ -154,12 +147,18 @@ export const AuthProvider = ({ children }) => {
 
   // Firebase login
   const login = async (email, password) => {
+    console.log("Login attempt:", email, password); // Debug log
     setLoading(true);
     setError(null);
     try {
       if (useMockAuth) {
         // Simulate API call delay for mock auth
         await new Promise((resolve) => setTimeout(resolve, 1000));
+        console.log(
+          "Checking credentials:",
+          email === ROOT_CREDENTIALS.email,
+          password === ROOT_CREDENTIALS.password
+        ); // Debug
         if (
           email === ROOT_CREDENTIALS.email &&
           password === ROOT_CREDENTIALS.password
@@ -168,9 +167,10 @@ export const AuthProvider = ({ children }) => {
           sessionStorage.setItem("netra_user", JSON.stringify(MOCK_USER));
           return { success: true };
         } else {
-          throw new Error(
-            "Invalid credentials. Use admin@netra.com / netra123"
-          );
+          const errorMsg =
+            "Invalid credentials. Use admin@netra.com / netra123";
+          console.log("Throwing error:", errorMsg); // Debug
+          throw new Error(errorMsg);
         }
       } else {
         // Firebase auth

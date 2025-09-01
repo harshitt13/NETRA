@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth"; // <-- 1. Import the useAuth hook
 import { Eye, EyeOff, LogIn, Shield, User, Key } from "lucide-react";
@@ -75,24 +75,53 @@ const LoginForm = () => {
   const [error, setError] = useState("");
 
   // --- 2. Get the login function and navigation hook ---
-  const { login } = useAuth();
+  const { login, user, logout } = useAuth();
   const navigate = useNavigate();
 
+  // If user is already logged in, show logout option
+  if (user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-gray-300 font-sans">
+        <div className="w-full max-w-lg p-10 space-y-8 rounded-3xl shadow-2xl bg-gray-800/80 backdrop-blur-xl border border-cyan-500/30 relative overflow-hidden">
+          <div className="text-center">
+            <h2 className="text-2xl font-light text-gray-200 mb-4">
+              Already Logged In
+            </h2>
+            <p className="text-cyan-400 text-sm mb-6">User: {user.email}</p>
+            <button
+              onClick={() => {
+                sessionStorage.clear();
+                logout();
+              }}
+              className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+            >
+              Logout & Test Login
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // --- 3. Update the handleLogin function ---
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
+  const handleLogin = async () => {
+    console.log("=== BUTTON CLICKED ===");
+    console.log("Email:", email, "Password:", password);
+
+    setError(""); // Clear any existing error
     setIsLoading(true);
 
     try {
-      // Call the actual login function from our auth hook
+      // Use the useAuth hook for authentication
       await login(email, password);
-      // On success, navigate to the main dashboard
+      console.log("Login successful - navigating to dashboard");
+      
+      setIsLoading(false);
+      // Navigate to dashboard
       navigate("/dashboard");
     } catch (err) {
-      // If login fails, the auth hook throws an error. We catch it here.
-      setError(err.message || "Invalid credentials. Please try again.");
-    } finally {
+      console.log("Login failed - setting error");
+      setError("Authentication failed. Please check your credentials.");
       setIsLoading(false);
     }
   };
@@ -115,7 +144,7 @@ const LoginForm = () => {
             </p>
           </div>
 
-          <form className="space-y-6" onSubmit={handleLogin}>
+          <div className="space-y-6">
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <User className="h-5 w-5 text-gray-400 group-focus-within:text-cyan-400 transition-colors" />
@@ -170,18 +199,19 @@ const LoginForm = () => {
             </div>
 
             {error && (
-              <div className="bg-red-900/50 border border-red-500/50 text-red-300 p-4 rounded-lg text-center animate-shake">
-                <div className="flex items-center justify-center space-x-2">
-                  <Shield className="h-5 w-5" />
-                  <span>{error}</span>
+              <div className="bg-red-500/90 border-2 border-red-400 text-white p-6 rounded-lg text-center animate-shake shadow-lg mb-4">
+                <div className="flex items-center justify-center space-x-3">
+                  <Shield className="h-6 w-6 text-red-100" />
+                  <span className="font-bold text-lg">{error}</span>
                 </div>
               </div>
             )}
 
             <div>
               <button
-                type="submit"
+                type="button"
                 disabled={isLoading}
+                onClick={handleLogin}
                 className="group relative w-full flex justify-center py-4 px-6 border border-transparent text-lg font-semibold rounded-xl text-white bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-gray-900 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-cyan-500/25"
               >
                 <span className="absolute left-0 top-0 h-full w-0 bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-500 group-hover:w-full rounded-xl"></span>
@@ -228,7 +258,7 @@ const LoginForm = () => {
                 Session timeout: 8 hours
               </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>

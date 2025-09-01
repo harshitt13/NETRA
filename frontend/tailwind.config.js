@@ -11,6 +11,7 @@ export default {
         fadeIn: "fadeIn 0.5s ease-in-out",
         scaleIn: "scaleIn 0.3s ease-in-out",
         fadeInUp: "fadeInUp 0.6s ease-in-out",
+        shake: "shake 0.5s ease-in-out",
       },
       keyframes: {
         fadeIn: {
