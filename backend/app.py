@@ -313,21 +313,26 @@ def run_analysis():
 @token_required
 def get_alerts():
     try:
+        # Debug: Print all request parameters
+        print(f"[ALERTS] Request args: {dict(request.args)}")
+        print(f"[ALERTS] Headers: {dict(request.headers)}")
+        
         # Always load from AlertScores.csv directly
         alerts_path = os.path.join(DATA_PATH, 'AlertScores.csv')
-        print(f"Looking for alerts at: {alerts_path}")
+        print(f"[ALERTS] Looking for alerts at: {alerts_path}")
         
         if not os.path.exists(alerts_path):
-            print("AlertScores.csv not found")
+            print("[ALERTS] AlertScores.csv not found")
             return jsonify([]), 200
             
         # Load the alerts data directly
         alerts_df = pd.read_csv(alerts_path)
-        print(f"Loaded alerts DataFrame with shape: {alerts_df.shape}")
-        print(f"Columns: {list(alerts_df.columns)}")
+        print(f"[ALERTS] Loaded alerts DataFrame with shape: {alerts_df.shape}")
+        print(f"[ALERTS] Columns: {list(alerts_df.columns)}")
         
         # Check if there's actual data (more than just header)
         if len(alerts_df) == 0:
+            print("[ALERTS] AlertScores.csv is empty (no data rows)")
             # Check if demo mode is requested
             demo_mode = request.args.get('demo', 'false').lower() == 'true'
             
@@ -391,6 +396,9 @@ def get_alerts():
                 print("No alert data found, returning empty array")
                 return jsonify([]), 200
         
+        # We have data, proceed normally
+        print(f"[ALERTS] Found {len(alerts_df)} alerts in CSV file")
+        
         # Get limit parameter
         limit = int(request.args.get('limit', 50))
         
@@ -398,14 +406,93 @@ def get_alerts():
         top_alerts_df = alerts_df.nlargest(limit, 'risk_score')
         alerts = top_alerts_df.to_dict(orient='records')
         
-        print(f"Returning {len(alerts)} alerts")
+        print(f"[ALERTS] Returning {len(alerts)} alerts (limited to {limit})")
         return jsonify(alerts), 200
         
     except Exception as e:
-        print(f"ERROR in /api/alerts: {e}")
+        print(f"[ALERTS] ERROR in /api/alerts: {e}")
         import traceback
         traceback.print_exc()
         return jsonify({"error": "Failed to retrieve alerts."}), 500
+
+
+# Add a simple alerts endpoint without authentication for debugging
+@app.route('/api/alerts-debug', methods=['GET'])
+def get_alerts_debug():
+    try:
+        print(f"[ALERTS-DEBUG] Request received")
+        
+        # Always load from AlertScores.csv directly
+        alerts_path = os.path.join(DATA_PATH, 'AlertScores.csv')
+        print(f"[ALERTS-DEBUG] Looking for alerts at: {alerts_path}")
+        
+        if not os.path.exists(alerts_path):
+            print("[ALERTS-DEBUG] AlertScores.csv not found")
+            return jsonify([]), 200
+            
+        # Load the alerts data directly
+        alerts_df = pd.read_csv(alerts_path)
+        print(f"[ALERTS-DEBUG] Loaded alerts DataFrame with shape: {alerts_df.shape}")
+        
+        if len(alerts_df) == 0:
+            print("[ALERTS-DEBUG] No alerts found")
+            return jsonify([]), 200
+        
+        # Get limit parameter
+        limit = int(request.args.get('limit', 10))
+        
+        # Sort by risk_score and get top alerts
+        top_alerts_df = alerts_df.nlargest(limit, 'risk_score')
+        alerts = top_alerts_df.to_dict(orient='records')
+        
+        print(f"[ALERTS-DEBUG] Returning {len(alerts)} alerts")
+        return jsonify(alerts), 200
+        
+    except Exception as e:
+        print(f"[ALERTS-DEBUG] ERROR: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": "Failed to retrieve alerts."}), 500
+
+@app.route('/api/test-alerts', methods=['GET'])
+def test_alerts():
+    """Test endpoint to verify alert generation without authentication"""
+    try:
+        alerts_path = os.path.join(DATA_PATH, 'AlertScores.csv')
+        print(f"DEBUG: Looking for alerts at: {alerts_path}")
+        
+        if os.path.exists(alerts_path):
+            alerts_df = pd.read_csv(alerts_path)
+            print(f"DEBUG: Found {len(alerts_df)} alerts")
+            print(f"DEBUG: Columns: {list(alerts_df.columns)}")
+            
+            # Test the same logic as the main alerts endpoint
+            if len(alerts_df) == 0:
+                return jsonify({
+                    "alerts_file_exists": True,
+                    "alerts_count": 0,
+                    "message": "File exists but is empty"
+                })
+            
+            # Get top 5 alerts by risk score
+            top_alerts_df = alerts_df.nlargest(5, 'risk_score')
+            alerts = top_alerts_df.to_dict(orient='records')
+            
+            return jsonify({
+                "alerts_file_exists": True,
+                "alerts_count": len(alerts_df),
+                "columns": list(alerts_df.columns),
+                "top_5_alerts": alerts,
+                "sample_alert": alerts_df.iloc[0].to_dict() if len(alerts_df) > 0 else None
+            })
+        else:
+            print(f"DEBUG: AlertScores.csv not found at {alerts_path}")
+            return jsonify({"alerts_file_exists": False, "path_checked": alerts_path})
+    except Exception as e:
+        print(f"DEBUG: Error in test-alerts: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(e)})
 
 @app.route('/api/investigate/<string:person_id>', methods=['GET'])
 @token_required

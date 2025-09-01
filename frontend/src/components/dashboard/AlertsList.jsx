@@ -42,7 +42,6 @@
 // };
 // // --- End of Placeholder ---
 
-
 // const AlertsList = () => {
 //   const { data: alerts, isLoading, error } = useAlerts();
 
@@ -69,76 +68,94 @@
 
 // export default AlertsList;
 
-
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import useFetchData from '../../hooks/useFetchData';
-import Loader from '../common/Loader';
-import { AlertCircle, User, ArrowRight } from 'lucide-react';
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
+import useDebugFetch from "../../hooks/useDebugFetch";
+import Loader from "../common/Loader";
+import { AlertCircle, User, ArrowRight } from "lucide-react";
 
 // This component now accepts a 'refetchTrigger' prop
 const AlertsList = ({ refetchTrigger }) => {
-    // We start by fetching alerts. The URL will never change.
-    const { data: alerts, loading, error, refetch } = useFetchData('/alerts');
+  // TEMPORARY: Use debug fetch to bypass auth issues
+  const {
+    data: alerts,
+    loading,
+    error,
+    refetch,
+  } = useDebugFetch("/alerts-debug?limit=20");
 
-    // --- IMPORTANT: This effect listens for changes to the trigger ---
-    // When the parent component changes 'refetchTrigger', this will run.
-    useEffect(() => {
-        // Don't refetch on the initial render (when trigger is 0)
-        if (refetchTrigger > 0) {
-            refetch();
-        }
-    }, [refetchTrigger, refetch]);
-
-
-    if (loading) {
-        return <div className="flex justify-center items-center p-8"><Loader /></div>;
+  // --- IMPORTANT: This effect listens for changes to the trigger ---
+  // When the parent component changes 'refetchTrigger', this will run.
+  useEffect(() => {
+    // Don't refetch on the initial render (when trigger is 0)
+    if (refetchTrigger > 0) {
+      refetch();
     }
+  }, [refetchTrigger, refetch]);
 
-    if (error) {
-        return (
-            <div className="bg-red-500/20 text-red-300 p-4 rounded-lg flex items-center space-x-3">
-                <AlertCircle className="h-6 w-6" />
-                <div>
-                    <h3 className="font-bold">Failed to load alerts.</h3>
-                    <p className="text-sm">{error.message}</p>
-                </div>
-            </div>
-        );
-    }
-
-    if (!alerts || alerts.length === 0) {
-        return (
-             <div className="bg-gray-800/50 text-gray-400 p-4 rounded-lg text-center">
-                <p>No high-priority alerts found. Run the analysis to generate new alerts.</p>
-            </div>
-        );
-    }
-
+  if (loading) {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeIn">
-            {alerts.map((alert) => (
-                <div key={alert.person_id} className="bg-gray-800/60 p-5 rounded-xl border border-gray-700 flex flex-col justify-between hover:border-cyan-500 transition-all duration-300 transform hover:-translate-y-1">
-                    <div>
-                        <div className="flex justify-between items-start mb-3">
-                            <div className="flex items-center space-x-3">
-                                <User className="h-6 w-6 text-cyan-400" />
-                                <h3 className="text-xl font-bold text-white">{alert.full_name}</h3>
-                            </div>
-                            <span className="bg-red-500/20 text-red-300 text-lg font-bold rounded-full h-12 w-12 flex items-center justify-center border-2 border-red-400">
-                                {alert.final_risk_score}
-                            </span>
-                        </div>
-                        <p className="text-gray-400 mb-4 h-16">{alert.summary}</p>
-                    </div>
-                    <Link to={`/triage/${alert.person_id}`} className="group mt-auto flex items-center justify-center w-full bg-cyan-600/50 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded-lg transition-all">
-                        Triage Case
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </Link>
-                </div>
-            ))}
-        </div>
+      <div className="flex justify-center items-center p-8">
+        <Loader />
+      </div>
     );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-500/20 text-red-300 p-4 rounded-lg flex items-center space-x-3">
+        <AlertCircle className="h-6 w-6" />
+        <div>
+          <h3 className="font-bold">Failed to load alerts.</h3>
+          <p className="text-sm">{error.message}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!alerts || alerts.length === 0) {
+    return (
+      <div className="bg-gray-800/50 text-gray-400 p-4 rounded-lg text-center">
+        <p>
+          No high-priority alerts found. Run the analysis to generate new
+          alerts.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeIn">
+      {alerts.map((alert) => (
+        <div
+          key={alert.person_id}
+          className="bg-gray-800/60 p-5 rounded-xl border border-gray-700 flex flex-col justify-between hover:border-cyan-500 transition-all duration-300 transform hover:-translate-y-1"
+        >
+          <div>
+            <div className="flex justify-between items-start mb-3">
+              <div className="flex items-center space-x-3">
+                <User className="h-6 w-6 text-cyan-400" />
+                <h3 className="text-xl font-bold text-white">
+                  {alert.full_name}
+                </h3>
+              </div>
+              <span className="bg-red-500/20 text-red-300 text-lg font-bold rounded-full h-12 w-12 flex items-center justify-center border-2 border-red-400">
+                {alert.final_risk_score}
+              </span>
+            </div>
+            <p className="text-gray-400 mb-4 h-16">{alert.summary}</p>
+          </div>
+          <Link
+            to={`/triage/${alert.person_id}`}
+            className="group mt-auto flex items-center justify-center w-full bg-cyan-600/50 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded-lg transition-all"
+          >
+            Triage Case
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default AlertsList;
