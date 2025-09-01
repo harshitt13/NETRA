@@ -57,7 +57,7 @@ System Flow
       +-----> Neo4j & CSVs  +-----> .pkl Model       +-----> Gemini API     +-----> User Interaction
                                                      +-----> Firebase
 
-A detailed architecture diagram is available in /docs/Project_Architecture.png.
+A detailed architecture diagram is available in frontend/docs/Project_Architecture.png.
 
 🚀 Getting Started
 Follow these instructions to get the entire platform up and running on your local machine.
