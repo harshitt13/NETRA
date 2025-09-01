@@ -111,7 +111,7 @@ const apiRequest = async (endpoint, options = {}) => {
 
   // If a token exists, add it to the request headers for protected routes.
   if (token) {
-    headers['x-access-token'] = token;
+    headers['Authorization'] = `Bearer ${token}`;
   }
 
   try {

@@ -114,7 +114,10 @@ const LoginForm = () => {
     try {
       // Use the useAuth hook for authentication
       await login(email, password);
-      console.log("Login successful - navigating to dashboard");
+      console.log("Login successful - storing auth token and navigating to dashboard");
+      
+      // Store the mock token for API authentication
+      localStorage.setItem('authToken', 'mock-jwt-token-12345');
       
       setIsLoading(false);
       // Navigate to dashboard
