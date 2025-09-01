@@ -1,21 +1,6 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-
-// --- Placeholder for the actual authentication hook ---
-// In a real application, you would replace this with your actual useAuth hook
-// which would provide the real user and loading state from Firebase.
-const useAuth = () => {
-  // SIMULATE DIFFERENT STATES FOR TESTING:
-  // 1. Loading state (e.g., checking Firebase session)
-  // return { user: null, loading: true };
-
-  // 2. Not authenticated state
-  // return { user: null, loading: false };
-  
-  // 3. Authenticated state
-  return { user: { email: 'investigator@netra.gov' }, loading: false }; 
-};
-// --- End of Placeholder ---
+import { useAuth } from '../../hooks/useAuth.jsx'; // Import the real useAuth hook
 
 
 // A themed loader component that matches our futuristic UI style

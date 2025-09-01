@@ -1,6 +1,7 @@
 import React from 'react';
 import { LogOut, UserCircle, Bell } from 'lucide-react';
 import Button from './Button.jsx'; // Assuming Button component is in the same folder
+import { useAuth } from '../../hooks/useAuth.jsx'; // Import the real useAuth hook
 
 // A smaller version of the logo for the header
 const MiniNetraLogo = () => (
@@ -14,13 +15,6 @@ const MiniNetraLogo = () => (
     <h1 className="text-2xl font-bold text-gray-200 ml-3 tracking-wider hidden sm:block">NETRA</h1>
   </div>
 );
-
-// --- Placeholder for the actual authentication hook ---
-const useAuth = () => {
-  // This would be replaced by your actual useAuth hook from Firebase context
-  return { user: { email: 'investigator@netra.gov' }, logout: () => console.log('Logout initiated') };
-};
-// --- End of Placeholder ---
 
 const Header = () => {
   const { user, logout } = useAuth();
