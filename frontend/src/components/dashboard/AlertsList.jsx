@@ -70,28 +70,46 @@
 
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import useDebugFetch from "../../hooks/useDebugFetch";
 import Loader from "../common/Loader";
 import { AlertCircle, User, ArrowRight } from "lucide-react";
+import { useAuth } from "../../hooks/useAuth.jsx";
 
-// This component now accepts a 'refetchTrigger' prop
 const AlertsList = ({ refetchTrigger }) => {
-  // TEMPORARY: Use debug fetch to bypass auth issues
-  const {
-    data: alerts,
-    loading,
-    error,
-    refetch,
-  } = useDebugFetch("/alerts-debug?limit=20");
+  const { user } = useAuth();
+  const [alerts, setAlerts] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+
+  const fetchAlerts = React.useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const token = await user.getIdToken();
+      const res = await fetch(`${API_BASE_URL}/alerts?limit=30`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        throw new Error(`Failed to load alerts (${res.status})`);
+      }
+      const data = await res.json();
+      setAlerts(data);
+    } catch (e) {
+      setError(e);
+    } finally {
+      setLoading(false);
+    }
+  }, [API_BASE_URL, user]);
+
+  useEffect(() => { if (user) fetchAlerts(); }, [user, fetchAlerts]);
 
   // --- IMPORTANT: This effect listens for changes to the trigger ---
   // When the parent component changes 'refetchTrigger', this will run.
   useEffect(() => {
     // Don't refetch on the initial render (when trigger is 0)
-    if (refetchTrigger > 0) {
-      refetch();
-    }
-  }, [refetchTrigger, refetch]);
+    if (refetchTrigger > 0) fetchAlerts();
+  }, [refetchTrigger, fetchAlerts]);
 
   if (loading) {
     return (

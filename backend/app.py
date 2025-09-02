@@ -251,13 +251,16 @@ app = Flask(__name__)
 
 # Configure CORS for production and development
 frontend_url = os.environ.get('FRONTEND_URL', 'https://netra-ai.vercel.app/')
-allowed_origins = [  # Vite dev server
+allowed_origins = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
     frontend_url
 ]
 
 # Remove duplicates and None values
 allowed_origins = list(set(filter(None, allowed_origins)))
 
+print(f"Configuring CORS for origins: {allowed_origins}")
 CORS(app, origins=allowed_origins, supports_credentials=True)
 
 print("Initializing Project Netra Backend Services...")

@@ -86,8 +86,10 @@ class HybridRiskScorer:
             }
             
             final_score = sum(scores[key] * weights[key] for key in scores)
-            
-            if final_score > 20: # Only create alerts for scores above a threshold
+
+            # Allow threshold override for demo / testing; default lowered to 10 if not set
+            threshold = int(os.environ.get('RISK_ALERT_THRESHOLD', '10'))
+            if final_score > threshold:  # Only create alerts for scores above a threshold
                 all_scores.append({
                     'alert_id': f"ALT-{len(all_scores)+1:03d}",
                     'person_id': person_id,

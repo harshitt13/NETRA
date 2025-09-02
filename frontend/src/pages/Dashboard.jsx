@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '../components/common/Header.jsx';
 import Sidebar from '../components/common/Sidebar.jsx';
 import AlertsList from '../components/dashboard/AlertsList.jsx';
@@ -36,7 +36,8 @@ const Dashboard = () => {
         
         try {
             const token = await user.getIdToken();
-            const response = await fetch('https://netra-8j8n.onrender.com/api/run-analysis', {
+            const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+            const response = await fetch(`${API_BASE_URL}/run-analysis`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -129,7 +130,7 @@ const Dashboard = () => {
                                      </div>
                                  )}
                                   {!searchLoading && searchResults && searchResults.length === 0 && (
-                                      <p className="text-gray-400">No results found for "{searchQuery}".</p>
+                                      <p className="text-gray-400">No results found for &quot;{searchQuery}&quot;.</p>
                                  )}
                             </div>
                         )}
