@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, FileText, Settings, ChevronsLeft, ChevronsRight, Search } from 'lucide-react';
 
@@ -48,7 +48,7 @@ const Sidebar = () => {
   return (
     <aside
       className={`
-        fixed top-0 left-0 h-screen z-30 pt-24 pb-8 px-4 flex flex-col
+        hidden md:flex h-full pt-24 pb-8 px-4 flex-col
         bg-gray-900/60 backdrop-blur-xl border-r border-cyan-500/20
         transition-all duration-300 ease-in-out
         ${isExpanded ? 'w-72' : 'w-24'}

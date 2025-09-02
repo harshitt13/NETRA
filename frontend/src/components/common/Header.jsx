@@ -1,6 +1,7 @@
 import { UserCircle, Bell, Menu, X, Settings } from "lucide-react";
 import { useState, useEffect } from "react";
 import LogoutButton from "./LogoutButton.jsx";
+import NotificationBell from "./NotificationBell.jsx";
 import { useAuth } from "../../hooks/useAuth.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -56,7 +57,7 @@ const MiniNetraLogo = () => (
 );
 
 // Mobile menu component
-const MobileMenu = ({ isOpen, onClose, user, navigate, profile }) => (
+const MobileMenu = ({ isOpen, onClose, navigate, profile }) => (
   <div className={`fixed inset-0 z-50 transition-all duration-300 md:hidden ${
     isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
   }`}>
@@ -176,16 +177,7 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
-          {/* Notifications */}
-          <button className="relative p-2 text-gray-400 hover:text-cyan-400 
-                           transition-all duration-300 hover:scale-110 hover-glow
-                           rounded-lg hover:bg-gray-800/30">
-            <Bell size={24} />
-            <span className="absolute -top-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-            </span>
-          </button>
+          <NotificationBell />
 
           {/* Settings */}
           <button 
@@ -231,10 +223,9 @@ const Header = () => {
       </header>
 
       {/* Mobile Menu */}
-      <MobileMenu 
+  <MobileMenu 
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
-        user={user}
         profile={profile}
         navigate={navigate}
       />

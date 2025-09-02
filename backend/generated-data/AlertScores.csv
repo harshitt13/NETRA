@@ -1,51 +1,51 @@
 alert_id,person_id,full_name,final_risk_score,risk_score,timestamp,summary,status,scoring_version
-ALT-025,PER00447,Ikshita Sehgal,22,22,2025-09-02T16:46:28.110213,Risk flagged due to high-value property ownership and 1 other factors.,active,2
-ALT-006,PER00134,Dhruv Dass,21,21,2025-09-02T16:46:25.475859,Risk flagged due to high-value property ownership and 2 other factors.,active,2
-ALT-030,PER00473,Hamsini Dani,21,21,2025-09-02T16:46:28.381661,Risk flagged due to high-value property ownership and 2 other factors.,active,2
-ALT-029,PER00466,Oviya Rana,19,19,2025-09-02T16:46:28.314850,Risk flagged due to high-value property ownership and 1 other factors.,active,2
-ALT-037,PER00678,Kai Mangat,19,19,2025-09-02T16:46:30.330272,Risk flagged due to high-value property ownership and 1 other factors.,active,2
-ALT-016,PER00257,Omya Kaur,19,19,2025-09-02T16:46:26.553171,Risk flagged due to high-value property ownership and 1 other factors.,active,2
-ALT-015,PER00256,Hamsini Parmer,18,18,2025-09-02T16:46:26.545667,Risk flagged due to high-value property ownership and 1 other factors.,active,2
-ALT-002,PER00025,Om Hayre,18,18,2025-09-02T16:46:24.562956,Risk flagged due to high-value property ownership and 1 other factors.,active,2
-ALT-041,PER00738,Tanish Chaudhary,18,18,2025-09-02T16:46:30.830331,Risk flagged due to high-value property ownership and 1 other factors.,active,2
-ALT-019,PER00328,Tristan Mital,17,17,2025-09-02T16:46:27.143102,Risk flagged due to high-value property ownership and 1 other factors.,active,2
-ALT-047,PER00927,Tara Rajagopalan,16,16,2025-09-02T16:46:32.239065,Risk flagged due to tax filing irregularities and 2 other factors.,active,2
-ALT-046,PER00867,Sathvik Prabhakar,16,16,2025-09-02T16:46:31.765847,Risk flagged due to high-value property ownership and 1 other factors.,active,2
-ALT-014,PER00253,Manthan Maharaj,16,16,2025-09-02T16:46:26.521154,Risk flagged due to high-value property ownership and 1 other factors.,active,2
-ALT-012,PER00181,Oeshi Deep,15,15,2025-09-02T16:46:25.891881,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-035,PER00658,Farhan Basak,15,15,2025-09-02T16:46:30.181347,Risk flagged due to high-value property ownership and 1 other factors.,active,2
-ALT-049,PER00958,Dhriti Narang,15,15,2025-09-02T16:46:32.470011,Risk flagged due to tax filing irregularities and 2 other factors.,active,2
-ALT-024,PER00437,Qushi Bose,15,15,2025-09-02T16:46:27.997575,Risk flagged due to tax filing irregularities and 2 other factors.,active,2
-ALT-018,PER00303,Yashoda Bhargava,14,14,2025-09-02T16:46:26.929776,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-045,PER00827,Gaurika Wagle,14,14,2025-09-02T16:46:31.469798,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-050,PER00988,Jeet Rout,14,14,2025-09-02T16:46:32.669085,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-004,PER00104,Ladli Din,14,14,2025-09-02T16:46:25.246943,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-042,PER00775,Nachiket Naidu,14,14,2025-09-02T16:46:31.119126,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-036,PER00663,Jonathan Rama,14,14,2025-09-02T16:46:30.218797,Risk flagged due to high-value property ownership,active,2
-ALT-031,PER00532,Tristan Ramachandran,14,14,2025-09-02T16:46:29.005715,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-011,PER00175,Zaid Babu,14,14,2025-09-02T16:46:25.835874,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-010,PER00164,Shivani Char,14,14,2025-09-02T16:46:25.748312,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-007,PER00147,Zehaan Khurana,14,14,2025-09-02T16:46:25.595908,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-008,PER00149,Krishna Wagle,14,14,2025-09-02T16:46:25.621022,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-022,PER00365,Brijesh Lata,14,14,2025-09-02T16:46:27.430585,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-048,PER00935,Lavanya Mane,14,14,2025-09-02T16:46:32.305622,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-021,PER00363,Odika Yohannan,13,13,2025-09-02T16:46:27.418577,Risk flagged due to high-value property ownership,active,2
-ALT-013,PER00202,Maanav Sama,13,13,2025-09-02T16:46:26.045483,Risk flagged due to high-value property ownership,active,2
-ALT-003,PER00073,Amrita Sidhu,12,12,2025-09-02T16:46:25.025461,Risk flagged due to high-value credits inconsistent with salary and 2 other factors.,active,2
-ALT-026,PER00460,Arjun Ramachandran,12,12,2025-09-02T16:46:28.239752,Risk flagged due to high-value property ownership,active,2
-ALT-033,PER00615,Hredhaan Barman,12,12,2025-09-02T16:46:29.848686,Risk flagged due to high-value property ownership,active,2
-ALT-040,PER00733,Panini Nayar,11,11,2025-09-02T16:46:30.790318,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active,2
-ALT-017,PER00289,Upkaar Wali,11,11,2025-09-02T16:46:26.806336,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active,2
-ALT-001,PER00013,Urvashi Dhawan,11,11,2025-09-02T16:46:24.471171,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active,2
-ALT-039,PER00703,Lakshmi Tiwari,11,11,2025-09-02T16:46:30.537398,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active,2
-ALT-032,PER00533,Devansh Pandya,11,11,2025-09-02T16:46:29.018711,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active,2
-ALT-034,PER00636,Pushti Bakshi,11,11,2025-09-02T16:46:29.999229,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-038,PER00696,Ayushman Lata,11,11,2025-09-02T16:46:30.478398,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active,2
-ALT-043,PER00808,Hardik Dara,11,11,2025-09-02T16:46:31.351991,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active,2
-ALT-044,PER00819,Gautami Din,11,11,2025-09-02T16:46:31.419095,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active,2
-ALT-005,PER00107,Advika Thakkar,10,10,2025-09-02T16:46:25.271414,Risk flagged due to tax filing irregularities and 2 other factors.,active,2
-ALT-009,PER00162,Diya Gulati,10,10,2025-09-02T16:46:25.726793,Risk flagged due to high-value property ownership and 1 other factors.,active,2
-ALT-028,PER00464,Keya Pal,10,10,2025-09-02T16:46:28.290761,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
-ALT-027,PER00462,Omkaar Sawhney,10,10,2025-09-02T16:46:28.263840,Risk flagged due to tax filing irregularities and 2 other factors.,active,2
-ALT-020,PER00336,Ayush Keer,10,10,2025-09-02T16:46:27.215340,Risk flagged due to tax filing irregularities and 2 other factors.,active,2
-ALT-023,PER00416,Balveer Modi,10,10,2025-09-02T16:46:27.825415,Risk flagged due to high-value property ownership,active,2
+ALT-025,PER00447,Ikshita Sehgal,22,22,2025-09-02T17:08:01.714585,Risk flagged due to high-value property ownership and 1 other factors.,active,2
+ALT-006,PER00134,Dhruv Dass,21,21,2025-09-02T17:07:59.128080,Risk flagged due to high-value property ownership and 2 other factors.,active,2
+ALT-030,PER00473,Hamsini Dani,21,21,2025-09-02T17:08:01.900867,Risk flagged due to high-value property ownership and 2 other factors.,active,2
+ALT-029,PER00466,Oviya Rana,19,19,2025-09-02T17:08:01.852293,Risk flagged due to high-value property ownership and 1 other factors.,active,2
+ALT-037,PER00678,Kai Mangat,19,19,2025-09-02T17:08:03.373693,Risk flagged due to high-value property ownership and 1 other factors.,active,2
+ALT-016,PER00257,Omya Kaur,19,19,2025-09-02T17:08:00.186089,Risk flagged due to high-value property ownership and 1 other factors.,active,2
+ALT-015,PER00256,Hamsini Parmer,18,18,2025-09-02T17:08:00.177130,Risk flagged due to high-value property ownership and 1 other factors.,active,2
+ALT-002,PER00025,Om Hayre,18,18,2025-09-02T17:07:58.268878,Risk flagged due to high-value property ownership and 1 other factors.,active,2
+ALT-041,PER00738,Tanish Chaudhary,18,18,2025-09-02T17:08:03.808877,Risk flagged due to high-value property ownership and 1 other factors.,active,2
+ALT-019,PER00328,Tristan Mital,17,17,2025-09-02T17:08:00.732806,Risk flagged due to high-value property ownership and 1 other factors.,active,2
+ALT-047,PER00927,Tara Rajagopalan,16,16,2025-09-02T17:08:05.350297,Risk flagged due to tax filing irregularities and 2 other factors.,active,2
+ALT-046,PER00867,Sathvik Prabhakar,16,16,2025-09-02T17:08:04.895300,Risk flagged due to high-value property ownership and 1 other factors.,active,2
+ALT-014,PER00253,Manthan Maharaj,16,16,2025-09-02T17:08:00.150327,Risk flagged due to high-value property ownership and 1 other factors.,active,2
+ALT-012,PER00181,Oeshi Deep,15,15,2025-09-02T17:07:59.566781,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-035,PER00658,Farhan Basak,15,15,2025-09-02T17:08:03.241327,Risk flagged due to high-value property ownership and 1 other factors.,active,2
+ALT-049,PER00958,Dhriti Narang,15,15,2025-09-02T17:08:05.569070,Risk flagged due to tax filing irregularities and 2 other factors.,active,2
+ALT-024,PER00437,Qushi Bose,15,15,2025-09-02T17:08:01.636263,Risk flagged due to tax filing irregularities and 2 other factors.,active,2
+ALT-018,PER00303,Yashoda Bhargava,14,14,2025-09-02T17:08:00.563660,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-045,PER00827,Gaurika Wagle,14,14,2025-09-02T17:08:04.614017,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-050,PER00988,Jeet Rout,14,14,2025-09-02T17:08:05.766651,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-004,PER00104,Ladli Din,14,14,2025-09-02T17:07:58.865028,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-042,PER00775,Nachiket Naidu,14,14,2025-09-02T17:08:04.166216,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-036,PER00663,Jonathan Rama,14,14,2025-09-02T17:08:03.273850,Risk flagged due to high-value property ownership,active,2
+ALT-031,PER00532,Tristan Ramachandran,14,14,2025-09-02T17:08:02.354950,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-011,PER00175,Zaid Babu,14,14,2025-09-02T17:07:59.517713,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-010,PER00164,Shivani Char,14,14,2025-09-02T17:07:59.420483,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-007,PER00147,Zehaan Khurana,14,14,2025-09-02T17:07:59.255295,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-008,PER00149,Krishna Wagle,14,14,2025-09-02T17:07:59.279008,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-022,PER00365,Brijesh Lata,14,14,2025-09-02T17:08:01.024531,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-048,PER00935,Lavanya Mane,14,14,2025-09-02T17:08:05.399604,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-021,PER00363,Odika Yohannan,13,13,2025-09-02T17:08:01.011545,Risk flagged due to high-value property ownership,active,2
+ALT-013,PER00202,Maanav Sama,13,13,2025-09-02T17:07:59.745924,Risk flagged due to high-value property ownership,active,2
+ALT-003,PER00073,Amrita Sidhu,12,12,2025-09-02T17:07:58.619921,Risk flagged due to high-value credits inconsistent with salary and 2 other factors.,active,2
+ALT-026,PER00460,Arjun Ramachandran,12,12,2025-09-02T17:08:01.808277,Risk flagged due to high-value property ownership,active,2
+ALT-033,PER00615,Hredhaan Barman,12,12,2025-09-02T17:08:02.947339,Risk flagged due to high-value property ownership,active,2
+ALT-040,PER00733,Panini Nayar,11,11,2025-09-02T17:08:03.775701,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active,2
+ALT-017,PER00289,Upkaar Wali,11,11,2025-09-02T17:08:00.465309,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active,2
+ALT-001,PER00013,Urvashi Dhawan,11,11,2025-09-02T17:07:58.187371,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active,2
+ALT-039,PER00703,Lakshmi Tiwari,11,11,2025-09-02T17:08:03.554819,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active,2
+ALT-032,PER00533,Devansh Pandya,11,11,2025-09-02T17:08:02.362049,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active,2
+ALT-034,PER00636,Pushti Bakshi,11,11,2025-09-02T17:08:03.090386,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-038,PER00696,Ayushman Lata,11,11,2025-09-02T17:08:03.493923,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active,2
+ALT-043,PER00808,Hardik Dara,11,11,2025-09-02T17:08:04.491887,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active,2
+ALT-044,PER00819,Gautami Din,11,11,2025-09-02T17:08:04.561502,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active,2
+ALT-005,PER00107,Advika Thakkar,10,10,2025-09-02T17:07:58.897616,Risk flagged due to tax filing irregularities and 2 other factors.,active,2
+ALT-009,PER00162,Diya Gulati,10,10,2025-09-02T17:07:59.404974,Risk flagged due to high-value property ownership and 1 other factors.,active,2
+ALT-028,PER00464,Keya Pal,10,10,2025-09-02T17:08:01.837277,Risk flagged due to tax filing irregularities and 1 other factors.,active,2
+ALT-027,PER00462,Omkaar Sawhney,10,10,2025-09-02T17:08:01.823279,Risk flagged due to tax filing irregularities and 2 other factors.,active,2
+ALT-020,PER00336,Ayush Keer,10,10,2025-09-02T17:08:00.795335,Risk flagged due to tax filing irregularities and 2 other factors.,active,2
+ALT-023,PER00416,Balveer Modi,10,10,2025-09-02T17:08:01.438936,Risk flagged due to high-value property ownership,active,2

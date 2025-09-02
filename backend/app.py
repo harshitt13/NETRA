@@ -233,6 +233,8 @@
 
 import os
 import json
+import uuid
+from datetime import datetime, timezone
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 import pandas as pd
@@ -283,6 +285,7 @@ print("All services initialized successfully. Backend is ready.")
 
 # --- Simple local settings persistence (non-sensitive demo storage) ---
 SETTINGS_FILE = os.path.join(os.path.dirname(__file__), 'app_settings.json')
+NOTIFICATIONS_FILE = os.path.join(os.path.dirname(__file__), 'notifications.json')
 
 def _load_settings():
     if os.path.exists(SETTINGS_FILE):
@@ -304,6 +307,24 @@ def _save_settings(data):
         return True
     except Exception as e:
         print(f"WARN: Failed to save settings: {e}")
+        return False
+
+def _load_notifications():
+    try:
+        if os.path.exists(NOTIFICATIONS_FILE):
+            with open(NOTIFICATIONS_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f).get('notifications', [])
+    except Exception as e:
+        print(f"WARN: Failed to load notifications: {e}")
+    return []
+
+def _save_notifications(items):
+    try:
+        with open(NOTIFICATIONS_FILE, 'w', encoding='utf-8') as f:
+            json.dump({'notifications': items}, f, indent=2)
+        return True
+    except Exception as e:
+        print(f"WARN: Failed to save notifications: {e}")
         return False
 
 # Auto-run analysis once on startup if no existing alert scores cached
@@ -883,6 +904,169 @@ def settings_theme():
     settings['theme'] = theme
     _save_settings(settings)
     return jsonify({"message": "Theme updated", "theme": theme}), 200
+
+# --- Notifications Endpoints ---
+@app.route('/api/notifications', methods=['GET'])
+@token_required
+def get_notifications():
+    """Return list of notifications. If none exist, synthesize a few from top alerts."""
+    force = request.args.get('force') == '1'
+    items = _load_notifications()
+    if force:
+        # Rebuild notifications from latest top alerts
+        items = []
+    if not items or force:
+        try:
+            alerts_path = os.path.join(DATA_PATH, 'AlertScores.csv')
+            if os.path.exists(alerts_path):
+                df = pd.read_csv(alerts_path)
+                if 'risk_score' in df.columns and len(df) > 0:
+                    # Get top 5 most recent high risk (sort by risk then maybe person_id to stabilize)
+                    top = df.nlargest(5, 'risk_score').to_dict(orient='records')
+                    now_iso = datetime.now(timezone.utc).isoformat()
+                    for rec in top:
+                        items.append({
+                            'id': str(uuid.uuid4()),
+                            'type': 'alert',
+                            'person_id': rec.get('person_id'),
+                            'title': f"High Risk Alert: {rec.get('person_id')}",
+                            'message': f"Score {int(rec.get('risk_score', rec.get('final_risk_score', 0)))} for {rec.get('person_id')} - {rec.get('full_name','Unknown')}",
+                            'severity': 'high' if rec.get('risk_score',0) >= 80 else 'medium',
+                            'created_at': now_iso,
+                            'read': False
+                        })
+        except Exception as e:
+            print(f"WARN: Failed to synthesize notifications: {e}")
+        _save_notifications(items)
+    else:
+        # Opportunistically append any new high risk alerts not already represented
+        try:
+            existing_person_ids = {n.get('person_id') for n in items if n.get('person_id')}
+            alerts_path = os.path.join(DATA_PATH, 'AlertScores.csv')
+            if os.path.exists(alerts_path):
+                df = pd.read_csv(alerts_path)
+                if 'risk_score' in df.columns and len(df) > 0:
+                    top_new = df.nlargest(5, 'risk_score')
+                    now_iso = datetime.now(timezone.utc).isoformat()
+                    for _, rec in top_new.iterrows():
+                        pid = rec.get('person_id')
+                        if pid not in existing_person_ids:
+                            items.append({
+                                'id': str(uuid.uuid4()),
+                                'type': 'alert',
+                                'person_id': pid,
+                                'title': f"High Risk Alert: {pid}",
+                                'message': f"Score {int(rec.get('risk_score', rec.get('final_risk_score', 0)))} for {pid} - {rec.get('full_name','Unknown')}",
+                                'severity': 'high' if rec.get('risk_score',0) >= 80 else 'medium',
+                                'created_at': now_iso,
+                                'read': False
+                            })
+                    _save_notifications(items)
+        except Exception as e:
+            print(f"WARN: Failed to augment notifications: {e}")
+    # Sort newest first
+    try:
+        items.sort(key=lambda x: x.get('created_at',''), reverse=True)
+    except Exception:
+        pass
+    # Filtering
+    unread_only = request.args.get('unread') == '1'
+    limit_param = request.args.get('limit')
+    filtered = [n for n in items if (not unread_only or not n.get('read'))]
+    if limit_param:
+        try:
+            lim = max(1, min(int(limit_param), 100))
+            filtered = filtered[:lim]
+        except ValueError:
+            pass
+    unread = sum(1 for n in items if not n.get('read'))
+    return jsonify({"notifications": filtered, "unread": unread, "total": len(items)}), 200
+
+@app.route('/api/notifications', methods=['POST'])
+@token_required
+def create_notification():
+    body = request.get_json(silent=True) or {}
+    title = body.get('title') or 'Notification'
+    message = body.get('message') or ''
+    severity = body.get('severity','info')
+    person_id = body.get('person_id')
+    if severity not in ['info','low','medium','high','critical']:
+        severity = 'info'
+    items = _load_notifications()
+    new_item = {
+        'id': str(uuid.uuid4()),
+        'type': body.get('type','general'),
+        'title': title,
+        'message': message,
+        'severity': severity,
+        'person_id': person_id,
+        'created_at': datetime.now(timezone.utc).isoformat(),
+        'read': False
+    }
+    items.append(new_item)
+    _save_notifications(items)
+    return jsonify({"message": "Notification created", "notification": new_item}), 201
+
+@app.route('/api/notifications/<string:notif_id>', methods=['PATCH'])
+@token_required
+def update_notification(notif_id):
+    body = request.get_json(silent=True) or {}
+    items = _load_notifications()
+    updated = None
+    for n in items:
+        if n.get('id') == notif_id:
+            if 'read' in body:
+                n['read'] = bool(body['read'])
+                if n['read']:
+                    n['read_at'] = datetime.now(timezone.utc).isoformat()
+                else:
+                    n.pop('read_at', None)
+            if 'title' in body:
+                n['title'] = body['title']
+            if 'message' in body:
+                n['message'] = body['message']
+            if 'severity' in body and body['severity'] in ['info','low','medium','high','critical']:
+                n['severity'] = body['severity']
+            updated = n
+            break
+    if updated is None:
+        return jsonify({"error": "Notification not found"}), 404
+    _save_notifications(items)
+    return jsonify({"message": "Notification updated", "notification": updated}), 200
+
+@app.route('/api/notifications/<string:notif_id>', methods=['DELETE'])
+@token_required
+def delete_notification(notif_id):
+    items = _load_notifications()
+    new_items = [n for n in items if n.get('id') != notif_id]
+    if len(new_items) == len(items):
+        return jsonify({"error": "Notification not found"}), 404
+    _save_notifications(new_items)
+    return jsonify({"message": "Notification deleted"}), 200
+
+@app.route('/api/notifications/mark-read', methods=['POST'])
+@token_required
+def mark_notifications_read():
+    body = request.get_json(silent=True) or {}
+    ids = body.get('ids')  # optional list
+    items = _load_notifications()
+    updated = 0
+    now_iso = datetime.now(timezone.utc).isoformat()
+    if ids and isinstance(ids, list):
+        id_set = set(ids)
+        for n in items:
+            if n.get('id') in id_set and not n.get('read'):
+                n['read'] = True
+                n['read_at'] = now_iso
+                updated += 1
+    else:
+        for n in items:
+            if not n.get('read'):
+                n['read'] = True
+                n['read_at'] = now_iso
+                updated += 1
+    _save_notifications(items)
+    return jsonify({"message": "Notifications marked read", "updated": updated}), 200
 
 
 # --- Error Handlers ---
