@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { API_BASE } from "../utils/apiBase.js";
 import Header from "../components/common/Header.jsx";
 import Sidebar from "../components/common/Sidebar.jsx";
@@ -48,43 +48,112 @@ const Dashboard = () => {
   }, [searchQuery, setSearchUrl]);
 
   // 2. This function triggers the backend's core analysis process.
+  const pollTimerRef = useRef(null);
+
+  const clearPollTimer = () => {
+    if (pollTimerRef.current) {
+      clearTimeout(pollTimerRef.current);
+      pollTimerRef.current = null;
+    }
+  };
+
+  const pollAnalysisStatus = async (token, initialDelay = 1500) => {
+    clearPollTimer();
+    pollTimerRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`${API_BASE}/run-analysis/status`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const statusJson = await res.json();
+        if (statusJson.running) {
+          setAnalysisStatus({
+            loading: true,
+            message: "Analysis running... (refreshing alerts when done)",
+            type: "info",
+          });
+          // continue polling (exponential-ish backoff up to 5s)
+          const nextDelay = Math.min(initialDelay * 1.5, 5000);
+          pollAnalysisStatus(token, nextDelay);
+        } else {
+          if (statusJson.error) {
+            setAnalysisStatus({
+              loading: false,
+              message: `Analysis failed: ${statusJson.error}`,
+              type: "error",
+            });
+          } else {
+            setAnalysisStatus({
+              loading: false,
+              message: `Full risk analysis complete. ${statusJson.alerts_generated || 0} alerts generated.`,
+              type: "success",
+            });
+            // Trigger refresh of alerts
+            setRefetchCounter((prev) => prev + 1);
+          }
+        }
+      } catch (e) {
+        setAnalysisStatus({
+          loading: false,
+          message: `Status check error: ${e.message}`,
+          type: "error",
+        });
+      }
+    }, initialDelay);
+  };
+
   const handleRunAnalysis = async () => {
+    clearPollTimer();
     setAnalysisStatus({
       loading: true,
-      message: "Running money laundering pattern detection...",
+      message: "Starting full risk analysis...",
       type: "info",
     });
-
     try {
       const token = await user.getIdToken();
-  const response = await fetch(`${API_BASE}/run-analysis`, {
+      const response = await fetch(`${API_BASE}/run-analysis`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      // Try parse JSON (may be empty on some error conditions)
+      let result = {};
+      try { result = await response.json(); } catch (_) { /* ignore */ }
 
-      const result = await response.json();
+      if (response.status === 202) {
+        setAnalysisStatus({
+          loading: true,
+          message: "Analysis launched (async). Monitoring progress...",
+          type: "info",
+        });
+        pollAnalysisStatus(token);
+        return;
+      }
+
       if (!response.ok) {
-        throw new Error(result.error || "Analysis failed to run.");
+        throw new Error(result.error || `Analysis failed (HTTP ${response.status}).`);
       }
 
       setAnalysisStatus({
         loading: false,
-        message: result.message,
+        message: result.message || "Full analysis complete.",
         type: "success",
       });
-
-      // 3. IMPORTANT: After success, we change the signal to trigger a refresh.
       setRefetchCounter((prev) => prev + 1);
     } catch (err) {
       setAnalysisStatus({
         loading: false,
-        message: err.message,
+        message: err.message === 'Failed to fetch'
+          ? 'Network error initiating analysis (CORS / network). Try again.'
+          : err.message,
         type: "error",
       });
     }
   };
+
+  useEffect(() => {
+    return () => clearPollTimer();
+  }, []);
 
   return (
     <div className="flex h-screen bg-gray-900 text-white font-sans">
@@ -119,9 +188,7 @@ const Dashboard = () => {
                   }`}
                 />
                 <span>
-                  {analysisStatus.loading
-                    ? "Analyzing..."
-                    : "Run Full Analysis"}
+                  {analysisStatus.loading ? "Analyzing..." : "Run Full Analysis"}
                 </span>
               </button>
             </div>

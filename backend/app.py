@@ -234,6 +234,7 @@
 import os
 import json
 import uuid
+import threading
 from datetime import datetime, timezone
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
@@ -365,16 +366,90 @@ def search_persons():
         print(f"ERROR in /api/persons: {e}")
         return jsonify({"error": "Failed to search for persons."}), 500
 
+analysis_state = {
+    'running': False,
+    'started_at': None,
+    'completed_at': None,
+    'alerts_generated': None,
+    'error': None
+}
+_analysis_lock = threading.Lock()
+
+def _background_full_analysis():
+    global analysis_state
+    try:
+        print("[ANALYSIS] Background full analysis started...")
+        results = risk_scorer.run_full_analysis()
+        with _analysis_lock:
+            analysis_state['running'] = False
+            analysis_state['completed_at'] = datetime.now(timezone.utc).isoformat()
+            analysis_state['alerts_generated'] = len(results)
+            analysis_state['error'] = None
+        print(f"[ANALYSIS] Completed. {len(results)} alerts generated.")
+    except Exception as e:
+        with _analysis_lock:
+            analysis_state['running'] = False
+            analysis_state['completed_at'] = datetime.now(timezone.utc).isoformat()
+            analysis_state['error'] = str(e)
+        print(f"ERROR in background analysis: {e}")
+
+@app.route('/api/run-analysis/status', methods=['GET'])
+@token_required
+def run_analysis_status():
+    # Return current state; hide None values for cleanliness
+    with _analysis_lock:
+        state_copy = {k: v for k, v in analysis_state.items() if v is not None}
+    return jsonify(state_copy), 200
+
 @app.route('/api/run-analysis', methods=['POST'])
 @token_required
 def run_analysis():
+    """Trigger a full analysis.
+    Modes:
+      - Async (default): returns 202 quickly and performs work in background thread.
+      - Sync: pass query param sync=1 to run inline (may timeout on free hosting).
+    """
+    sync_mode = request.args.get('sync') == '1'
     try:
-        print("Received request to run analysis...")
-        risk_results = risk_scorer.run_full_analysis()
+        if sync_mode:
+            print("[ANALYSIS] Synchronous run requested...")
+            results = risk_scorer.run_full_analysis()
+            with _analysis_lock:
+                analysis_state.update({
+                    'running': False,
+                    'started_at': analysis_state.get('started_at') or datetime.now(timezone.utc).isoformat(),
+                    'completed_at': datetime.now(timezone.utc).isoformat(),
+                    'alerts_generated': len(results),
+                    'error': None
+                })
+            return jsonify({
+                "message": f"Full risk analysis complete. {len(results)} alerts generated.",
+                "alerts_generated": len(results),
+                "mode": "sync"
+            }), 200
+        # Async path
+        with _analysis_lock:
+            if analysis_state['running']:
+                return jsonify({
+                    'message': 'Analysis already running.',
+                    'running': True,
+                    'started_at': analysis_state['started_at']
+                }), 202
+            # Initialize state and launch thread
+            analysis_state.update({
+                'running': True,
+                'started_at': datetime.now(timezone.utc).isoformat(),
+                'completed_at': None,
+                'alerts_generated': None,
+                'error': None
+            })
+        t = threading.Thread(target=_background_full_analysis, daemon=True)
+        t.start()
         return jsonify({
-            "message": f"Full risk analysis complete. {len(risk_results)} alerts generated.",
-            "alerts_generated": len(risk_results)
-        }), 200
+            'message': 'Full risk analysis started in background.',
+            'running': True,
+            'mode': 'async'
+        }), 202
     except Exception as e:
         print(f"ERROR in /api/run-analysis: {e}")
         return jsonify({"error": str(e)}), 500
