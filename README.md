@@ -166,33 +166,6 @@ project-NETRA/
 └── .gitignore                # Git ignore rules
 ```
 
-## 🧪 Development
-
-### Running Tests
-
-```bash
-# Backend tests
-cd backend
-python -m pytest
-
-# Frontend tests
-cd frontend
-npm test
-```
-
-### Building for Production
-
-```bash
-# Frontend build
-cd frontend
-npm run build
-
-# Backend deployment
-cd backend
-# Configure production environment variables
-# Deploy using your preferred method (Docker, cloud services, etc.)
-```
-
 ## 📈 Performance & Scalability
 
 - **Database**: Neo4j for high-performance graph queries

@@ -279,6 +279,14 @@ case_manager = CaseManager()
 
 print("All services initialized successfully. Backend is ready.")
 
+# Auto-run analysis once on startup if no existing alert scores cached
+try:
+    if (risk_scorer.risk_scores_df is None) or risk_scorer.risk_scores_df.empty:
+        print("[Startup] Running initial full risk analysis to populate alert scores...")
+        risk_scorer.run_full_analysis()
+except Exception as e:
+    print(f"WARN: Initial analysis run failed: {e}")
+
 # --- API ENDPOINTS (Existing endpoints remain the same) ---
 
 @app.route('/api/health', methods=['GET'])
@@ -332,7 +340,20 @@ def get_alerts():
         print(f"[ALERTS] Loaded alerts DataFrame with shape: {alerts_df.shape}")
         print(f"[ALERTS] Columns: {list(alerts_df.columns)}")
         
-        # Check if there's actual data (more than just header)
+        # If final_risk_score missing but risk_score present, align columns
+        if 'final_risk_score' not in alerts_df.columns and 'risk_score' in alerts_df.columns:
+            alerts_df['final_risk_score'] = alerts_df['risk_score']
+        if 'risk_score' not in alerts_df.columns and 'final_risk_score' in alerts_df.columns:
+            alerts_df['risk_score'] = alerts_df['final_risk_score']
+        # Force integer types for consistency
+        for col in ['final_risk_score','risk_score']:
+            if col in alerts_df.columns:
+                try:
+                    alerts_df[col] = alerts_df[col].fillna(0).astype(int)
+                except Exception:
+                    pass
+
+        # Check if there's actual data (rows) after normalization
         if len(alerts_df) == 0:
             print("[ALERTS] AlertScores.csv is empty (no data rows)")
             # Check if demo mode is requested
@@ -706,6 +727,22 @@ def generate_report(person_id):
         risk_details = risk_scorer.get_person_risk_details(person_id)
         if not risk_details:
             return jsonify({"error": "Cannot generate report. Person ID not found."}), 404
+        # Harmonize: ensure we use the canonical alert score (from AlertScores.csv) so PDF matches dashboard
+        try:
+            alerts_path = os.path.join(DATA_PATH, 'AlertScores.csv')
+            if os.path.exists(alerts_path):
+                alerts_df = pd.read_csv(alerts_path)
+                row = alerts_df[alerts_df['person_id'] == person_id]
+                if not row.empty:
+                    canonical_score = int(row.iloc[0].get('final_risk_score', row.iloc[0].get('risk_score', 0)))
+                    # Only override if canonical differs; keep recalculated score accessible for debugging
+                    risk_details['final_risk_score'] = canonical_score
+                    risk_details['canonical_alert_score'] = canonical_score
+                    print(f"[REPORT] Using canonical score {canonical_score} for {person_id} (recalc {risk_details.get('recalculated_risk_score')})")
+                else:
+                    print(f"[REPORT] No canonical alert row found for {person_id}, using recalculated {risk_details.get('final_risk_score')}")
+        except Exception as _harm_err:
+            print(f"WARN: Failed to harmonize PDF score for {person_id}: {_harm_err}")
         summary = ai_summarizer.generate_summary_from_details(risk_details)
         pdf_path = report_generator.generate_pdf(person_id, risk_details, summary)
         if not pdf_path or not os.path.exists(pdf_path):

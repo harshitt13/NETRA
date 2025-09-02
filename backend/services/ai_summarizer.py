@@ -22,8 +22,14 @@ class AI_Summarizer:
         """
         Generates a summary from a dictionary of risk details for one person.
         """
-        if not self.api_key or not risk_details:
-            return "AI Summary generation is disabled or risk data is missing."
+        if not risk_details:
+            return "No risk data available to summarize." 
+
+        # Always build a deterministic fallback first (used if AI disabled / fails)
+        fallback_summary = self._rule_based_fallback(risk_details)
+
+        if not self.api_key:
+            return fallback_summary + " (AI offline)"
 
         # --- Gather facts for the prompt from the provided dictionary ---
         try:
@@ -61,7 +67,7 @@ class AI_Summarizer:
         }
 
         try:
-            response = requests.post(self.api_url, headers=headers, data=json.dumps(payload), timeout=20)
+            response = requests.post(self.api_url, headers=headers, data=json.dumps(payload), timeout=15)
             response.raise_for_status()
             result = response.json()
             
@@ -70,8 +76,35 @@ class AI_Summarizer:
 
         # --- THIS IS THE FIX 2: Graceful fallback on API failure ---
         except requests.exceptions.RequestException as e:
-            print(f"API Request Error: {e}")
-            return f"AI summary could not be generated. The AI service may be unavailable or the API key may be invalid. (Details: {e})"
+            print(f"AI API Request Error: {e}")
+            return fallback_summary + " (AI request failed)"
         except (KeyError, IndexError) as e:
-            print(f"API Response Parsing Error: {e}. Full Response: {response.text}")
-            return "AI summary could not be generated due to an invalid response from the AI service."
+            print(f"AI API Parsing Error: {e}. Full Response: {response.text if 'response' in locals() else 'N/A'}")
+            return fallback_summary + " (AI parse fallback)"
+
+    def _rule_based_fallback(self, risk_details):
+        """Generates a concise deterministic summary from risk details without external AI."""
+        person = risk_details.get('person_details', {}) or {}
+        name = person.get('full_name', 'Subject')
+        pid = risk_details.get('person_id', 'Unknown')
+        final_score = risk_details.get('final_risk_score', 0)
+        breakdown = risk_details.get('breakdown', {}) or {}
+        triggered = [d for d in breakdown.values() if d.get('score', 0) > 0]
+        if not triggered and final_score == 0:
+            return f"{name} (ID {pid}) currently exhibits no elevated risk indicators; all monitored factors score 0."
+        factor_phrases = []
+        for item in triggered:
+            label = item.get('label', 'Unknown Factor')
+            score = item.get('score', 0)
+            if score >= 100:
+                adjective = "significant" 
+            elif score >= 50:
+                adjective = "moderate"
+            else:
+                adjective = "minor"
+            factor_phrases.append(f"{adjective} {label.lower()}")
+        if factor_phrases:
+            factors_text = ", ".join(factor_phrases[:-1]) + (" and " + factor_phrases[-1] if len(factor_phrases) > 1 else factor_phrases[0])
+            return f"{name} (ID {pid}) has a composite risk score of {final_score}. Indicators include {factors_text}."
+        else:
+            return f"{name} (ID {pid}) has a composite risk score of {final_score} with no individual factor exceeding threshold." 

@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
+# Increment this whenever scoring logic changes materially
+SCORING_VERSION = 2
+
 class HybridRiskScorer:
     """
     A service to analyze financial data, calculate risk scores for individuals
@@ -63,14 +66,14 @@ class HybridRiskScorer:
         ).rename(columns={'monthly_salary_inr': 'to_person_salary'})
 
     def run_full_analysis(self):
-        """
-        Executes all risk scoring rules for all persons and saves the results.
-        This is the main analysis trigger.
-        """
-        all_scores = []
+        """Execute all risk scoring rules for all persons and persist alert list."""
+        all_scores: list[dict] = []
+
+        threshold = int(os.environ.get('RISK_ALERT_THRESHOLD', '10'))
+
         for _, person in self.persons_df.iterrows():
             person_id = person['person_id']
-            
+
             scores = {
                 'income_discrepancy': self._calculate_income_discrepancy_score(person_id),
                 'structuring': self._calculate_structuring_score(person_id),
@@ -78,39 +81,43 @@ class HybridRiskScorer:
                 'property_discrepancy': self._calculate_property_discrepancy_score(person_id),
                 'tax_status': self._calculate_tax_status_score(person_id),
             }
-            
+
             weights = {
-                'income_discrepancy': 0.30, 'structuring': 0.25,
-                'shell_company_interaction': 0.25, 'property_discrepancy': 0.15,
+                'income_discrepancy': 0.30,
+                'structuring': 0.25,
+                'shell_company_interaction': 0.25,
+                'property_discrepancy': 0.15,
                 'tax_status': 0.05,
             }
-            
-            final_score = sum(scores[key] * weights[key] for key in scores)
 
-            # Allow threshold override for demo / testing; default lowered to 10 if not set
-            threshold = int(os.environ.get('RISK_ALERT_THRESHOLD', '10'))
-            if final_score > threshold:  # Only create alerts for scores above a threshold
+            final_score = sum(scores[k] * weights[k] for k in scores)
+
+            if final_score > threshold:
                 all_scores.append({
                     'alert_id': f"ALT-{len(all_scores)+1:03d}",
                     'person_id': person_id,
                     'full_name': person['full_name'],
                     'final_risk_score': int(final_score),
-                    'risk_score': int(final_score),  # Add this for compatibility
+                    'risk_score': int(final_score),  # compatibility
                     'timestamp': pd.Timestamp.now().isoformat(),
                     'summary': self._generate_summary(scores),
-                    'status': 'active'
+                    'status': 'active',
+                    'scoring_version': SCORING_VERSION,
                 })
-        
-        # Save the results to the class attribute and a CSV file
-        results_df = pd.DataFrame(all_scores).sort_values(by='final_risk_score', ascending=False).reset_index(drop=True)
-        self.risk_scores_df = results_df
-        
-        # Persist the results for future sessions
+
+        self.risk_scores_df = (
+            pd.DataFrame(all_scores)
+            .sort_values(by='final_risk_score', ascending=False)
+            .reset_index(drop=True)
+        ) if all_scores else pd.DataFrame(columns=[
+            'alert_id','person_id','full_name','final_risk_score','risk_score','timestamp','summary','status','scoring_version'
+        ])
+
         output_path = os.path.join(os.path.dirname(__file__), '..', 'generated-data', 'AlertScores.csv')
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         self.risk_scores_df.to_csv(output_path, index=False)
         print(f"Saved {len(self.risk_scores_df)} alerts to {output_path}")
-        
+
         return self.risk_scores_df.to_dict(orient='records')
 
     def get_person_risk_details(self, person_id):
@@ -136,11 +143,48 @@ class HybridRiskScorer:
             'tax_status': 0.05,
         }
         
-        final_score = sum(scores[key] * weights[key] for key in scores)
+        recalculated_score = sum(scores[key] * weights[key] for key in scores)
+
+        # Load current alert score (canonical) if exists; update version mismatch
+        canonical_alert_score = None
+        alerts_path = os.path.join(os.path.dirname(__file__), '..', 'generated-data', 'AlertScores.csv')
+        try:
+            if (self.risk_scores_df is not None) and not self.risk_scores_df.empty:
+                row = self.risk_scores_df[self.risk_scores_df['person_id'] == person_id]
+                if not row.empty:
+                    canonical_alert_score = int(row.iloc[0]['final_risk_score'])
+            elif os.path.exists(alerts_path):
+                cached_df = pd.read_csv(alerts_path)
+                row = cached_df[cached_df['person_id'] == person_id]
+                if not row.empty:
+                    canonical_alert_score = int(row.iloc[0]['final_risk_score'])
+        except Exception as e:
+            print(f"WARN: Could not retrieve canonical alert score for {person_id}: {e}")
+
+        # Decide final score: prefer canonical alert score if present to match UI lists
+        final_score = int(canonical_alert_score) if canonical_alert_score is not None else int(recalculated_score)
+
+        # If we have a canonical alert but scoring version bumped and difference large (>10), refresh the alert entry in memory
+        if canonical_alert_score is not None and abs(canonical_alert_score - recalculated_score) > 10:
+            try:
+                # Update in dataframe and persist
+                if (self.risk_scores_df is not None) and not self.risk_scores_df.empty:
+                    idx = self.risk_scores_df[self.risk_scores_df['person_id'] == person_id].index
+                    if len(idx) == 1:
+                        self.risk_scores_df.loc[idx, 'final_risk_score'] = int(recalculated_score)
+                        self.risk_scores_df.loc[idx, 'risk_score'] = int(recalculated_score)
+                        self.risk_scores_df.loc[idx, 'scoring_version'] = SCORING_VERSION
+                        self.risk_scores_df.to_csv(alerts_path, index=False)
+                        final_score = int(recalculated_score)
+            except Exception as e:
+                print(f"WARN: Failed to harmonize alert score for {person_id}: {e}")
 
         return {
             "person_id": person_id,
-            "final_risk_score": int(final_score),
+            "final_risk_score": final_score,
+            "recalculated_risk_score": int(recalculated_score),
+            "canonical_alert_score": canonical_alert_score,
+            "scoring_version": SCORING_VERSION,
             "person_details": person_details.iloc[0].to_dict(),
             "breakdown": {
                 'income': {'label': 'Income vs. Transactions', 'score': scores['income_discrepancy']},
@@ -185,10 +229,16 @@ class HybridRiskScorer:
 
     def _calculate_income_discrepancy_score(self, person_id):
         person_salary = self.persons_df.loc[self.persons_df['person_id'] == person_id, 'monthly_salary_inr'].iloc[0]
-        if person_salary == 0: return 0
+        if person_salary <= 0:
+            return 0
         person_transactions = self.tx_details_df[self.tx_details_df['to_person_id'] == person_id]
+        # Credits exceeding 2x salary considered anomalous; scale by count
         high_value_credits = person_transactions[person_transactions['amount_inr'] > (person_salary * 2)]
-        return 100 if not high_value_credits.empty else 0
+        count = len(high_value_credits)
+        if count == 0:
+            return 0
+        # Each anomalous credit adds 20 points up to 100
+        return min(100, count * 20)
 
     def _calculate_structuring_score(self, person_id):
         person_accounts = self.person_accounts_df[self.person_accounts_df['person_id'] == person_id]['account_number'].tolist()
@@ -198,9 +248,16 @@ class HybridRiskScorer:
             (self.transactions_df['payment_mode'] == 'Cash') &
             (self.transactions_df['amount_inr'].between(40000, 49999))
         ]
-        if len(cash_deposits) > 5: return 100
-        elif len(cash_deposits) > 2: return 50
-        return 0
+        n = len(cash_deposits)
+        if n == 0:
+            return 0
+        if n >= 8:
+            return 100
+        if n >= 5:
+            return 70
+        if n >= 3:
+            return 40
+        return 15  # at least some low-level structuring pattern
 
     def _calculate_shell_company_score(self, person_id):
         person_accounts = self.person_accounts_df[self.person_accounts_df['person_id'] == person_id]['account_number'].tolist()
@@ -217,7 +274,16 @@ class HybridRiskScorer:
             (self.transactions_df['from_account'].isin(person_accounts) & self.transactions_df['to_account'].isin(shell_accounts)) |
             (self.transactions_df['to_account'].isin(person_accounts) & self.transactions_df['from_account'].isin(shell_accounts))
         ]
-        return 100 if not risky_tx.empty else 0
+        n = len(risky_tx)
+        if n == 0:
+            return 0
+        if n >= 10:
+            return 100
+        if n >= 5:
+            return 70
+        if n >= 2:
+            return 40
+        return 20
 
     def _calculate_property_discrepancy_score(self, person_id):
         person_salary = self.persons_df.loc[self.persons_df['person_id'] == person_id, 'monthly_salary_inr'].iloc[0]
@@ -226,9 +292,17 @@ class HybridRiskScorer:
         if person_properties.empty: return 0
         
         total_property_value = person_properties['purchase_value_inr'].sum()
-        if person_salary > 0 and total_property_value > (person_salary * 12 * 10):
+        if person_salary <= 0:
+            return 0
+        # Ratio of total property value to 12 * salary (annual) baseline *10 (approx wealth multiple)
+        ratio = total_property_value / (person_salary * 12) if person_salary > 0 else 0
+        if ratio <= 5:
+            return 0
+        if ratio >= 50:
             return 100
-        return 0
+        # Scale between 5x and 50x linearly
+        scaled = int(((ratio - 5) / (50 - 5)) * 100)
+        return max(10, min(100, scaled))
 
     def _calculate_tax_status_score(self, person_id):
         tax_status = self.persons_df.loc[self.persons_df['person_id'] == person_id, 'tax_filing_status'].iloc[0]
