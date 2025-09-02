@@ -1,0 +1,4 @@
+{
+  "details": "PDF generation returned no path. Check server logs for 'FATAL ERROR during primary PDF generation' entries.",
+  "error": "Failed to create the PDF report on the server."
+}

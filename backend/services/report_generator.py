@@ -155,7 +155,12 @@ class ReportGenerator:
         """
         self.persons_df = all_datasets.get('persons')
         self.properties_df = all_datasets.get('properties')
-        if 'owner_person_id' in self.properties_df.columns:
+        # Guard against missing dataset
+        if self.properties_df is None:
+            print("WARN: properties dataset missing; proceeding with empty DataFrame for reports.")
+            import pandas as _pd
+            self.properties_df = _pd.DataFrame(columns=['person_id','property_address','purchase_value_inr'])
+        elif 'owner_person_id' in self.properties_df.columns:
             self.properties_df = self.properties_df.rename(columns={'owner_person_id': 'person_id'})
 
     def _safe_text(self, text):
@@ -175,7 +180,7 @@ class ReportGenerator:
             # If encoding fails, return ASCII-only version
             return ''.join(char if ord(char) < 128 else '?' for char in text_str)
 
-    def generate_pdf(self, person_id, risk_details, summary):
+    def generate_pdf(self, person_id, risk_details, summary, *, allow_fallback=True):
         """
         Generates and saves a PDF report for a given person_id using pre-analyzed data.
         """
@@ -188,52 +193,70 @@ class ReportGenerator:
             
             # Create PDF with explicit settings to avoid layout issues
             pdf = FPDF(orientation='P', unit='mm', format='A4')
+            # Set margins BEFORE adding the first page (fpdf2 quirk for width calc)
+            left_margin = 15
+            right_margin = 15
+            top_margin = 15
+            pdf.set_margins(left_margin, top_margin, right_margin)
+            pdf.set_auto_page_break(auto=True, margin=18)
             pdf.add_page()
-            pdf.set_margins(left=20, top=20, right=20)
-            pdf.set_auto_page_break(auto=True, margin=20)
+
+            content_width = pdf.w - pdf.l_margin - pdf.r_margin
+
+            def safe_mc(txt, h=6, font=None, style='', size=0):
+                """Safe multi_cell wrapper that avoids width=0 issues."""
+                if font:
+                    pdf.set_font(font, style, size or pdf.font_size_pt)
+                try:
+                    pdf.multi_cell(content_width, h, self._safe_text(txt), 0, 'L')
+                except Exception as mc_err:
+                    # Last resort: truncate the text and write with cell
+                    trunc = self._safe_text(str(txt))[:120]
+                    pdf.cell(content_width, h, trunc, 0, 1, 'L')
+                    print(f"WARN: safe_mc fallback used ({mc_err}). Text truncated.")
             
             # Debug info
-            effective_width = pdf.w - pdf.l_margin - pdf.r_margin
-            print(f"DEBUG: PDF effective width: {effective_width}mm")
+            print(f"DEBUG: PDF content width: {content_width}mm (page width {pdf.w} minus margins {pdf.l_margin}+{pdf.r_margin})")
             
-            # --- Header ---
-            pdf.set_font("Arial", 'B', 18)
-            pdf.ln(10)
-            pdf.multi_cell(0, 10, "Project Netra - Intelligence Report", 0, 'C')
+            # --- Header (use core PDF font 'Helvetica' to avoid undefined font errors) ---
+            pdf.set_font("Helvetica", 'B', 18)
+            pdf.ln(6)
+            # Centered header using cell with explicit width
+            pdf.cell(0, 10, "Project Netra - Intelligence Report", 0, 1, 'C')
             pdf.ln(10)
 
             # --- Case Summary ---
-            pdf.set_font("Arial", 'B', 14)
+            pdf.set_font("Helvetica", 'B', 14)
             subject_name = person_info.get('full_name', 'N/A')
-            pdf.multi_cell(0, 8, self._safe_text(f"Subject: {subject_name} (ID: {person_id})"), 0, 'L')
+            safe_mc(f"Subject: {subject_name} (ID: {person_id})", h=8)
             
-            pdf.set_font("Arial", '', 12)
-            pdf.multi_cell(0, 6, f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", 0, 'L')
+            pdf.set_font("Helvetica", '', 12)
+            safe_mc(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", h=6)
             pdf.ln(5)
             
             # --- Risk Score ---
-            pdf.set_font("Arial", 'B', 12)
-            pdf.multi_cell(0, 8, "Overall Risk Score:", 0, 'L')
+            pdf.set_font("Helvetica", 'B', 12)
+            safe_mc("Overall Risk Score:", h=8)
             pdf.set_text_color(255, 0, 0)
             final_score = risk_details.get('final_risk_score', 0)
-            pdf.set_font("Arial", 'B', 16)
-            pdf.multi_cell(0, 10, str(int(final_score)), 0, 'L')
+            pdf.set_font("Helvetica", 'B', 16)
+            safe_mc(str(int(final_score)), h=10, style='B', size=16)
             pdf.set_text_color(0, 0, 0)
             pdf.ln(10)
 
             # --- AI Generated Summary ---
             self._add_section_title(pdf, "AI Generated Summary")
-            pdf.set_font("Arial", '', 11)
+            pdf.set_font("Helvetica", '', 11)
             summary_text = summary or "No AI summary available."
             # Limit summary length to prevent issues
             if len(summary_text) > 800:
                 summary_text = summary_text[:800] + "..."
-            pdf.multi_cell(0, 6, self._safe_text(summary_text), 0, 'L')
+            safe_mc(summary_text, h=6)
             pdf.ln(10)
 
             # --- Risk Factors Breakdown ---
             self._add_section_title(pdf, "Risk Factor Analysis")
-            pdf.set_font("Arial", '', 11)
+            pdf.set_font("Helvetica", '', 11)
             breakdown = risk_details.get('breakdown', {})
             
             if breakdown:
@@ -241,17 +264,16 @@ class ReportGenerator:
                     score = details.get('score', 0)
                     if score > 0:
                         label = details.get('label', 'Unknown Factor')
-                        # Keep text simple and short
                         risk_text = f"• {label}: {score}"
-                        pdf.multi_cell(0, 6, self._safe_text(risk_text), 0, 'L')
+                        safe_mc(risk_text, h=6)
                         pdf.ln(2)
             else:
-                pdf.multi_cell(0, 6, "No significant risk factors identified.", 0, 'L')
+                safe_mc("No significant risk factors identified.", h=6)
             pdf.ln(10)
 
             # --- Subject Details ---
             self._add_section_title(pdf, "Subject Details")
-            pdf.set_font("Arial", '', 11)
+            pdf.set_font("Helvetica", '', 11)
             
             # Handle salary safely
             salary = person_info.get('monthly_salary_inr', 0)
@@ -267,7 +289,7 @@ class ReportGenerator:
             ]
             
             for detail in details:
-                pdf.multi_cell(0, 6, self._safe_text(detail), 0, 'L')
+                safe_mc(detail, h=6)
                 pdf.ln(2)
             pdf.ln(10)
 
@@ -276,7 +298,7 @@ class ReportGenerator:
             person_properties = self.properties_df[self.properties_df['person_id'] == person_id]
             
             if not person_properties.empty:
-                pdf.set_font("Arial", '', 11)
+                pdf.set_font("Helvetica", '', 11)
                 for i, (_, prop) in enumerate(person_properties.iterrows(), 1):
                     address = str(prop.get('property_address', 'N/A'))
                     # Truncate long addresses
@@ -287,16 +309,16 @@ class ReportGenerator:
                     value_text = f"INR {int(purchase_value):,}" if pd.notna(purchase_value) and purchase_value > 0 else "N/A"
                     
                     property_info = f"Property {i}: {address} (Value: {value_text})"
-                    pdf.multi_cell(0, 6, self._safe_text(property_info), 0, 'L')
+                    safe_mc(property_info, h=6)
                     pdf.ln(3)
             else:
-                pdf.set_font("Arial", 'I', 11)
-                pdf.multi_cell(0, 6, "No properties recorded.", 0, 'L')
+                pdf.set_font("Helvetica", 'I', 11)
+                safe_mc("No properties recorded.", h=6)
 
             # --- Footer ---
             pdf.set_y(-25)
-            pdf.set_font("Arial", 'I', 8)
-            pdf.multi_cell(0, 10, f'Page {pdf.page_no()}', 0, 'C')
+            pdf.set_font("Helvetica", 'I', 8)
+            pdf.cell(0, 10, f'Page {pdf.page_no()}', 0, 1, 'C')
 
             # --- Save the PDF ---
             output_dir = os.path.join(os.path.dirname(__file__), '..', 'reports')
@@ -307,16 +329,42 @@ class ReportGenerator:
             return file_path
 
         except Exception as e:
-            print(f"FATAL ERROR during PDF generation for {person_id}: {e}")
             import traceback
-            print(f"Full traceback: {traceback.format_exc()}")
-            return None
+            print(f"FATAL ERROR during primary PDF generation for {person_id}: {e}")
+            print(f"TRACE: {traceback.format_exc()}")
+            if not allow_fallback:
+                return None
+            # --- Fallback minimal PDF attempt ---
+            try:
+                print(f"Attempting fallback minimal PDF for {person_id}...")
+                pdf = FPDF()
+                pdf.set_margins(15, 15, 15)
+                pdf.add_page()
+                cw = pdf.w - pdf.l_margin - pdf.r_margin
+                pdf.set_font("Helvetica", 'B', 16)
+                pdf.multi_cell(cw, 8, f"Investigation Report (Fallback)")
+                pdf.ln(2)
+                pdf.set_font("Helvetica", '', 12)
+                pdf.multi_cell(cw, 6, f"Subject: {person_id}")
+                pdf.set_font("Helvetica", '', 11)
+                pdf.multi_cell(cw, 6, "Full report generation failed. This minimal PDF was generated as a fallback.")
+                if risk_details:
+                    pdf.multi_cell(cw, 6, f"Risk Score: {risk_details.get('final_risk_score', 'N/A')}")
+                if summary:
+                    pdf.multi_cell(cw, 6, f"Summary: {self._safe_text(summary)[:300]}")
+                output_dir = os.path.join(os.path.dirname(__file__), '..', 'reports')
+                os.makedirs(output_dir, exist_ok=True)
+                file_path = os.path.join(output_dir, f"report_{person_id}_fallback.pdf")
+                pdf.output(file_path)
+                print(f"Fallback PDF generated: {file_path}")
+                return file_path
+            except Exception as fe:
+                print(f"FATAL: Fallback PDF generation also failed for {person_id}: {fe}")
+                return None
 
     def _add_section_title(self, pdf, title):
-        """
-        Adds a section title with consistent formatting
-        """
-        pdf.set_font("Arial", 'B', 14)
+        """Adds a section title with consistent formatting."""
+        pdf.set_font("Helvetica", 'B', 14)
         pdf.set_fill_color(230, 230, 230)
         pdf.multi_cell(0, 10, self._safe_text(title), 0, 'L', fill=True)
         pdf.ln(5)

@@ -709,11 +709,20 @@ def generate_report(person_id):
         summary = ai_summarizer.generate_summary_from_details(risk_details)
         pdf_path = report_generator.generate_pdf(person_id, risk_details, summary)
         if not pdf_path or not os.path.exists(pdf_path):
-            return jsonify({"error": "Failed to create the PDF report on the server."}), 500
+            debug = request.args.get('debug') == '1' or os.environ.get('NETRA_REPORT_DEBUG') == '1'
+            msg = {"error": "Failed to create the PDF report on the server."}
+            if debug:
+                msg["details"] = "PDF generation returned no path. Check server logs for 'FATAL ERROR during primary PDF generation' entries."
+            return jsonify(msg), 500
         return send_file(pdf_path, as_attachment=True, download_name=f"Investigation_Report_{person_id}.pdf", mimetype='application/pdf')
     except Exception as e:
         print(f"ERROR in /api/report/{person_id}: {e}")
-        return jsonify({"error": "Failed to generate PDF report."}), 500
+        debug = request.args.get('debug') == '1' or os.environ.get('NETRA_REPORT_DEBUG') == '1'
+        msg = {"error": "Failed to generate PDF report."}
+        if debug:
+            import traceback
+            msg['details'] = traceback.format_exc()
+        return jsonify(msg), 500
         
 # --- NEW: Settings & Data Management Endpoints ---
 @app.route('/api/settings/regenerate-data', methods=['POST'])

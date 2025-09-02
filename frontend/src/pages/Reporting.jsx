@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Header from '../components/common/Header';
 import Sidebar from '../components/common/Sidebar';
 import { FileDown, BookCheck, Loader2 } from 'lucide-react';
@@ -12,35 +12,47 @@ const Reporting = () => {
     const { user } = useAuth(); // Get user to provide token for downloads
 
     // --- A functional report generation handler ---
-    const handleGenerateReport = async (caseId, subjectName) => {
+        const API_BASE = (import.meta.env?.VITE_API_URL || 'http://localhost:5001/api').replace(/\/$/, '');
+
+        const handleGenerateReport = async (caseId, subjectName) => {
         setLoadingStates(prev => ({ ...prev, [caseId]: true }));
         
         try {
             if (!user) throw new Error("Authentication required.");
             const token = await user.getIdToken();
-
-            const response = await fetch(`https://netra-8j8n.onrender.com/api/report/${caseId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+                        const reportUrl = `${API_BASE}/report/${caseId}`;
+                        const response = await fetch(reportUrl, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
 
             if (!response.ok) {
-                const errData = await response.json();
-                throw new Error(errData.error || `Report generation failed with status: ${response.status}`);
+                                // Try to parse JSON error; if not possible use status text
+                                let serverErr = '';
+                                try { serverErr = (await response.json()).error; } catch(_) { /* ignore */ }
+                                throw new Error(serverErr || `Report generation failed (HTTP ${response.status}).`);
             }
 
             // Handle the file download
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
+                        const contentType = response.headers.get('Content-Type') || '';
+                        if (!contentType.includes('application/pdf')) {
+                            // Unexpected content type, attempt to parse error
+                            try {
+                                const errData = await response.json();
+                                throw new Error(errData.error || 'Server returned non-PDF response.');
+                            } catch(parseErr) {
+                                throw new Error('Server returned unexpected non-PDF content.');
+                            }
+                        }
+                        const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.style.display = 'none';
-            a.href = url;
+            a.href = downloadUrl;
             const fileName = `Investigation_Report_${subjectName.replace(/\s+/g, '_')}_${caseId}.pdf`;
             a.download = fileName;
             document.body.appendChild(a);
             a.click();
-            window.URL.revokeObjectURL(url);
+            window.URL.revokeObjectURL(downloadUrl);
             document.body.removeChild(a);
 
         } catch (err) {

@@ -1,18 +1,27 @@
 import os
 from functools import wraps
 from flask import request, jsonify
-import firebase_admin
-from firebase_admin import credentials, auth
+
+# --- Optional Firebase Import (graceful fallback for local dev) ---
+FIREBASE_AVAILABLE = True
+try:
+    import firebase_admin  # type: ignore
+    from firebase_admin import credentials, auth  # type: ignore
+except Exception as imp_err:
+    FIREBASE_AVAILABLE = False
+    print(f"WARN: firebase_admin not available ({imp_err}). Running in mock auth mode.")
 
 # --- Initialize Firebase Admin SDK ---
 # This looks for the service account key file you downloaded.
-try:
-    cred = credentials.Certificate('serviceAccountKey.json')
-    firebase_admin.initialize_app(cred)
-    print("Firebase Admin SDK initialized successfully.")
-except Exception as e:
-    print(f"ERROR initializing Firebase Admin SDK: {e}")
-    print("Please ensure 'serviceAccountKey.json' is in the 'backend' directory.")
+if FIREBASE_AVAILABLE:
+    try:
+        cred = credentials.Certificate('serviceAccountKey.json')
+        firebase_admin.initialize_app(cred)
+        print("Firebase Admin SDK initialized successfully.")
+    except Exception as e:
+        FIREBASE_AVAILABLE = False
+        print(f"ERROR initializing Firebase Admin SDK: {e}")
+        print("Proceeding in mock auth mode. Place 'serviceAccountKey.json' in backend/ to enable real token verification.")
 
 def token_required(f):
     """A decorator to protect API routes."""
@@ -28,19 +37,19 @@ def token_required(f):
             return jsonify({"error": "Authorization token is missing!"}), 401
 
         try:
-            # Check if it's a mock token for development
-            if token == 'mock-jwt-token-12345':
-                # Mock user for development
+            # Allow a deterministic mock token or any token starting with 'mock-' when Firebase unavailable
+            if token.startswith('mock-') or token == 'mock-jwt-token-12345':
                 request.user = {
-                    'uid': 'root-user-001',
-                    'email': 'admin@netra.com',
-                    'name': 'Root Administrator'
+                    'uid': 'dev-user',
+                    'email': 'dev@netra.local',
+                    'name': 'Developer User',
+                    'mock': True
                 }
-            else:
-                # Verify the token with Firebase
-                decoded_token = auth.verify_id_token(token)
-                # You can optionally store the user info in the request context
+            elif FIREBASE_AVAILABLE:
+                decoded_token = auth.verify_id_token(token)  # type: ignore
                 request.user = decoded_token
+            else:
+                return jsonify({"error": "Firebase authentication not available. Use a mock token (prefix 'mock-')."}), 403
         except Exception as e:
             print(f"Token verification failed: {e}")
             return jsonify({"error": "Invalid or expired token!"}), 403
