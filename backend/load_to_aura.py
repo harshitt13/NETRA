@@ -39,7 +39,7 @@ def load_data_to_aura():
     config = get_neo4j_config()
     
     # Data directory
-    DATA_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'generated-data')
+    DATA_DIR = os.path.join(os.path.dirname(__file__), 'generated-data')
     
     try:
         # Connect to Neo4j Aura

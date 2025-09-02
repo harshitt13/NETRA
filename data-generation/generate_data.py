@@ -15,7 +15,7 @@ from patterns import (
 NUM_PERSONS = 1000
 NUM_COMPANIES = 200
 NUM_TRANSACTIONS_NORMAL = 20000
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'generated-data')
+OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'backend', 'generated-data')
 
 # Initialize Faker for Indian data
 fake = Faker('en_IN')

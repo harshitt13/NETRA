@@ -6,7 +6,7 @@ import joblib
 # --- Configuration ---
 # Define the relative paths to the data and model directories.
 # This makes the script runnable from the `backend` directory.
-DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'generated-data')
+DATA_DIR = os.path.join(os.path.dirname(__file__), 'generated-data')
 TRANSACTIONS_FILE = os.path.join(DATA_DIR, 'Transactions.csv')
 MODEL_DIR = os.path.join(os.path.dirname(__file__), 'models')
 MODEL_PATH = os.path.join(MODEL_DIR, 'isolation_forest.pkl')

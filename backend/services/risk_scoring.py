@@ -104,7 +104,7 @@ class HybridRiskScorer:
         self.risk_scores_df = results_df
         
         # Persist the results for future sessions
-        output_path = os.path.join(os.path.dirname(__file__), '..', '..', 'generated-data', 'AlertScores.csv')
+        output_path = os.path.join(os.path.dirname(__file__), '..', 'generated-data', 'AlertScores.csv')
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         self.risk_scores_df.to_csv(output_path, index=False)
         print(f"Saved {len(self.risk_scores_df)} alerts to {output_path}")

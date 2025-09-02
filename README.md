@@ -163,7 +163,6 @@ project-NETRA/
 ├── data-generation/           # Synthetic data generation
 │   ├── generate_data.py      # Main data generation script
 │   └── patterns.py           # Money laundering patterns
-├── generated-data/            # Shared data files
 └── .gitignore                # Git ignore rules
 ```
 

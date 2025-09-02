@@ -261,7 +261,7 @@ allowed_origins = list(set(filter(None, allowed_origins)))
 CORS(app, origins=allowed_origins, supports_credentials=True)
 
 print("Initializing Project Netra Backend Services...")
-DATA_PATH = os.path.join(os.path.dirname(__file__), '..', 'generated-data')
+DATA_PATH = os.path.join(os.path.dirname(__file__), 'generated-data')
 DATA_GENERATION_SCRIPT_PATH = os.path.join(os.path.dirname(__file__), '..', 'data-generation', 'generate_data.py')
 
 data_loader = DataLoader(data_path=DATA_PATH)

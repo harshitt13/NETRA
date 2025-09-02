@@ -17,7 +17,7 @@ def test_report_generation():
     try:
         # Load data
         print("Loading data...")
-        DATA_PATH = os.path.join(os.path.dirname(__file__), '..', 'generated-data')
+        DATA_PATH = os.path.join(os.path.dirname(__file__), 'generated-data')
         data_loader = DataLoader(data_path=DATA_PATH)
         all_datasets = data_loader.load_all_data()
         

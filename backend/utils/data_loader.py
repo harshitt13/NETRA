@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 class DataLoader:
-    def __init__(self, data_path='../generated-data/'):
+    def __init__(self, data_path='./generated-data/'):
         self.data_path = data_path
         self.datasets = {}
         self.file_names = {
@@ -35,7 +35,7 @@ class DataLoader:
 if __name__ == '__main__':
     print("Running DataLoader in standalone mode for testing...")
     
-    loader = DataLoader(data_path='../generated-data/')
+    loader = DataLoader(data_path='./generated-data/')
     all_data = loader.load_all_data()
     
     print("\n--- Verifying Loaded Data ---")
