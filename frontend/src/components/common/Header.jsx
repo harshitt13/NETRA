@@ -1,5 +1,5 @@
 import { UserCircle, Bell, Menu, X, Settings } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LogoutButton from "./LogoutButton.jsx";
 import { useAuth } from "../../hooks/useAuth.jsx";
 import { useNavigate } from "react-router-dom";
@@ -56,7 +56,7 @@ const MiniNetraLogo = () => (
 );
 
 // Mobile menu component
-const MobileMenu = ({ isOpen, onClose, user, navigate }) => (
+const MobileMenu = ({ isOpen, onClose, user, navigate, profile }) => (
   <div className={`fixed inset-0 z-50 transition-all duration-300 md:hidden ${
     isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
   }`}>
@@ -82,8 +82,8 @@ const MobileMenu = ({ isOpen, onClose, user, navigate }) => (
         <div className="flex items-center space-x-3 p-4 bg-gray-800/50 rounded-lg">
           <UserCircle size={48} className="text-cyan-400" />
           <div>
-            <p className="font-semibold text-gray-200">{user?.email}</p>
-            <p className="text-sm text-gray-400">Senior Investigator</p>
+            <p className="font-semibold text-gray-200">{profile?.email}</p>
+            <p className="text-sm text-gray-400">{profile?.department || 'Investigator'}</p>
           </div>
         </div>
         
@@ -128,8 +128,35 @@ const MobileMenu = ({ isOpen, onClose, user, navigate }) => (
 
 const Header = () => {
   const { user } = useAuth();
+  const [profile, setProfile] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('netra-profile')||'null') || null; } catch { return null; }
+  });
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Fetch persisted profile from backend to display displayName instead of raw email
+  useEffect(() => {
+    let aborted = false;
+    const fetchProfile = async () => {
+      if (!user) return;
+      try {
+        const token = await user.getIdToken();
+        const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5001/api').replace(/\/$/, '');
+        const res = await fetch(`${API_BASE}/settings/profile`, { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!aborted) {
+          setProfile(data);
+          try { localStorage.setItem('netra-profile', JSON.stringify(data)); } catch (e) { /* ignore storage errors */ }
+        }
+      } catch (e) {
+        // non-fatal
+        console.warn('Profile fetch failed', e);
+      }
+    };
+    fetchProfile();
+    return () => { aborted = true; };
+  }, [user]);
 
   const handleLogoClick = () => {
     navigate('/dashboard');
@@ -178,10 +205,10 @@ const Header = () => {
                               animate-pulse-custom"></div>
             </div>
             <div className="text-left hidden lg:block">
-              <p className="text-sm font-semibold text-gray-200 text-responsive-sm">
-                {user?.email}
+              <p className="text-sm font-semibold text-gray-200 text-responsive-sm" title={user?.email}>
+                {profile?.displayName || user?.displayName || user?.email}
               </p>
-              <p className="text-xs text-gray-400">Senior Investigator</p>
+              <p className="text-xs text-gray-400">{profile?.department || 'Investigator'}</p>
             </div>
           </div>
 
@@ -208,6 +235,7 @@ const Header = () => {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         user={user}
+        profile={profile}
         navigate={navigate}
       />
     </>

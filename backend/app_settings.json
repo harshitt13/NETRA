@@ -1,0 +1,10 @@
+{
+  "profile": {
+    "displayName": "test_user",
+    "email": "admin@netra.com",
+    "department": "test_unit",
+    "badge": "0000"
+  },
+  "apiKey": "",
+  "theme": "dark"
+}

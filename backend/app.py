@@ -255,6 +255,8 @@ frontend_url = os.environ.get('FRONTEND_URL', 'https://netra-ai.vercel.app/')
 allowed_origins = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
     frontend_url
 ]
 
@@ -262,7 +264,7 @@ allowed_origins = [
 allowed_origins = list(set(filter(None, allowed_origins)))
 
 print(f"Configuring CORS for origins: {allowed_origins}")
-CORS(app, origins=allowed_origins, supports_credentials=True)
+CORS(app, origins=allowed_origins, supports_credentials=True, allow_headers=['Content-Type','Authorization'])
 
 print("Initializing Project Netra Backend Services...")
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'generated-data')
@@ -278,6 +280,31 @@ report_generator = ReportGenerator(all_datasets)
 case_manager = CaseManager()
 
 print("All services initialized successfully. Backend is ready.")
+
+# --- Simple local settings persistence (non-sensitive demo storage) ---
+SETTINGS_FILE = os.path.join(os.path.dirname(__file__), 'app_settings.json')
+
+def _load_settings():
+    if os.path.exists(SETTINGS_FILE):
+        try:
+            with open(SETTINGS_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"WARN: Failed to load settings file: {e}")
+    return {
+        "profile": {"displayName": "Senior Investigator", "email": "admin@netra.com", "department": "Financial Crimes Unit", "badge": "FC-001"},
+        "apiKey": "",
+        "theme": "dark"
+    }
+
+def _save_settings(data):
+    try:
+        with open(SETTINGS_FILE, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2)
+        return True
+    except Exception as e:
+        print(f"WARN: Failed to save settings: {e}")
+        return False
 
 # Auto-run analysis once on startup if no existing alert scores cached
 try:
@@ -805,6 +832,57 @@ def clear_all_cases():
     except Exception as e:
         print(f"ERROR in /api/settings/clear-cases: {e}")
         return jsonify({"error": "An unexpected error occurred while clearing cases."}), 500
+
+@app.route('/api/settings/profile', methods=['GET','POST'])
+@token_required
+def settings_profile():
+    settings = _load_settings()
+    if request.method == 'GET':
+        return jsonify(settings.get('profile', {})), 200
+    body = request.get_json(force=True, silent=True) or {}
+    print(f"[PROFILE] Incoming profile update body: {body}")
+    missing = [k for k in ['displayName','email'] if k not in body]
+    if missing:
+        return jsonify({"error": f"Missing required fields: {', '.join(missing)}"}), 400
+    profile = settings.get('profile', {})
+    for k in ['displayName','email','department','badge']:
+        if k in body:
+            profile[k] = body[k]
+    settings['profile'] = profile
+    if not _save_settings(settings):
+        return jsonify({"error": "Failed to persist profile settings"}), 500
+    print(f"[PROFILE] Updated profile saved: {profile}")
+    return jsonify({"message": "Profile updated", "profile": profile}), 200
+
+@app.route('/api/settings/api-key', methods=['GET','POST'])
+@token_required
+def settings_api_key():
+    settings = _load_settings()
+    if request.method == 'GET':
+        key = settings.get('apiKey','')
+        masked = key[:4] + '...' + key[-4:] if len(key) > 8 else key
+        return jsonify({"apiKeyMasked": masked, "configured": bool(key)}), 200
+    body = request.get_json(force=True, silent=True) or {}
+    new_key = body.get('apiKey','').strip()
+    settings['apiKey'] = new_key
+    _save_settings(settings)
+    if new_key:
+        os.environ['GEMINI_API_KEY'] = new_key
+    return jsonify({"message": "API key updated"}), 200
+
+@app.route('/api/settings/theme', methods=['GET','POST'])
+@token_required
+def settings_theme():
+    settings = _load_settings()
+    if request.method == 'GET':
+        return jsonify({"theme": settings.get('theme','dark')}), 200
+    body = request.get_json(force=True, silent=True) or {}
+    theme = body.get('theme','dark')
+    if theme not in ['dark','light']:
+        return jsonify({"error": "Invalid theme"}), 400
+    settings['theme'] = theme
+    _save_settings(settings)
+    return jsonify({"message": "Theme updated", "theme": theme}), 200
 
 
 # --- Error Handlers ---

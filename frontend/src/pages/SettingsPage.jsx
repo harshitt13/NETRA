@@ -168,10 +168,11 @@
 
 // export default SettingsPage;
 
-import React, { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Header from '../components/common/Header.jsx';
 import Sidebar from '../components/common/Sidebar.jsx';
 import { useTheme } from '../contexts/ThemeContext.jsx';
+import { useAuth } from '../hooks/useAuth.jsx';
 import { Settings, User, Key, Database, Sun, Moon, Save, RefreshCw, Trash2 } from 'lucide-react';
 
 // A reusable card component for different settings sections
@@ -234,19 +235,19 @@ const Button = ({ children, onClick, variant = 'primary', disabled = false, isLo
 
 const SettingsPage = () => {
     // --- Theme Management ---
-    const { theme, setTheme, isDark } = useTheme();
+    const { theme, setTheme, themeSaving } = useTheme();
+    const { user } = useAuth();
     
     // --- State Management for Settings ---
-    const [profile, setProfile] = useState({ 
-        displayName: 'Senior Investigator', 
-        email: 'admin@netra.com',
-        department: 'Financial Crimes Unit',
-        badge: 'FC-001'
-    });
-    const [apiKey, setApiKey] = useState('AIzaSy...wdVEIMk');
+    const [profile, setProfile] = useState({ displayName: '', email: '', department: '', badge: '' });
+    const [apiKey, setApiKey] = useState('');
+    const [apiKeyMasked, setApiKeyMasked] = useState('');
     const [isRegenerating, setIsRegenerating] = useState(false);
     const [isClearing, setIsClearing] = useState(false);
     const [feedback, setFeedback] = useState({ message: '', type: '' });
+    const [loadingSettings, setLoadingSettings] = useState(true);
+
+    const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5001/api').replace(/\/$/, '');
 
     // Handlers for updating state
     const handleProfileChange = (e) => {
@@ -258,16 +259,64 @@ const SettingsPage = () => {
         setTimeout(() => setFeedback({ message: '', type: '' }), 5000);
     };
 
-    const handleSaveProfile = () => {
-        // Mock API call for saving profile
-        console.log("Saving profile:", profile);
-        showFeedback('Profile updated successfully!', 'success');
+    const authHeaders = useCallback(async () => {
+        if (!user) return {};
+        try { const token = await user.getIdToken(); return { Authorization: `Bearer ${token}` }; } catch { return {}; }
+    }, [user]);
+
+    const fetchSettings = useCallback(async () => {
+        setLoadingSettings(true);
+        try {
+            const headers = await authHeaders();
+            // Profile
+            const pRes = await fetch(`${API_BASE}/settings/profile`, { headers });
+            if (pRes.ok) {
+                const pData = await pRes.json();
+                setProfile(prev => ({ ...prev, ...pData }));
+            }
+            // API key (masked)
+            const kRes = await fetch(`${API_BASE}/settings/api-key`, { headers });
+            if (kRes.ok) {
+                const kData = await kRes.json();
+                setApiKeyMasked(kData.apiKeyMasked || '');
+            }
+        } catch (e) {
+            console.warn('Failed to load settings', e);
+        } finally {
+            setLoadingSettings(false);
+        }
+    }, [API_BASE, authHeaders]);
+
+    useEffect(() => { if (user) fetchSettings(); }, [user, fetchSettings]);
+
+    const handleSaveProfile = async () => {
+        try {
+            const headers = { 'Content-Type': 'application/json', ...(await authHeaders()) };
+            const res = await fetch(`${API_BASE}/settings/profile`, { method: 'POST', headers, body: JSON.stringify(profile) });
+            if (!res.ok) {
+                let errTxt = '';
+                try { errTxt = await res.text(); } catch { /* ignore body parse error */ }
+                console.warn('Profile save failed', res.status, errTxt);
+                throw new Error('Failed');
+            }
+            showFeedback('Profile updated successfully!', 'success');
+        } catch {
+            showFeedback('Failed to update profile.', 'error');
+        }
     };
 
-    const handleSaveApiKey = () => {
-        // Mock API call for saving API key
-        console.log("Saving API Key:", apiKey);
-        showFeedback('API Key updated successfully!', 'success');
+    const handleSaveApiKey = async () => {
+        try {
+            const headers = { 'Content-Type': 'application/json', ...(await authHeaders()) };
+            const res = await fetch(`${API_BASE}/settings/api-key`, { method: 'POST', headers, body: JSON.stringify({ apiKey }) });
+            if (!res.ok) throw new Error('Failed');
+            showFeedback('API Key updated successfully!', 'success');
+            // Refresh masked view
+            fetchSettings();
+            setApiKey('');
+        } catch {
+            showFeedback('Failed to update API Key.', 'error');
+        }
     };
 
     const handleRegenerate = async () => {
@@ -275,9 +324,10 @@ const SettingsPage = () => {
         
         setIsRegenerating(true);
         try {
-            // Mock API call
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            showFeedback('Dataset regenerated successfully! New synthetic data has been created.', 'success');
+            const headers = await authHeaders();
+            const res = await fetch(`${API_BASE}/settings/regenerate-data`, { method: 'POST', headers });
+            if (!res.ok) throw new Error();
+            showFeedback('Dataset regenerated successfully. Reload alerts to see changes.', 'success');
         } catch (error) {
             showFeedback('Failed to regenerate dataset. Please try again.', 'error');
         } finally {
@@ -290,8 +340,9 @@ const SettingsPage = () => {
 
         setIsClearing(true);
         try {
-            // Mock API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            const headers = await authHeaders();
+            const res = await fetch(`${API_BASE}/settings/clear-cases`, { method: 'POST', headers });
+            if (!res.ok) throw new Error();
             showFeedback('All cases cleared successfully!', 'success');
         } catch (error) {
             showFeedback('Failed to clear cases. Please try again.', 'error');
@@ -328,6 +379,7 @@ const SettingsPage = () => {
                         <div className="space-y-8">
                             {/* User Profile Settings */}
                             <SettingsCard title="User Profile" icon={User}>
+                                {loadingSettings && <p className="text-xs text-gray-500">Loading profile...</p>}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <InputField
                                         label="Display Name"
@@ -372,6 +424,9 @@ const SettingsPage = () => {
                             {/* API Configuration */}
                             <SettingsCard title="API Configuration" icon={Key}>
                                 <div className="space-y-4">
+                                    {apiKeyMasked && (
+                                        <p className="text-xs text-gray-400">Current Key: <span className="font-mono">{apiKeyMasked}</span></p>
+                                    )}
                                     <InputField
                                         label="Google Gemini API Key"
                                         id="apiKey"
@@ -440,11 +495,12 @@ const SettingsPage = () => {
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <p className="text-gray-300 font-medium">Theme Preference</p>
-                                            <p className="text-sm text-gray-400">Choose your preferred color scheme</p>
+                                            <p className="text-sm text-gray-400 flex items-center gap-2">Choose your preferred color scheme {themeSaving && <span className="text-xs text-yellow-400">(saving...)</span>}</p>
                                         </div>
                                         <div className="flex bg-gray-700 p-1 rounded-lg">
                                             <button 
                                                 onClick={() => setTheme('dark')} 
+                                                disabled={themeSaving}
                                                 className={`px-4 py-2 text-sm rounded-md transition-all duration-200 flex items-center space-x-2 ${
                                                     theme === 'dark' 
                                                         ? 'bg-purple-600 text-white shadow-lg' 
@@ -456,6 +512,7 @@ const SettingsPage = () => {
                                             </button>
                                             <button 
                                                 onClick={() => setTheme('light')} 
+                                                disabled={themeSaving}
                                                 className={`px-4 py-2 text-sm rounded-md transition-all duration-200 flex items-center space-x-2 ${
                                                     theme === 'light' 
                                                         ? 'bg-purple-600 text-white shadow-lg' 

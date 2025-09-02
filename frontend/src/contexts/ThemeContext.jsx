@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 // Create the theme context
 const ThemeContext = createContext();
@@ -10,11 +10,39 @@ export const ThemeProvider = ({ children }) => {
     try {
       const savedTheme = localStorage.getItem('netra-theme');
       return savedTheme || 'dark';
-    } catch (error) {
-      console.warn('Could not access localStorage:', error);
+    } catch {
       return 'dark';
     }
   });
+  const [loading, setLoading] = useState(false);
+  const saveTimer = useRef(null);
+  const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5001/api').replace(/\/$/, '');
+
+  // Initial fetch from backend (if available)
+  useEffect(() => {
+    const fetchRemoteTheme = async () => {
+      try {
+        const stored = localStorage.getItem('netra-theme-fetched');
+        if (stored) return; // already synced once this session
+        const token = window?.currentUser?.getIdToken ? await window.currentUser.getIdToken() : null; // optional
+        const res = await fetch(`${API_BASE}/settings/theme`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        if (res.ok) {
+          const data = await res.json();
+            if (data.theme && (data.theme === 'dark' || data.theme === 'light')) {
+              setTheme(data.theme);
+              localStorage.setItem('netra-theme', data.theme);
+            }
+          localStorage.setItem('netra-theme-fetched', '1');
+        }
+      } catch (e) {
+        // Silent fail – backend theme not critical
+        console.warn('Theme fetch skipped:', e);
+      }
+    };
+    fetchRemoteTheme();
+  }, [API_BASE]);
 
   // Apply theme changes to the document
   useEffect(() => {
@@ -34,16 +62,36 @@ export const ThemeProvider = ({ children }) => {
 
   // Function to set a specific theme
   const setSpecificTheme = (newTheme) => {
-    if (newTheme === 'light' || newTheme === 'dark') {
-      setTheme(newTheme);
-    }
+    if (newTheme !== 'light' && newTheme !== 'dark') return;
+    setTheme(newTheme);
+    // Debounced persistence to backend
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(async () => {
+      try {
+        setLoading(true);
+        const token = window?.currentUser?.getIdToken ? await window.currentUser.getIdToken() : null;
+        await fetch(`${API_BASE}/settings/theme`, {
+          method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(token ? { Authorization: `Bearer ${token}` } : {})
+            },
+            body: JSON.stringify({ theme: newTheme })
+        });
+      } catch (e) {
+        console.warn('Failed to persist theme:', e);
+      } finally {
+        setLoading(false);
+      }
+    }, 400);
   };
 
   const value = {
     theme,
     setTheme: setSpecificTheme,
     isDark: theme === 'dark',
-    isLight: theme === 'light'
+  isLight: theme === 'light',
+  themeSaving: loading
   };
 
   return (

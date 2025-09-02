@@ -177,3 +177,25 @@ class CaseManager:
             print(f"ERROR: Could not retrieve all cases from Firestore. Details: {e}")
             return []
 
+    def clear_all_cases(self):
+        """Deletes all documents in the 'cases' collection (destructive). Returns count deleted."""
+        if not self.db: return 0
+        try:
+            batch = self.db.batch()
+            collection_ref = self.db.collection('cases')
+            docs = list(collection_ref.stream())
+            count = 0
+            # Firestore limits batch size (500); handle in segments
+            for doc in docs:
+                batch.delete(doc.reference)
+                count += 1
+                if count % 450 == 0:  # commit periodically
+                    batch.commit()
+                    batch = self.db.batch()
+            batch.commit()
+            print(f"INFO: Deleted {count} case documents from Firestore.")
+            return count
+        except Exception as e:
+            print(f"ERROR: Failed to clear cases. Details: {e}")
+            return 0
+
