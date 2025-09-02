@@ -253,20 +253,32 @@ from services.case_manager import CaseManager
 app = Flask(__name__)
 
 # Configure CORS for production and development
-frontend_url = os.environ.get('FRONTEND_URL', 'https://netra-ai.vercel.app/')
+raw_frontend_url = os.environ.get('FRONTEND_URL', 'https://netra-ai.vercel.app/')
+# Normalize: remove trailing slash and whitespace
+frontend_url = raw_frontend_url.strip().rstrip('/')
 allowed_origins = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    frontend_url
+    'http://localhost:3000', 'http://127.0.0.1:3000',
+    'http://localhost:5173', 'http://127.0.0.1:5173',
+    frontend_url,  # canonical (no slash)
 ]
+# Also add explicit trailing slash variant to be safe (some mis-configured CORS libs compare literally)
+allowed_origins.append(frontend_url + '/')
 
 # Remove duplicates and None values
 allowed_origins = list(set(filter(None, allowed_origins)))
 
 print(f"Configuring CORS for origins: {allowed_origins}")
-CORS(app, origins=allowed_origins, supports_credentials=True, allow_headers=['Content-Type','Authorization'])
+CORS(app, origins=allowed_origins, supports_credentials=True, allow_headers=['Content-Type','Authorization'], expose_headers=['Content-Type'])
+
+@app.before_request
+def _cors_debug_log():
+    # Lightweight debug to help diagnose production fetch issues (only first few prints to avoid noise)
+    if not hasattr(app, '_cors_debug_count'):
+        app._cors_debug_count = 0
+    if app._cors_debug_count < 25:  # cap logging
+        origin = request.headers.get('Origin')
+        print(f"[CORS-DEBUG] Origin={origin} Path={request.path}")
+        app._cors_debug_count += 1
 
 print("Initializing Project Netra Backend Services...")
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'generated-data')
