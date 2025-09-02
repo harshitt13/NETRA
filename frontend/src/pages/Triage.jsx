@@ -14,13 +14,20 @@ import {
 import useFetchData from "../hooks/useFetchData";
 import { useAuth } from "../hooks/useAuth";
 
-// A more detailed sub-component for risk factors
+// Enhanced RiskFactorSummary: always show all categories in consistent order (including 0 scores)
 const RiskFactorSummary = ({ riskProfile, aiSummary }) => {
   if (!riskProfile) return null;
 
-  const riskFactors = Object.entries(riskProfile.breakdown || {}).filter(
-    ([, details]) => details.score > 0
-  );
+  const ORDER = ["income", "structuring", "shell", "property", "tax"];
+  const LABELS = {
+    income: "Income vs. Transactions",
+    structuring: "Transaction Structuring",
+    shell: "Shell Company Links",
+    property: "High-Value Property",
+    tax: "Tax Status Irregularities",
+  };
+
+  const breakdown = riskProfile.breakdown || {};
 
   return (
     <div className="bg-gray-800/50 p-6 rounded-xl border border-gray-700 space-y-6">
@@ -37,29 +44,43 @@ const RiskFactorSummary = ({ riskProfile, aiSummary }) => {
             {riskProfile.final_risk_score}
           </span>
         </div>
-        <p className="text-gray-400 text-sm">{aiSummary}</p>
+        <p className="text-gray-400 text-sm whitespace-pre-line">{aiSummary}</p>
       </div>
 
-      {riskFactors.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold mb-3 text-gray-200">
-            Key Risk Indicators
-          </h3>
-          <ul className="space-y-2">
-            {riskFactors.map(([key, details]) => (
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-gray-200">
+          Key Risk Indicators
+        </h3>
+        <ul className="space-y-2">
+          {ORDER.map((key) => {
+            const details = breakdown[key] || { label: LABELS[key], score: 0 };
+            return (
               <li
                 key={key}
                 className="flex justify-between items-center bg-gray-900/50 p-2 rounded-md"
               >
-                <span className="text-gray-300">{details.label}</span>
-                <span className="font-bold text-orange-400">
+                <span className="text-gray-300">
+                  {details.label || LABELS[key]}
+                </span>
+                <span
+                  className={`font-bold ${
+                    details.score > 0 ? "text-orange-400" : "text-gray-500"
+                  }`}
+                  title={
+                    details.score === 0 ? "No signals detected" : "Triggered"
+                  }
+                >
                   {details.score}
                 </span>
               </li>
-            ))}
-          </ul>
-        </div>
-      )}
+            );
+          })}
+        </ul>
+        <p className="text-[11px] text-gray-500 mt-3">
+          Scores are rule-based (0 or 50/80/100). 0 indicates no anomaly
+          detected for that category.
+        </p>
+      </div>
     </div>
   );
 };

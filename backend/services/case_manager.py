@@ -130,6 +130,31 @@ class CaseManager:
             print(f"ERROR: Could not retrieve case {case_id} from Firestore. Details: {e}")
             return None
 
+    def update_case_notes(self, case_id, notes):
+        """Upserts investigator notes for a case.
+
+        Args:
+            case_id (str): ID of the existing case
+            notes (str): Notes content
+        Returns:
+            bool: True if update succeeded
+        """
+        if not self.db: return False
+        try:
+            case_ref = self.db.collection('cases').document(case_id)
+            if not case_ref.get().exists:
+                print(f"WARN: Tried to update notes for non-existent case {case_id}")
+                return False
+            case_ref.update({
+                'notes': notes,
+                'updatedAt': firestore.SERVER_TIMESTAMP
+            })
+            print(f"DEBUG: Updated notes for case {case_id} (length={len(notes)})")
+            return True
+        except Exception as e:
+            print(f"ERROR: Failed to update notes for {case_id}. Details: {e}")
+            return False
+
     # --- THIS IS THE NEW METHOD ---
     def get_all_cases(self):
         """Retrieves all case documents from the 'cases' collection for the reporting page."""

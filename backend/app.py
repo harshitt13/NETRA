@@ -232,6 +232,7 @@
 
 
 import os
+import json
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 import pandas as pd
@@ -549,6 +550,60 @@ def get_case(case_id):
     except Exception as e:
         print(f"ERROR in /api/cases/{case_id} GET: {e}")
         return jsonify({"error": "An unexpected error occurred."}), 500
+
+NOTES_STORE_PATH = os.path.join(os.path.dirname(__file__), 'generated-data', 'case_notes.json')
+
+def _read_local_notes():
+    try:
+        if os.path.exists(NOTES_STORE_PATH):
+            with open(NOTES_STORE_PATH, 'r', encoding='utf-8') as f:
+                return json.load(f)
+    except Exception as e:
+        print(f"WARN: Failed reading local notes store: {e}")
+    return {}
+
+def _write_local_notes(data):
+    try:
+        os.makedirs(os.path.dirname(NOTES_STORE_PATH), exist_ok=True)
+        with open(NOTES_STORE_PATH, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        return True
+    except Exception as e:
+        print(f"WARN: Failed writing local notes store: {e}")
+        return False
+
+@app.route('/api/cases/<string:case_id>/notes', methods=['GET', 'PUT'])
+@token_required
+def case_notes(case_id):
+    try:
+        if request.method == 'GET':
+            case = case_manager.get_case(case_id)
+            firestore_notes = case.get('notes') if case else None
+            if firestore_notes is not None:
+                return jsonify({"case_id": case_id, "notes": firestore_notes, "source": "firestore"}), 200
+            # Fallback to local file
+            local_notes_map = _read_local_notes()
+            notes_text = local_notes_map.get(case_id, '')
+            if case is None and not notes_text:
+                return jsonify({"error": "Case not found."}), 404
+            return jsonify({"case_id": case_id, "notes": notes_text, "source": "local"}), 200
+        else:  # PUT
+            body = request.get_json() or {}
+            notes = body.get('notes')
+            if notes is None:
+                return jsonify({"error": "'notes' field is required."}), 400
+            updated = case_manager.update_case_notes(case_id, notes)
+            # Always also persist locally as fallback
+            local_notes_map = _read_local_notes()
+            local_notes_map[case_id] = notes
+            _write_local_notes(local_notes_map)
+            if not updated:
+                # Firestore failed but local saved
+                return jsonify({"message": "Notes saved locally (Firestore unavailable).", "fallback": True}), 200
+            return jsonify({"message": "Notes saved successfully.", "fallback": False}), 200
+    except Exception as e:
+        print(f"ERROR in /api/cases/{case_id}/notes: {e}")
+        return jsonify({"error": "Failed to process notes request."}), 500
 
 @app.route('/api/graph/<string:person_id>', methods=['GET'])
 @token_required

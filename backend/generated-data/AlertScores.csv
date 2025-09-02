@@ -1,347 +1,347 @@
 alert_id,person_id,full_name,final_risk_score,risk_score,timestamp,summary,status
-ALT-248,PER00696,Ayushman Lata,55,55,2025-09-02T15:08:04.602330,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active
-ALT-027,PER00073,Amrita Sidhu,55,55,2025-09-02T15:07:52.932124,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active
-ALT-250,PER00703,Lakshmi Tiwari,55,55,2025-09-02T15:08:04.718208,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active
-ALT-105,PER00289,Upkaar Wali,55,55,2025-09-02T15:07:57.102503,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active
-ALT-044,PER00134,Dhruv Dass,44,44,2025-09-02T15:07:54.127040,Risk flagged due to transactions with suspected shell companies and 2 other factors.,active
-ALT-320,PER00927,Tara Rajagopalan,44,44,2025-09-02T15:08:07.853870,Risk flagged due to transactions with suspected shell companies and 2 other factors.,active
-ALT-166,PER00473,Hamsini Dani,44,44,2025-09-02T15:08:00.438257,Risk flagged due to transactions with suspected shell companies and 2 other factors.,active
-ALT-263,PER00738,Tanish Chaudhary,40,40,2025-09-02T15:08:05.371442,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-116,PER00328,Tristan Mital,40,40,2025-09-02T15:07:57.705458,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-089,PER00256,Hamsini Parmer,40,40,2025-09-02T15:07:56.463441,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-165,PER00466,Oviya Rana,40,40,2025-09-02T15:08:00.277474,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-234,PER00658,Farhan Basak,40,40,2025-09-02T15:08:03.960227,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-051,PER00162,Diya Gulati,40,40,2025-09-02T15:07:54.713944,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-243,PER00678,Kai Mangat,40,40,2025-09-02T15:08:04.300869,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-158,PER00447,Ikshita Sehgal,40,40,2025-09-02T15:07:59.871293,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-090,PER00257,Omya Kaur,40,40,2025-09-02T15:07:56.485725,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-306,PER00867,Sathvik Prabhakar,40,40,2025-09-02T15:08:07.307383,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-160,PER00454,Ranbir Pillay,34,34,2025-09-02T15:08:00.031061,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active
-ALT-183,PER00531,Bhavya Shanker,30,30,2025-09-02T15:08:01.552349,Risk flagged due to high-value credits inconsistent with salary,active
-ALT-283,PER00791,Ekantika Sarin,29,29,2025-09-02T15:08:06.410058,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-313,PER00909,Xavier Pal,29,29,2025-09-02T15:08:07.648724,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-312,PER00902,Tanay Dube,29,29,2025-09-02T15:08:07.582482,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-309,PER00895,Jacob Nadig,29,29,2025-09-02T15:08:07.525848,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-334,PER00958,Dhriti Narang,29,29,2025-09-02T15:08:08.180902,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-332,PER00954,Tanvi Palla,29,29,2025-09-02T15:08:08.148785,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-038,PER00107,Advika Thakkar,29,29,2025-09-02T15:07:53.569802,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-037,PER00104,Ladli Din,29,29,2025-09-02T15:07:53.508298,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-023,PER00066,Wishi Soman,29,29,2025-09-02T15:07:52.806076,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-031,PER00084,Darika Bava,29,29,2025-09-02T15:07:53.106786,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-300,PER00833,Ekansh Acharya,29,29,2025-09-02T15:08:07.065089,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-024,PER00068,Neel Basu,29,29,2025-09-02T15:07:52.842197,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-019,PER00057,Nihal Madan,29,29,2025-09-02T15:07:52.602595,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-021,PER00064,Idika Gill,29,29,2025-09-02T15:07:52.773178,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-329,PER00949,Jeremiah Karpe,29,29,2025-09-02T15:08:08.107740,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-316,PER00913,Harinakshi Kota,29,29,2025-09-02T15:08:07.700214,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-314,PER00910,Chandani Mani,29,29,2025-09-02T15:08:07.661071,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-345,PER00988,Jeet Rout,29,29,2025-09-02T15:08:08.390956,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-237,PER00667,Wakeeta Das,29,29,2025-09-02T15:08:04.109705,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-057,PER00175,Zaid Babu,29,29,2025-09-02T15:07:54.962610,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-245,PER00686,Kevin Bajwa,29,29,2025-09-02T15:08:04.430678,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-219,PER00618,Balendra Pillay,29,29,2025-09-02T15:08:03.155437,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-275,PER00775,Nachiket Naidu,29,29,2025-09-02T15:08:06.107063,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-242,PER00677,Chakradev Bansal,29,29,2025-09-02T15:08:04.277795,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-053,PER00164,Shivani Char,29,29,2025-09-02T15:07:54.757728,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-048,PER00149,Krishna Wagle,29,29,2025-09-02T15:07:54.436007,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-047,PER00148,Ekapad Choudhury,29,29,2025-09-02T15:07:54.409889,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-269,PER00761,Jeet Bajwa,29,29,2025-09-02T15:08:05.814437,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-277,PER00780,Jairaj Bala,29,29,2025-09-02T15:08:06.238357,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-288,PER00802,Bina Puri,29,29,2025-09-02T15:08:06.622813,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-268,PER00760,Qarin Wali,29,29,2025-09-02T15:08:05.783425,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-297,PER00827,Gaurika Wagle,29,29,2025-09-02T15:08:07.021080,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-180,PER00527,Triya Krish,29,29,2025-09-02T15:08:01.483244,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-178,PER00523,Ira Chauhan,29,29,2025-09-02T15:08:01.411430,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-200,PER00561,Chandani Grewal,29,29,2025-09-02T15:08:02.093851,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-198,PER00558,Faqid Khosla,29,29,2025-09-02T15:08:02.036209,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-197,PER00556,Rachana Pillay,29,29,2025-09-02T15:08:01.984259,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-216,PER00609,Avi Brahmbhatt,29,29,2025-09-02T15:08:02.964723,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-207,PER00579,Darsh Lal,29,29,2025-09-02T15:08:02.384265,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-233,PER00655,Bhavani Chawla,29,29,2025-09-02T15:08:03.890107,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-226,PER00632,Anya Prasad,29,29,2025-09-02T15:08:03.408378,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-225,PER00628,Rajeshri Sandal,29,29,2025-09-02T15:08:03.339018,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-081,PER00240,Ishanvi Upadhyay,29,29,2025-09-02T15:07:56.161927,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-058,PER00177,Ekaja Sane,29,29,2025-09-02T15:07:55.006361,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-163,PER00462,Omkaar Sawhney,29,29,2025-09-02T15:08:00.194611,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-161,PER00456,Champak Nair,29,29,2025-09-02T15:08:00.066775,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-184,PER00532,Tristan Ramachandran,29,29,2025-09-02T15:08:01.575003,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-181,PER00529,Odika Buch,29,29,2025-09-02T15:08:01.516195,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-127,PER00353,Chatresh Kurian,29,29,2025-09-02T15:07:58.190610,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-126,PER00352,Gaurangi Morar,29,29,2025-09-02T15:07:58.171660,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-152,PER00437,Qushi Bose,29,29,2025-09-02T15:07:59.669439,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-167,PER00476,Sudiksha Behl,29,29,2025-09-02T15:08:00.501777,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-091,PER00259,Advaith Sibal,29,29,2025-09-02T15:07:56.538284,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-135,PER00375,Brinda Mangal,29,29,2025-09-02T15:07:58.637323,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-095,PER00267,Aadi Yogi,29,29,2025-09-02T15:07:56.673394,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-130,PER00365,Brijesh Lata,29,29,2025-09-02T15:07:58.396617,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-109,PER00303,Yashoda Bhargava,29,29,2025-09-02T15:07:57.341946,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-117,PER00332,Lila Bassi,29,29,2025-09-02T15:07:57.782619,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-120,PER00336,Ayush Keer,29,29,2025-09-02T15:07:57.861217,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-319,PER00926,Avni Sha,29,29,2025-09-02T15:08:07.843871,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-322,PER00930,Hitesh Krishna,29,29,2025-09-02T15:08:07.886835,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-323,PER00931,Peter Narayan,29,29,2025-09-02T15:08:07.897722,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-324,PER00935,Lavanya Mane,29,29,2025-09-02T15:08:07.968647,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-040,PER00118,Victor Mishra,29,29,2025-09-02T15:07:53.790741,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
-ALT-009,PER00029,Diya Gade,25,25,2025-09-02T15:07:51.937289,Risk flagged due to transactions with suspected shell companies,active
-ALT-025,PER00071,Advay Pal,25,25,2025-09-02T15:07:52.898895,Risk flagged due to transactions with suspected shell companies,active
-ALT-330,PER00951,Alexander Seth,25,25,2025-09-02T15:08:08.123788,Risk flagged due to transactions with suspected shell companies,active
-ALT-327,PER00946,Om Sharaf,25,25,2025-09-02T15:08:08.082322,Risk flagged due to transactions with suspected shell companies,active
-ALT-010,PER00030,Saumya Bhatia,25,25,2025-09-02T15:07:51.960574,Risk flagged due to transactions with suspected shell companies,active
-ALT-346,PER00989,Saksham Ratti,25,25,2025-09-02T15:08:08.397981,Risk flagged due to transactions with suspected shell companies,active
-ALT-005,PER00019,Geetika Comar,25,25,2025-09-02T15:07:51.707932,Risk flagged due to transactions with suspected shell companies,active
-ALT-344,PER00987,Max Deol,25,25,2025-09-02T15:08:08.383830,Risk flagged due to transactions with suspected shell companies,active
-ALT-343,PER00981,Neha Bora,25,25,2025-09-02T15:08:08.347049,Risk flagged due to transactions with suspected shell companies,active
-ALT-342,PER00975,Zansi Karan,25,25,2025-09-02T15:08:08.305020,Risk flagged due to transactions with suspected shell companies,active
-ALT-341,PER00974,Dhriti Wali,25,25,2025-09-02T15:08:08.298033,Risk flagged due to transactions with suspected shell companies,active
-ALT-340,PER00971,Yug Gola,25,25,2025-09-02T15:08:08.277318,Risk flagged due to transactions with suspected shell companies,active
-ALT-339,PER00970,Ridhi Sibal,25,25,2025-09-02T15:08:08.266205,Risk flagged due to transactions with suspected shell companies,active
-ALT-338,PER00968,Chavvi Golla,25,25,2025-09-02T15:08:08.251219,Risk flagged due to transactions with suspected shell companies,active
-ALT-337,PER00964,Umang Borde,25,25,2025-09-02T15:08:08.223602,Risk flagged due to transactions with suspected shell companies,active
-ALT-016,PER00047,Jai Nadig,25,25,2025-09-02T15:07:52.380734,Risk flagged due to transactions with suspected shell companies,active
-ALT-015,PER00038,Kevin Sarin,25,25,2025-09-02T15:07:52.177533,Risk flagged due to transactions with suspected shell companies,active
-ALT-014,PER00036,Xalak Murthy,25,25,2025-09-02T15:07:52.126541,Risk flagged due to transactions with suspected shell companies,active
-ALT-013,PER00034,Pooja Doctor,25,25,2025-09-02T15:07:52.066372,Risk flagged due to transactions with suspected shell companies,active
-ALT-012,PER00033,Rachit Nair,25,25,2025-09-02T15:07:52.041812,Risk flagged due to transactions with suspected shell companies,active
-ALT-011,PER00032,Ishani Din,25,25,2025-09-02T15:07:52.016120,Risk flagged due to transactions with suspected shell companies,active
-ALT-004,PER00017,Chaaya Cherian,25,25,2025-09-02T15:07:51.664942,Risk flagged due to transactions with suspected shell companies,active
-ALT-003,PER00013,Urvashi Dhawan,25,25,2025-09-02T15:07:51.584376,Risk flagged due to transactions with suspected shell companies,active
-ALT-326,PER00944,Tanay Balan,25,25,2025-09-02T15:08:08.066264,Risk flagged due to transactions with suspected shell companies,active
-ALT-325,PER00937,Advik Dugar,25,25,2025-09-02T15:08:07.998231,Risk flagged due to transactions with suspected shell companies,active
-ALT-321,PER00928,Henry Kadakia,25,25,2025-09-02T15:08:07.863874,Risk flagged due to transactions with suspected shell companies,active
-ALT-121,PER00337,Arin Purohit,25,25,2025-09-02T15:07:57.878343,Risk flagged due to transactions with suspected shell companies,active
-ALT-119,PER00334,Sai Dugar,25,25,2025-09-02T15:07:57.825722,Risk flagged due to transactions with suspected shell companies,active
-ALT-118,PER00333,Divya Sheth,25,25,2025-09-02T15:07:57.803298,Risk flagged due to transactions with suspected shell companies,active
-ALT-115,PER00321,Wriddhish Narasimhan,25,25,2025-09-02T15:07:57.591569,Risk flagged due to transactions with suspected shell companies,active
-ALT-114,PER00317,Siddharth Wagle,25,25,2025-09-02T15:07:57.530886,Risk flagged due to transactions with suspected shell companies,active
-ALT-113,PER00313,Raagini Dhawan,25,25,2025-09-02T15:07:57.476766,Risk flagged due to transactions with suspected shell companies,active
-ALT-112,PER00312,Manthan Om,25,25,2025-09-02T15:07:57.462892,Risk flagged due to transactions with suspected shell companies,active
-ALT-111,PER00311,Idika Loke,25,25,2025-09-02T15:07:57.449364,Risk flagged due to transactions with suspected shell companies,active
-ALT-110,PER00304,Bhanumati Narasimhan,25,25,2025-09-02T15:07:57.355482,Risk flagged due to transactions with suspected shell companies,active
-ALT-108,PER00301,William Khare,25,25,2025-09-02T15:07:57.315290,Risk flagged due to transactions with suspected shell companies,active
-ALT-107,PER00294,Ayaan Mitra,25,25,2025-09-02T15:07:57.203817,Risk flagged due to transactions with suspected shell companies,active
-ALT-106,PER00292,Dominic Sankaran,25,25,2025-09-02T15:07:57.170280,Risk flagged due to transactions with suspected shell companies,active
-ALT-074,PER00212,Wakeeta Kalita,25,25,2025-09-02T15:07:55.636048,Risk flagged due to transactions with suspected shell companies,active
-ALT-103,PER00287,Meera Bandi,25,25,2025-09-02T15:07:57.054752,Risk flagged due to transactions with suspected shell companies,active
-ALT-102,PER00284,Omya Zachariah,25,25,2025-09-02T15:07:57.000074,Risk flagged due to transactions with suspected shell companies,active
-ALT-101,PER00277,Arunima Borra,25,25,2025-09-02T15:07:56.875769,Risk flagged due to transactions with suspected shell companies,active
-ALT-100,PER00276,Damini Dua,25,25,2025-09-02T15:07:56.849145,Risk flagged due to transactions with suspected shell companies,active
-ALT-099,PER00275,Libni Rana,25,25,2025-09-02T15:07:56.830053,Risk flagged due to transactions with suspected shell companies,active
-ALT-098,PER00274,Idika Sarraf,25,25,2025-09-02T15:07:56.804310,Risk flagged due to transactions with suspected shell companies,active
-ALT-097,PER00273,Nidhi Narang,25,25,2025-09-02T15:07:56.775307,Risk flagged due to transactions with suspected shell companies,active
-ALT-096,PER00272,Madhav Chopra,25,25,2025-09-02T15:07:56.752784,Risk flagged due to transactions with suspected shell companies,active
-ALT-094,PER00265,Jonathan Bose,25,25,2025-09-02T15:07:56.635495,Risk flagged due to transactions with suspected shell companies,active
-ALT-093,PER00264,Amaira Pandit,25,25,2025-09-02T15:07:56.620494,Risk flagged due to transactions with suspected shell companies,active
-ALT-092,PER00260,Harita Savant,25,25,2025-09-02T15:07:56.556457,Risk flagged due to transactions with suspected shell companies,active
-ALT-137,PER00381,Matthew Naik,25,25,2025-09-02T15:07:58.754104,Risk flagged due to transactions with suspected shell companies,active
-ALT-136,PER00380,Yauvani Sur,25,25,2025-09-02T15:07:58.736996,Risk flagged due to transactions with suspected shell companies,active
-ALT-134,PER00369,Balhaar Raja,25,25,2025-09-02T15:07:58.503001,Risk flagged due to transactions with suspected shell companies,active
-ALT-133,PER00368,Ekbal Dara,25,25,2025-09-02T15:07:58.475307,Risk flagged due to transactions with suspected shell companies,active
-ALT-132,PER00367,Kashish Koshy,25,25,2025-09-02T15:07:58.450511,Risk flagged due to transactions with suspected shell companies,active
-ALT-131,PER00366,Avi Goyal,25,25,2025-09-02T15:07:58.425364,Risk flagged due to transactions with suspected shell companies,active
-ALT-128,PER00359,Saumya Dora,25,25,2025-09-02T15:07:58.282028,Risk flagged due to transactions with suspected shell companies,active
-ALT-125,PER00350,Gagan Bains,25,25,2025-09-02T15:07:58.135143,Risk flagged due to transactions with suspected shell companies,active
-ALT-124,PER00344,Vrishti Verma,25,25,2025-09-02T15:07:58.019261,Risk flagged due to transactions with suspected shell companies,active
-ALT-123,PER00342,Vamakshi Tata,25,25,2025-09-02T15:07:57.979272,Risk flagged due to transactions with suspected shell companies,active
-ALT-122,PER00341,Lipika Sangha,25,25,2025-09-02T15:07:57.956258,Risk flagged due to transactions with suspected shell companies,active
-ALT-153,PER00438,Shivansh Dubey,25,25,2025-09-02T15:07:59.685371,Risk flagged due to transactions with suspected shell companies,active
-ALT-151,PER00434,Lakshit Pal,25,25,2025-09-02T15:07:59.626469,Risk flagged due to transactions with suspected shell companies,active
-ALT-150,PER00433,Caleb Nazareth,25,25,2025-09-02T15:07:59.611461,Risk flagged due to transactions with suspected shell companies,active
-ALT-149,PER00427,Praneel Nigam,25,25,2025-09-02T15:07:59.523528,Risk flagged due to transactions with suspected shell companies,active
-ALT-148,PER00426,Krisha Iyengar,25,25,2025-09-02T15:07:59.507467,Risk flagged due to transactions with suspected shell companies,active
-ALT-146,PER00421,Kabir Saran,25,25,2025-09-02T15:07:59.426644,Risk flagged due to transactions with suspected shell companies,active
-ALT-144,PER00415,Hritik Parekh,25,25,2025-09-02T15:07:59.322870,Risk flagged due to transactions with suspected shell companies,active
-ALT-143,PER00410,Anjali Nadig,25,25,2025-09-02T15:07:59.244192,Risk flagged due to transactions with suspected shell companies,active
-ALT-142,PER00400,Lakshit Narang,25,25,2025-09-02T15:07:59.067360,Risk flagged due to transactions with suspected shell companies,active
-ALT-141,PER00394,Girish Subramaniam,25,25,2025-09-02T15:07:58.963385,Risk flagged due to transactions with suspected shell companies,active
-ALT-140,PER00390,Kamala Shenoy,25,25,2025-09-02T15:07:58.898838,Risk flagged due to transactions with suspected shell companies,active
-ALT-139,PER00385,Faris Dass,25,25,2025-09-02T15:07:58.821274,Risk flagged due to transactions with suspected shell companies,active
-ALT-138,PER00384,Vincent Sanghvi,25,25,2025-09-02T15:07:58.805975,Risk flagged due to transactions with suspected shell companies,active
-ALT-169,PER00481,Darsh Dixit,25,25,2025-09-02T15:08:00.578600,Risk flagged due to transactions with suspected shell companies,active
-ALT-168,PER00480,Zansi Rajagopal,25,25,2025-09-02T15:08:00.562585,Risk flagged due to transactions with suspected shell companies,active
-ALT-059,PER00178,Isaac Kunda,25,25,2025-09-02T15:07:55.031363,Risk flagged due to transactions with suspected shell companies,active
-ALT-088,PER00254,Kashish Muni,25,25,2025-09-02T15:07:56.425538,Risk flagged due to transactions with suspected shell companies,active
-ALT-086,PER00251,Brijesh Atwal,25,25,2025-09-02T15:07:56.374080,Risk flagged due to transactions with suspected shell companies,active
-ALT-085,PER00249,Ikshita Ram,25,25,2025-09-02T15:07:56.329583,Risk flagged due to transactions with suspected shell companies,active
-ALT-084,PER00245,Leela Yogi,25,25,2025-09-02T15:07:56.262539,Risk flagged due to transactions with suspected shell companies,active
-ALT-083,PER00244,Eesha Bhardwaj,25,25,2025-09-02T15:07:56.245821,Risk flagged due to transactions with suspected shell companies,active
-ALT-082,PER00243,Logan Grewal,25,25,2025-09-02T15:07:56.227490,Risk flagged due to transactions with suspected shell companies,active
-ALT-080,PER00236,Anusha Anne,25,25,2025-09-02T15:07:56.067750,Risk flagged due to transactions with suspected shell companies,active
-ALT-079,PER00235,Aditya Varty,25,25,2025-09-02T15:07:56.052748,Risk flagged due to transactions with suspected shell companies,active
-ALT-078,PER00231,Zayyan Bora,25,25,2025-09-02T15:07:55.995974,Risk flagged due to transactions with suspected shell companies,active
-ALT-077,PER00222,Max Wali,25,25,2025-09-02T15:07:55.835752,Risk flagged due to transactions with suspected shell companies,active
-ALT-076,PER00220,Ishani Ravel,25,25,2025-09-02T15:07:55.800407,Risk flagged due to transactions with suspected shell companies,active
-ALT-075,PER00218,Mugdha Sabharwal,25,25,2025-09-02T15:07:55.759278,Risk flagged due to transactions with suspected shell companies,active
-ALT-159,PER00453,Panini Badami,25,25,2025-09-02T15:08:00.002067,Risk flagged due to transactions with suspected shell companies,active
-ALT-157,PER00443,Raksha Magar,25,25,2025-09-02T15:07:59.791358,Risk flagged due to transactions with suspected shell companies,active
-ALT-156,PER00442,Qushi Varkey,25,25,2025-09-02T15:07:59.771360,Risk flagged due to transactions with suspected shell companies,active
-ALT-155,PER00441,Yadavi Balasubramanian,25,25,2025-09-02T15:07:59.750568,Risk flagged due to transactions with suspected shell companies,active
-ALT-154,PER00439,Yatin Dubey,25,25,2025-09-02T15:07:59.706453,Risk flagged due to transactions with suspected shell companies,active
-ALT-185,PER00533,Devansh Pandya,25,25,2025-09-02T15:08:01.593046,Risk flagged due to transactions with suspected shell companies,active
-ALT-182,PER00530,Charita Rao,25,25,2025-09-02T15:08:01.536239,Risk flagged due to transactions with suspected shell companies,active
-ALT-179,PER00525,Yahvi Gill,25,25,2025-09-02T15:08:01.447424,Risk flagged due to transactions with suspected shell companies,active
-ALT-177,PER00521,Jeet Talwar,25,25,2025-09-02T15:08:01.368435,Risk flagged due to transactions with suspected shell companies,active
-ALT-176,PER00520,Harish Nagarajan,25,25,2025-09-02T15:08:01.342617,Risk flagged due to transactions with suspected shell companies,active
-ALT-175,PER00513,Madhav Ramesh,25,25,2025-09-02T15:08:01.197744,Risk flagged due to transactions with suspected shell companies,active
-ALT-174,PER00505,Wriddhish Dash,25,25,2025-09-02T15:08:01.066611,Risk flagged due to transactions with suspected shell companies,active
-ALT-173,PER00486,Yashodhara Rama,25,25,2025-09-02T15:08:00.719526,Risk flagged due to transactions with suspected shell companies,active
-ALT-172,PER00484,Parth Purohit,25,25,2025-09-02T15:08:00.649192,Risk flagged due to transactions with suspected shell companies,active
-ALT-171,PER00483,Kalpit Chandran,25,25,2025-09-02T15:08:00.616623,Risk flagged due to transactions with suspected shell companies,active
-ALT-170,PER00482,Lopa Bassi,25,25,2025-09-02T15:08:00.594593,Risk flagged due to transactions with suspected shell companies,active
-ALT-201,PER00564,Ethan Agate,25,25,2025-09-02T15:08:02.142938,Risk flagged due to transactions with suspected shell companies,active
-ALT-199,PER00559,Fiyaz Golla,25,25,2025-09-02T15:08:02.055259,Risk flagged due to transactions with suspected shell companies,active
-ALT-196,PER00554,Pallavi Barman,25,25,2025-09-02T15:08:01.942403,Risk flagged due to transactions with suspected shell companies,active
-ALT-195,PER00549,Ronith Bahri,25,25,2025-09-02T15:08:01.843605,Risk flagged due to transactions with suspected shell companies,active
-ALT-194,PER00548,Niharika Soni,25,25,2025-09-02T15:08:01.820596,Risk flagged due to transactions with suspected shell companies,active
-ALT-193,PER00547,Baghyawati Yohannan,25,25,2025-09-02T15:08:01.798615,Risk flagged due to transactions with suspected shell companies,active
-ALT-192,PER00544,Dhruv Vaidya,25,25,2025-09-02T15:08:01.751922,Risk flagged due to transactions with suspected shell companies,active
-ALT-191,PER00543,Arunima Bhattacharyya,25,25,2025-09-02T15:08:01.737830,Risk flagged due to transactions with suspected shell companies,active
-ALT-190,PER00542,Reyansh Bhatia,25,25,2025-09-02T15:08:01.726843,Risk flagged due to transactions with suspected shell companies,active
-ALT-189,PER00541,Dayamai Sarkar,25,25,2025-09-02T15:08:01.709866,Risk flagged due to transactions with suspected shell companies,active
-ALT-188,PER00539,Warinder Bora,25,25,2025-09-02T15:08:01.680831,Risk flagged due to transactions with suspected shell companies,active
-ALT-187,PER00536,Balvan Grover,25,25,2025-09-02T15:08:01.636035,Risk flagged due to transactions with suspected shell companies,active
-ALT-186,PER00535,Vasatika Sinha,25,25,2025-09-02T15:08:01.622064,Risk flagged due to transactions with suspected shell companies,active
-ALT-217,PER00610,Kamya Guha,25,25,2025-09-02T15:08:02.991429,Risk flagged due to transactions with suspected shell companies,active
-ALT-215,PER00605,Xalak Ravi,25,25,2025-09-02T15:08:02.875727,Risk flagged due to transactions with suspected shell companies,active
-ALT-214,PER00600,Hitesh Kumar,25,25,2025-09-02T15:08:02.779805,Risk flagged due to transactions with suspected shell companies,active
-ALT-213,PER00594,Dayamai Golla,25,25,2025-09-02T15:08:02.637972,Risk flagged due to transactions with suspected shell companies,active
-ALT-212,PER00591,Januja Buch,25,25,2025-09-02T15:08:02.578967,Risk flagged due to transactions with suspected shell companies,active
-ALT-211,PER00586,Shaurya Varughese,25,25,2025-09-02T15:08:02.485997,Risk flagged due to transactions with suspected shell companies,active
-ALT-210,PER00585,Samarth Sidhu,25,25,2025-09-02T15:08:02.468993,Risk flagged due to transactions with suspected shell companies,active
-ALT-209,PER00582,Kai Baria,25,25,2025-09-02T15:08:02.429231,Risk flagged due to transactions with suspected shell companies,active
-ALT-208,PER00580,Anirudh Mani,25,25,2025-09-02T15:08:02.400187,Risk flagged due to transactions with suspected shell companies,active
-ALT-206,PER00578,Anay Mukhopadhyay,25,25,2025-09-02T15:08:02.367202,Risk flagged due to transactions with suspected shell companies,active
-ALT-205,PER00577,Unnati Sabharwal,25,25,2025-09-02T15:08:02.350514,Risk flagged due to transactions with suspected shell companies,active
-ALT-204,PER00573,Ojas Yadav,25,25,2025-09-02T15:08:02.284491,Risk flagged due to transactions with suspected shell companies,active
-ALT-203,PER00572,Ansh Aggarwal,25,25,2025-09-02T15:08:02.268486,Risk flagged due to transactions with suspected shell companies,active
-ALT-202,PER00571,Bahadurjit Aggarwal,25,25,2025-09-02T15:08:02.251811,Risk flagged due to transactions with suspected shell companies,active
-ALT-232,PER00653,Qasim Garde,25,25,2025-09-02T15:08:03.856279,Risk flagged due to transactions with suspected shell companies,active
-ALT-231,PER00651,Neha Ranganathan,25,25,2025-09-02T15:08:03.802243,Risk flagged due to transactions with suspected shell companies,active
-ALT-230,PER00648,Rajata Sani,25,25,2025-09-02T15:08:03.743415,Risk flagged due to transactions with suspected shell companies,active
-ALT-229,PER00644,Chanchal Mohanty,25,25,2025-09-02T15:08:03.650513,Risk flagged due to transactions with suspected shell companies,active
-ALT-045,PER00139,Imaran Bera,25,25,2025-09-02T15:07:54.225236,Risk flagged due to transactions with suspected shell companies,active
-ALT-043,PER00127,Sarthak Naik,25,25,2025-09-02T15:07:54.010992,Risk flagged due to transactions with suspected shell companies,active
-ALT-042,PER00125,Ekta Mody,25,25,2025-09-02T15:07:53.975016,Risk flagged due to transactions with suspected shell companies,active
-ALT-073,PER00205,Omisha Ramachandran,25,25,2025-09-02T15:07:55.500095,Risk flagged due to transactions with suspected shell companies,active
-ALT-072,PER00204,Mason Rajagopalan,25,25,2025-09-02T15:07:55.479584,Risk flagged due to transactions with suspected shell companies,active
-ALT-071,PER00203,Kalpit Sehgal,25,25,2025-09-02T15:07:55.465533,Risk flagged due to transactions with suspected shell companies,active
-ALT-069,PER00199,Agastya Gera,25,25,2025-09-02T15:07:55.396144,Risk flagged due to transactions with suspected shell companies,active
-ALT-068,PER00198,Jhalak Ratta,25,25,2025-09-02T15:07:55.376618,Risk flagged due to transactions with suspected shell companies,active
-ALT-067,PER00197,Eshana Sahni,25,25,2025-09-02T15:07:55.355488,Risk flagged due to transactions with suspected shell companies,active
-ALT-066,PER00195,Peter Sawhney,25,25,2025-09-02T15:07:55.326507,Risk flagged due to transactions with suspected shell companies,active
-ALT-065,PER00193,Simon Purohit,25,25,2025-09-02T15:07:55.288781,Risk flagged due to transactions with suspected shell companies,active
-ALT-064,PER00183,Rohan Yohannan,25,25,2025-09-02T15:07:55.108165,Risk flagged due to transactions with suspected shell companies,active
-ALT-063,PER00182,Dayamai Raghavan,25,25,2025-09-02T15:07:55.093781,Risk flagged due to transactions with suspected shell companies,active
-ALT-061,PER00180,Brijesh More,25,25,2025-09-02T15:07:55.062015,Risk flagged due to transactions with suspected shell companies,active
-ALT-060,PER00179,Naveen Ravi,25,25,2025-09-02T15:07:55.050229,Risk flagged due to transactions with suspected shell companies,active
-ALT-228,PER00643,Charles Sule,25,25,2025-09-02T15:08:03.611501,Risk flagged due to transactions with suspected shell companies,active
-ALT-224,PER00627,Zaid Upadhyay,25,25,2025-09-02T15:08:03.320964,Risk flagged due to transactions with suspected shell companies,active
-ALT-223,PER00626,Ryan Tak,25,25,2025-09-02T15:08:03.305011,Risk flagged due to transactions with suspected shell companies,active
-ALT-222,PER00625,Pranit Chakrabarti,25,25,2025-09-02T15:08:03.289006,Risk flagged due to transactions with suspected shell companies,active
-ALT-221,PER00622,Vasatika Reddy,25,25,2025-09-02T15:08:03.227889,Risk flagged due to transactions with suspected shell companies,active
-ALT-220,PER00620,Neha Bal,25,25,2025-09-02T15:08:03.191188,Risk flagged due to transactions with suspected shell companies,active
-ALT-249,PER00701,Aarnav Padmanabhan,25,25,2025-09-02T15:08:04.688208,Risk flagged due to transactions with suspected shell companies,active
-ALT-247,PER00693,Ijaya Kumar,25,25,2025-09-02T15:08:04.552424,Risk flagged due to transactions with suspected shell companies,active
-ALT-246,PER00688,Alexander Mand,25,25,2025-09-02T15:08:04.463754,Risk flagged due to transactions with suspected shell companies,active
-ALT-244,PER00685,Bhavya Kumar,25,25,2025-09-02T15:08:04.414675,Risk flagged due to transactions with suspected shell companies,active
-ALT-241,PER00674,Isaiah Kari,25,25,2025-09-02T15:08:04.229841,Risk flagged due to transactions with suspected shell companies,active
-ALT-240,PER00673,Raagini Kaul,25,25,2025-09-02T15:08:04.208523,Risk flagged due to transactions with suspected shell companies,active
-ALT-239,PER00671,Balvan Chauhan,25,25,2025-09-02T15:08:04.172398,Risk flagged due to transactions with suspected shell companies,active
-ALT-238,PER00668,William Gandhi,25,25,2025-09-02T15:08:04.126694,Risk flagged due to transactions with suspected shell companies,active
-ALT-236,PER00664,Sanya Sabharwal,25,25,2025-09-02T15:08:04.062076,Risk flagged due to transactions with suspected shell companies,active
-ALT-265,PER00745,Shaurya Ram,25,25,2025-09-02T15:08:05.487084,Risk flagged due to transactions with suspected shell companies,active
-ALT-264,PER00742,Maya Kade,25,25,2025-09-02T15:08:05.441417,Risk flagged due to transactions with suspected shell companies,active
-ALT-262,PER00736,Yuvraj Prasad,25,25,2025-09-02T15:08:05.331054,Risk flagged due to transactions with suspected shell companies,active
-ALT-261,PER00734,Nidhi Narula,25,25,2025-09-02T15:08:05.273772,Risk flagged due to transactions with suspected shell companies,active
-ALT-260,PER00733,Panini Nayar,25,25,2025-09-02T15:08:05.242590,Risk flagged due to transactions with suspected shell companies,active
-ALT-259,PER00730,Theodore Lala,25,25,2025-09-02T15:08:05.178340,Risk flagged due to transactions with suspected shell companies,active
-ALT-258,PER00729,Charvi Sinha,25,25,2025-09-02T15:08:05.158527,Risk flagged due to transactions with suspected shell companies,active
-ALT-257,PER00725,Amol Dasgupta,25,25,2025-09-02T15:08:05.083575,Risk flagged due to transactions with suspected shell companies,active
-ALT-256,PER00723,Ronith Arora,25,25,2025-09-02T15:08:05.047720,Risk flagged due to transactions with suspected shell companies,active
-ALT-255,PER00720,Rudra Bhatt,25,25,2025-09-02T15:08:04.992722,Risk flagged due to transactions with suspected shell companies,active
-ALT-254,PER00716,Victor Goswami,25,25,2025-09-02T15:08:04.925848,Risk flagged due to transactions with suspected shell companies,active
-ALT-253,PER00713,Raghav Banerjee,25,25,2025-09-02T15:08:04.881880,Risk flagged due to transactions with suspected shell companies,active
-ALT-252,PER00709,Geetika Dyal,25,25,2025-09-02T15:08:04.819042,Risk flagged due to transactions with suspected shell companies,active
-ALT-251,PER00708,Ekta Subramanian,25,25,2025-09-02T15:08:04.803043,Risk flagged due to transactions with suspected shell companies,active
-ALT-281,PER00788,Oni Chacko,25,25,2025-09-02T15:08:06.370326,Risk flagged due to transactions with suspected shell companies,active
-ALT-280,PER00787,Sneha Kanda,25,25,2025-09-02T15:08:06.359230,Risk flagged due to transactions with suspected shell companies,active
-ALT-279,PER00786,Jackson Kunda,25,25,2025-09-02T15:08:06.346224,Risk flagged due to transactions with suspected shell companies,active
-ALT-278,PER00785,Jason Nori,25,25,2025-09-02T15:08:06.332151,Risk flagged due to transactions with suspected shell companies,active
-ALT-276,PER00776,Theodore Gandhi,25,25,2025-09-02T15:08:06.127127,Risk flagged due to transactions with suspected shell companies,active
-ALT-274,PER00774,Falak Tank,25,25,2025-09-02T15:08:06.091132,Risk flagged due to transactions with suspected shell companies,active
-ALT-030,PER00083,Devika Banik,25,25,2025-09-02T15:07:53.091201,Risk flagged due to transactions with suspected shell companies,active
-ALT-029,PER00076,Dayita Bora,25,25,2025-09-02T15:07:52.975972,Risk flagged due to transactions with suspected shell companies,active
-ALT-028,PER00075,Arjun Venkatesh,25,25,2025-09-02T15:07:52.960970,Risk flagged due to transactions with suspected shell companies,active
-ALT-026,PER00072,Ojasvi Mukherjee,25,25,2025-09-02T15:07:52.913892,Risk flagged due to transactions with suspected shell companies,active
-ALT-056,PER00174,Gauri Loke,25,25,2025-09-02T15:07:54.942823,Risk flagged due to transactions with suspected shell companies,active
-ALT-055,PER00168,Sai Srinivasan,25,25,2025-09-02T15:07:54.845289,Risk flagged due to transactions with suspected shell companies,active
-ALT-054,PER00166,Tara Bath,25,25,2025-09-02T15:07:54.803146,Risk flagged due to transactions with suspected shell companies,active
-ALT-052,PER00163,Varsha Ramesh,25,25,2025-09-02T15:07:54.735025,Risk flagged due to transactions with suspected shell companies,active
-ALT-050,PER00153,Girik Subramaniam,25,25,2025-09-02T15:07:54.514690,Risk flagged due to transactions with suspected shell companies,active
-ALT-049,PER00152,Tripti Gaba,25,25,2025-09-02T15:07:54.496687,Risk flagged due to transactions with suspected shell companies,active
-ALT-273,PER00771,Damini Pillay,25,25,2025-09-02T15:08:06.041131,Risk flagged due to transactions with suspected shell companies,active
-ALT-272,PER00768,Rajeshri Kadakia,25,25,2025-09-02T15:08:05.970495,Risk flagged due to transactions with suspected shell companies,active
-ALT-271,PER00763,Oeshi Sarna,25,25,2025-09-02T15:08:05.879344,Risk flagged due to transactions with suspected shell companies,active
-ALT-270,PER00762,Lila Khanna,25,25,2025-09-02T15:08:05.846433,Risk flagged due to transactions with suspected shell companies,active
-ALT-267,PER00754,Abdul Bhagat,25,25,2025-09-02T15:08:05.647668,Risk flagged due to transactions with suspected shell companies,active
-ALT-266,PER00746,Rehaan Tailor,25,25,2025-09-02T15:08:05.501588,Risk flagged due to transactions with suspected shell companies,active
-ALT-296,PER00826,Nidra Sarma,25,25,2025-09-02T15:08:07.011080,Risk flagged due to transactions with suspected shell companies,active
-ALT-295,PER00823,Yuvraj Date,25,25,2025-09-02T15:08:06.969389,Risk flagged due to transactions with suspected shell companies,active
-ALT-294,PER00819,Gautami Din,25,25,2025-09-02T15:08:06.912285,Risk flagged due to transactions with suspected shell companies,active
-ALT-293,PER00815,Rudra Sabharwal,25,25,2025-09-02T15:08:06.836446,Risk flagged due to transactions with suspected shell companies,active
-ALT-292,PER00813,Maanav Srinivas,25,25,2025-09-02T15:08:06.797476,Risk flagged due to transactions with suspected shell companies,active
-ALT-291,PER00811,Lucky Dani,25,25,2025-09-02T15:08:06.759665,Risk flagged due to transactions with suspected shell companies,active
-ALT-290,PER00808,Hardik Dara,25,25,2025-09-02T15:08:06.713613,Risk flagged due to transactions with suspected shell companies,active
-ALT-289,PER00806,Manbir Nayak,25,25,2025-09-02T15:08:06.685734,Risk flagged due to transactions with suspected shell companies,active
-ALT-287,PER00799,Bishakha Keer,25,25,2025-09-02T15:08:06.555969,Risk flagged due to transactions with suspected shell companies,active
-ALT-285,PER00794,Vanya Wason,25,25,2025-09-02T15:08:06.470200,Risk flagged due to transactions with suspected shell companies,active
-ALT-284,PER00792,Aahana Keer,25,25,2025-09-02T15:08:06.424035,Risk flagged due to transactions with suspected shell companies,active
-ALT-282,PER00790,Atharv Majumdar,25,25,2025-09-02T15:08:06.397021,Risk flagged due to transactions with suspected shell companies,active
-ALT-311,PER00897,Chameli Cheema,25,25,2025-09-02T15:08:07.546862,Risk flagged due to transactions with suspected shell companies,active
-ALT-310,PER00896,Bahadurjit Trivedi,25,25,2025-09-02T15:08:07.535806,Risk flagged due to transactions with suspected shell companies,active
-ALT-308,PER00891,Aadi Prabhu,25,25,2025-09-02T15:08:07.492006,Risk flagged due to transactions with suspected shell companies,active
-ALT-307,PER00876,Ekantika Swamy,25,25,2025-09-02T15:08:07.381097,Risk flagged due to transactions with suspected shell companies,active
-ALT-305,PER00864,Mahika Aggarwal,25,25,2025-09-02T15:08:07.287383,Risk flagged due to transactions with suspected shell companies,active
-ALT-336,PER00962,Anvi Sharma,25,25,2025-09-02T15:08:08.211513,Risk flagged due to transactions with suspected shell companies,active
-ALT-335,PER00960,Janani Mall,25,25,2025-09-02T15:08:08.196604,Risk flagged due to transactions with suspected shell companies,active
-ALT-333,PER00956,Ati Talwar,25,25,2025-09-02T15:08:08.164786,Risk flagged due to transactions with suspected shell companies,active
-ALT-331,PER00953,Siya Seshadri,25,25,2025-09-02T15:08:08.140811,Risk flagged due to transactions with suspected shell companies,active
-ALT-002,PER00005,Ojas Dua,25,25,2025-09-02T15:07:51.371894,Risk flagged due to transactions with suspected shell companies,active
-ALT-039,PER00116,Mahika Chaudhari,25,25,2025-09-02T15:07:53.732535,Risk flagged due to transactions with suspected shell companies,active
-ALT-036,PER00101,Jason Dass,25,25,2025-09-02T15:07:53.443959,Risk flagged due to transactions with suspected shell companies,active
-ALT-035,PER00098,Janaki Mammen,25,25,2025-09-02T15:07:53.377090,Risk flagged due to transactions with suspected shell companies,active
-ALT-034,PER00095,Advay Chadha,25,25,2025-09-02T15:07:53.320346,Risk flagged due to transactions with suspected shell companies,active
-ALT-033,PER00090,Shravya Banik,25,25,2025-09-02T15:07:53.227464,Risk flagged due to transactions with suspected shell companies,active
-ALT-032,PER00088,Wishi Nanda,25,25,2025-09-02T15:07:53.191773,Risk flagged due to transactions with suspected shell companies,active
-ALT-304,PER00860,Kai Nadkarni,25,25,2025-09-02T15:08:07.261613,Risk flagged due to transactions with suspected shell companies,active
-ALT-303,PER00859,Widisha Desai,25,25,2025-09-02T15:08:07.253580,Risk flagged due to transactions with suspected shell companies,active
-ALT-302,PER00844,Amara Chokshi,25,25,2025-09-02T15:08:07.146882,Risk flagged due to transactions with suspected shell companies,active
-ALT-301,PER00837,Indira Goel,25,25,2025-09-02T15:08:07.095893,Risk flagged due to transactions with suspected shell companies,active
-ALT-299,PER00832,Amruta Bath,25,25,2025-09-02T15:08:07.056092,Risk flagged due to transactions with suspected shell companies,active
-ALT-298,PER00829,Xiti Wable,25,25,2025-09-02T15:08:07.032080,Risk flagged due to transactions with suspected shell companies,active
-ALT-001,PER00003,Ikshita Zacharia,25,25,2025-09-02T15:07:51.321414,Risk flagged due to transactions with suspected shell companies,active
-ALT-022,PER00065,Kala Samra,25,25,2025-09-02T15:07:52.790175,Risk flagged due to transactions with suspected shell companies,active
-ALT-020,PER00058,Omya Kala,25,25,2025-09-02T15:07:52.626032,Risk flagged due to transactions with suspected shell companies,active
-ALT-018,PER00052,Nirja Verma,25,25,2025-09-02T15:07:52.495008,Risk flagged due to transactions with suspected shell companies,active
-ALT-017,PER00049,Amruta Raghavan,25,25,2025-09-02T15:07:52.428598,Risk flagged due to transactions with suspected shell companies,active
-ALT-318,PER00925,Mugdha Rau,25,25,2025-09-02T15:08:07.833879,Risk flagged due to transactions with suspected shell companies,active
-ALT-317,PER00917,Neelima Modi,25,25,2025-09-02T15:08:07.746466,Risk flagged due to transactions with suspected shell companies,active
-ALT-328,PER00948,Odika Shah,25,25,2025-09-02T15:08:08.098782,Risk flagged due to transactions with suspected shell companies,active
-ALT-315,PER00911,Hredhaan Nanda,25,25,2025-09-02T15:08:07.674569,Risk flagged due to transactions with suspected shell companies,active
-ALT-008,PER00026,Vamakshi Subramaniam,25,25,2025-09-02T15:07:51.869340,Risk flagged due to transactions with suspected shell companies,active
-ALT-041,PER00120,Damyanti Kashyap,25,25,2025-09-02T15:07:53.858792,Risk flagged due to transactions with suspected shell companies,active
-ALT-006,PER00020,Harita Swaminathan,25,25,2025-09-02T15:07:51.732089,Risk flagged due to transactions with suspected shell companies,active
-ALT-227,PER00636,Pushti Bakshi,19,19,2025-09-02T15:08:03.467860,Risk flagged due to high-value property ownership and 1 other factors.,active
-ALT-164,PER00464,Keya Pal,19,19,2025-09-02T15:08:00.243633,Risk flagged due to high-value property ownership and 1 other factors.,active
-ALT-087,PER00253,Manthan Maharaj,19,19,2025-09-02T15:07:56.411433,Risk flagged due to high-value property ownership and 1 other factors.,active
-ALT-062,PER00181,Oeshi Deep,19,19,2025-09-02T15:07:55.076390,Risk flagged due to high-value property ownership and 1 other factors.,active
-ALT-046,PER00147,Zehaan Khurana,19,19,2025-09-02T15:07:54.386273,Risk flagged due to high-value property ownership and 1 other factors.,active
-ALT-007,PER00025,Om Hayre,19,19,2025-09-02T15:07:51.850374,Risk flagged due to high-value property ownership and 1 other factors.,active
-ALT-286,PER00797,Farhan Mall,15,15,2025-09-02T15:08:06.517971,Risk flagged due to high-value property ownership,active
-ALT-145,PER00416,Balveer Modi,15,15,2025-09-02T15:07:59.338876,Risk flagged due to high-value property ownership,active
-ALT-162,PER00460,Arjun Ramachandran,15,15,2025-09-02T15:08:00.146925,Risk flagged due to high-value property ownership,active
-ALT-235,PER00663,Jonathan Rama,15,15,2025-09-02T15:08:04.045965,Risk flagged due to high-value property ownership,active
-ALT-218,PER00615,Hredhaan Barman,15,15,2025-09-02T15:08:03.108768,Risk flagged due to high-value property ownership,active
-ALT-104,PER00288,Fitan Saraf,15,15,2025-09-02T15:07:57.081303,Risk flagged due to high-value property ownership,active
-ALT-129,PER00363,Odika Yohannan,15,15,2025-09-02T15:07:58.348070,Risk flagged due to high-value property ownership,active
-ALT-147,PER00425,Maya Mitra,15,15,2025-09-02T15:07:59.492512,Risk flagged due to high-value property ownership,active
-ALT-070,PER00202,Maanav Sama,15,15,2025-09-02T15:07:55.449196,Risk flagged due to high-value property ownership,active
+ALT-248,PER00696,Ayushman Lata,55,55,2025-09-02T15:43:28.701040,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active
+ALT-027,PER00073,Amrita Sidhu,55,55,2025-09-02T15:43:16.139332,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active
+ALT-250,PER00703,Lakshmi Tiwari,55,55,2025-09-02T15:43:28.861704,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active
+ALT-105,PER00289,Upkaar Wali,55,55,2025-09-02T15:43:20.512642,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active
+ALT-044,PER00134,Dhruv Dass,44,44,2025-09-02T15:43:17.363780,Risk flagged due to transactions with suspected shell companies and 2 other factors.,active
+ALT-320,PER00927,Tara Rajagopalan,44,44,2025-09-02T15:43:33.639387,Risk flagged due to transactions with suspected shell companies and 2 other factors.,active
+ALT-166,PER00473,Hamsini Dani,44,44,2025-09-02T15:43:24.352967,Risk flagged due to transactions with suspected shell companies and 2 other factors.,active
+ALT-263,PER00738,Tanish Chaudhary,40,40,2025-09-02T15:43:29.679038,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-116,PER00328,Tristan Mital,40,40,2025-09-02T15:43:21.266201,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-089,PER00256,Hamsini Parmer,40,40,2025-09-02T15:43:19.820336,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-165,PER00466,Oviya Rana,40,40,2025-09-02T15:43:24.209260,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-234,PER00658,Farhan Basak,40,40,2025-09-02T15:43:27.991684,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-051,PER00162,Diya Gulati,40,40,2025-09-02T15:43:18.037768,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-243,PER00678,Kai Mangat,40,40,2025-09-02T15:43:28.363598,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-158,PER00447,Ikshita Sehgal,40,40,2025-09-02T15:43:23.870819,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-090,PER00257,Omya Kaur,40,40,2025-09-02T15:43:19.838339,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-306,PER00867,Sathvik Prabhakar,40,40,2025-09-02T15:43:32.298349,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-160,PER00454,Ranbir Pillay,34,34,2025-09-02T15:43:23.977604,Risk flagged due to high-value credits inconsistent with salary and 1 other factors.,active
+ALT-183,PER00531,Bhavya Shanker,30,30,2025-09-02T15:43:25.558615,Risk flagged due to high-value credits inconsistent with salary,active
+ALT-283,PER00791,Ekantika Sarin,29,29,2025-09-02T15:43:30.650737,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-313,PER00909,Xavier Pal,29,29,2025-09-02T15:43:33.315975,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-312,PER00902,Tanay Dube,29,29,2025-09-02T15:43:33.086174,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-309,PER00895,Jacob Nadig,29,29,2025-09-02T15:43:32.911595,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-334,PER00958,Dhriti Narang,29,29,2025-09-02T15:43:34.240936,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-332,PER00954,Tanvi Palla,29,29,2025-09-02T15:43:34.153192,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-038,PER00107,Advika Thakkar,29,29,2025-09-02T15:43:16.831042,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-037,PER00104,Ladli Din,29,29,2025-09-02T15:43:16.764935,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-023,PER00066,Wishi Soman,29,29,2025-09-02T15:43:16.008363,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-031,PER00084,Darika Bava,29,29,2025-09-02T15:43:16.356010,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-300,PER00833,Ekansh Acharya,29,29,2025-09-02T15:43:31.674202,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-024,PER00068,Neel Basu,29,29,2025-09-02T15:43:16.057559,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-019,PER00057,Nihal Madan,29,29,2025-09-02T15:43:15.839469,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-021,PER00064,Idika Gill,29,29,2025-09-02T15:43:15.950097,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-329,PER00949,Jeremiah Karpe,29,29,2025-09-02T15:43:34.073883,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-316,PER00913,Harinakshi Kota,29,29,2025-09-02T15:43:33.386700,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-314,PER00910,Chandani Mani,29,29,2025-09-02T15:43:33.335871,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-345,PER00988,Jeet Rout,29,29,2025-09-02T15:43:34.985399,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-237,PER00667,Wakeeta Das,29,29,2025-09-02T15:43:28.169602,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-057,PER00175,Zaid Babu,29,29,2025-09-02T15:43:18.290427,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-245,PER00686,Kevin Bajwa,29,29,2025-09-02T15:43:28.490810,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-219,PER00618,Balendra Pillay,29,29,2025-09-02T15:43:27.034803,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-275,PER00775,Nachiket Naidu,29,29,2025-09-02T15:43:30.318552,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-242,PER00677,Chakradev Bansal,29,29,2025-09-02T15:43:28.349525,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-053,PER00164,Shivani Char,29,29,2025-09-02T15:43:18.081785,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-048,PER00149,Krishna Wagle,29,29,2025-09-02T15:43:17.746243,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-047,PER00148,Ekapad Choudhury,29,29,2025-09-02T15:43:17.712597,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-269,PER00761,Jeet Bajwa,29,29,2025-09-02T15:43:30.062047,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-277,PER00780,Jairaj Bala,29,29,2025-09-02T15:43:30.427202,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-288,PER00802,Bina Puri,29,29,2025-09-02T15:43:30.936602,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-268,PER00760,Qarin Wali,29,29,2025-09-02T15:43:30.041207,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-297,PER00827,Gaurika Wagle,29,29,2025-09-02T15:43:31.576011,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-180,PER00527,Triya Krish,29,29,2025-09-02T15:43:25.431044,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-178,PER00523,Ira Chauhan,29,29,2025-09-02T15:43:25.308995,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-200,PER00561,Chandani Grewal,29,29,2025-09-02T15:43:26.104318,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-198,PER00558,Faqid Khosla,29,29,2025-09-02T15:43:26.058236,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-197,PER00556,Rachana Pillay,29,29,2025-09-02T15:43:26.022023,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-216,PER00609,Avi Brahmbhatt,29,29,2025-09-02T15:43:26.847650,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-207,PER00579,Darsh Lal,29,29,2025-09-02T15:43:26.360401,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-233,PER00655,Bhavani Chawla,29,29,2025-09-02T15:43:27.932211,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-226,PER00632,Anya Prasad,29,29,2025-09-02T15:43:27.334275,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-225,PER00628,Rajeshri Sandal,29,29,2025-09-02T15:43:27.255160,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-081,PER00240,Ishanvi Upadhyay,29,29,2025-09-02T15:43:19.464386,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-058,PER00177,Ekaja Sane,29,29,2025-09-02T15:43:18.317440,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-163,PER00462,Omkaar Sawhney,29,29,2025-09-02T15:43:24.140582,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-161,PER00456,Champak Nair,29,29,2025-09-02T15:43:24.014598,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-184,PER00532,Tristan Ramachandran,29,29,2025-09-02T15:43:25.587601,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-181,PER00529,Odika Buch,29,29,2025-09-02T15:43:25.500883,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-127,PER00353,Chatresh Kurian,29,29,2025-09-02T15:43:21.743821,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-126,PER00352,Gaurangi Morar,29,29,2025-09-02T15:43:21.725467,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-152,PER00437,Qushi Bose,29,29,2025-09-02T15:43:23.667865,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-167,PER00476,Sudiksha Behl,29,29,2025-09-02T15:43:24.409953,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-091,PER00259,Advaith Sibal,29,29,2025-09-02T15:43:19.865979,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-135,PER00375,Brinda Mangal,29,29,2025-09-02T15:43:22.349759,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-095,PER00267,Aadi Yogi,29,29,2025-09-02T15:43:20.074081,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-130,PER00365,Brijesh Lata,29,29,2025-09-02T15:43:22.018826,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-109,PER00303,Yashoda Bhargava,29,29,2025-09-02T15:43:20.743278,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-117,PER00332,Lila Bassi,29,29,2025-09-02T15:43:21.351840,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-120,PER00336,Ayush Keer,29,29,2025-09-02T15:43:21.421397,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-319,PER00926,Avni Sha,29,29,2025-09-02T15:43:33.623378,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-322,PER00930,Hitesh Krishna,29,29,2025-09-02T15:43:33.712143,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-323,PER00931,Peter Narayan,29,29,2025-09-02T15:43:33.743793,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-324,PER00935,Lavanya Mane,29,29,2025-09-02T15:43:33.829367,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-040,PER00118,Victor Mishra,29,29,2025-09-02T15:43:17.058133,Risk flagged due to transactions with suspected shell companies and 1 other factors.,active
+ALT-009,PER00029,Diya Gade,25,25,2025-09-02T15:43:15.135821,Risk flagged due to transactions with suspected shell companies,active
+ALT-025,PER00071,Advay Pal,25,25,2025-09-02T15:43:16.107559,Risk flagged due to transactions with suspected shell companies,active
+ALT-330,PER00951,Alexander Seth,25,25,2025-09-02T15:43:34.100873,Risk flagged due to transactions with suspected shell companies,active
+ALT-327,PER00946,Om Sharaf,25,25,2025-09-02T15:43:34.012712,Risk flagged due to transactions with suspected shell companies,active
+ALT-010,PER00030,Saumya Bhatia,25,25,2025-09-02T15:43:15.175830,Risk flagged due to transactions with suspected shell companies,active
+ALT-346,PER00989,Saksham Ratti,25,25,2025-09-02T15:43:35.003558,Risk flagged due to transactions with suspected shell companies,active
+ALT-005,PER00019,Geetika Comar,25,25,2025-09-02T15:43:14.972252,Risk flagged due to transactions with suspected shell companies,active
+ALT-344,PER00987,Max Deol,25,25,2025-09-02T15:43:34.963887,Risk flagged due to transactions with suspected shell companies,active
+ALT-343,PER00981,Neha Bora,25,25,2025-09-02T15:43:34.821145,Risk flagged due to transactions with suspected shell companies,active
+ALT-342,PER00975,Zansi Karan,25,25,2025-09-02T15:43:34.721976,Risk flagged due to transactions with suspected shell companies,active
+ALT-341,PER00974,Dhriti Wali,25,25,2025-09-02T15:43:34.707209,Risk flagged due to transactions with suspected shell companies,active
+ALT-340,PER00971,Yug Gola,25,25,2025-09-02T15:43:34.603513,Risk flagged due to transactions with suspected shell companies,active
+ALT-339,PER00970,Ridhi Sibal,25,25,2025-09-02T15:43:34.581528,Risk flagged due to transactions with suspected shell companies,active
+ALT-338,PER00968,Chavvi Golla,25,25,2025-09-02T15:43:34.547448,Risk flagged due to transactions with suspected shell companies,active
+ALT-337,PER00964,Umang Borde,25,25,2025-09-02T15:43:34.443927,Risk flagged due to transactions with suspected shell companies,active
+ALT-016,PER00047,Jai Nadig,25,25,2025-09-02T15:43:15.634854,Risk flagged due to transactions with suspected shell companies,active
+ALT-015,PER00038,Kevin Sarin,25,25,2025-09-02T15:43:15.434704,Risk flagged due to transactions with suspected shell companies,active
+ALT-014,PER00036,Xalak Murthy,25,25,2025-09-02T15:43:15.375169,Risk flagged due to transactions with suspected shell companies,active
+ALT-013,PER00034,Pooja Doctor,25,25,2025-09-02T15:43:15.328613,Risk flagged due to transactions with suspected shell companies,active
+ALT-012,PER00033,Rachit Nair,25,25,2025-09-02T15:43:15.292677,Risk flagged due to transactions with suspected shell companies,active
+ALT-011,PER00032,Ishani Din,25,25,2025-09-02T15:43:15.260674,Risk flagged due to transactions with suspected shell companies,active
+ALT-004,PER00017,Chaaya Cherian,25,25,2025-09-02T15:43:14.942749,Risk flagged due to transactions with suspected shell companies,active
+ALT-003,PER00013,Urvashi Dhawan,25,25,2025-09-02T15:43:14.875512,Risk flagged due to transactions with suspected shell companies,active
+ALT-326,PER00944,Tanay Balan,25,25,2025-09-02T15:43:33.971627,Risk flagged due to transactions with suspected shell companies,active
+ALT-325,PER00937,Advik Dugar,25,25,2025-09-02T15:43:33.870405,Risk flagged due to transactions with suspected shell companies,active
+ALT-321,PER00928,Henry Kadakia,25,25,2025-09-02T15:43:33.661395,Risk flagged due to transactions with suspected shell companies,active
+ALT-121,PER00337,Arin Purohit,25,25,2025-09-02T15:43:21.436409,Risk flagged due to transactions with suspected shell companies,active
+ALT-119,PER00334,Sai Dugar,25,25,2025-09-02T15:43:21.381493,Risk flagged due to transactions with suspected shell companies,active
+ALT-118,PER00333,Divya Sheth,25,25,2025-09-02T15:43:21.365021,Risk flagged due to transactions with suspected shell companies,active
+ALT-115,PER00321,Wriddhish Narasimhan,25,25,2025-09-02T15:43:21.134078,Risk flagged due to transactions with suspected shell companies,active
+ALT-114,PER00317,Siddharth Wagle,25,25,2025-09-02T15:43:21.047852,Risk flagged due to transactions with suspected shell companies,active
+ALT-113,PER00313,Raagini Dhawan,25,25,2025-09-02T15:43:20.965405,Risk flagged due to transactions with suspected shell companies,active
+ALT-112,PER00312,Manthan Om,25,25,2025-09-02T15:43:20.944407,Risk flagged due to transactions with suspected shell companies,active
+ALT-111,PER00311,Idika Loke,25,25,2025-09-02T15:43:20.922422,Risk flagged due to transactions with suspected shell companies,active
+ALT-110,PER00304,Bhanumati Narasimhan,25,25,2025-09-02T15:43:20.763785,Risk flagged due to transactions with suspected shell companies,active
+ALT-108,PER00301,William Khare,25,25,2025-09-02T15:43:20.705849,Risk flagged due to transactions with suspected shell companies,active
+ALT-107,PER00294,Ayaan Mitra,25,25,2025-09-02T15:43:20.585222,Risk flagged due to transactions with suspected shell companies,active
+ALT-106,PER00292,Dominic Sankaran,25,25,2025-09-02T15:43:20.555192,Risk flagged due to transactions with suspected shell companies,active
+ALT-074,PER00212,Wakeeta Kalita,25,25,2025-09-02T15:43:18.902638,Risk flagged due to transactions with suspected shell companies,active
+ALT-103,PER00287,Meera Bandi,25,25,2025-09-02T15:43:20.472541,Risk flagged due to transactions with suspected shell companies,active
+ALT-102,PER00284,Omya Zachariah,25,25,2025-09-02T15:43:20.396150,Risk flagged due to transactions with suspected shell companies,active
+ALT-101,PER00277,Arunima Borra,25,25,2025-09-02T15:43:20.266036,Risk flagged due to transactions with suspected shell companies,active
+ALT-100,PER00276,Damini Dua,25,25,2025-09-02T15:43:20.248021,Risk flagged due to transactions with suspected shell companies,active
+ALT-099,PER00275,Libni Rana,25,25,2025-09-02T15:43:20.231501,Risk flagged due to transactions with suspected shell companies,active
+ALT-098,PER00274,Idika Sarraf,25,25,2025-09-02T15:43:20.211892,Risk flagged due to transactions with suspected shell companies,active
+ALT-097,PER00273,Nidhi Narang,25,25,2025-09-02T15:43:20.191909,Risk flagged due to transactions with suspected shell companies,active
+ALT-096,PER00272,Madhav Chopra,25,25,2025-09-02T15:43:20.170895,Risk flagged due to transactions with suspected shell companies,active
+ALT-094,PER00265,Jonathan Bose,25,25,2025-09-02T15:43:20.009518,Risk flagged due to transactions with suspected shell companies,active
+ALT-093,PER00264,Amaira Pandit,25,25,2025-09-02T15:43:19.969558,Risk flagged due to transactions with suspected shell companies,active
+ALT-092,PER00260,Harita Savant,25,25,2025-09-02T15:43:19.882983,Risk flagged due to transactions with suspected shell companies,active
+ALT-137,PER00381,Matthew Naik,25,25,2025-09-02T15:43:22.481993,Risk flagged due to transactions with suspected shell companies,active
+ALT-136,PER00380,Yauvani Sur,25,25,2025-09-02T15:43:22.463095,Risk flagged due to transactions with suspected shell companies,active
+ALT-134,PER00369,Balhaar Raja,25,25,2025-09-02T15:43:22.162505,Risk flagged due to transactions with suspected shell companies,active
+ALT-133,PER00368,Ekbal Dara,25,25,2025-09-02T15:43:22.130784,Risk flagged due to transactions with suspected shell companies,active
+ALT-132,PER00367,Kashish Koshy,25,25,2025-09-02T15:43:22.098685,Risk flagged due to transactions with suspected shell companies,active
+ALT-131,PER00366,Avi Goyal,25,25,2025-09-02T15:43:22.057685,Risk flagged due to transactions with suspected shell companies,active
+ALT-128,PER00359,Saumya Dora,25,25,2025-09-02T15:43:21.869655,Risk flagged due to transactions with suspected shell companies,active
+ALT-125,PER00350,Gagan Bains,25,25,2025-09-02T15:43:21.683489,Risk flagged due to transactions with suspected shell companies,active
+ALT-124,PER00344,Vrishti Verma,25,25,2025-09-02T15:43:21.579216,Risk flagged due to transactions with suspected shell companies,active
+ALT-123,PER00342,Vamakshi Tata,25,25,2025-09-02T15:43:21.536628,Risk flagged due to transactions with suspected shell companies,active
+ALT-122,PER00341,Lipika Sangha,25,25,2025-09-02T15:43:21.512583,Risk flagged due to transactions with suspected shell companies,active
+ALT-153,PER00438,Shivansh Dubey,25,25,2025-09-02T15:43:23.690884,Risk flagged due to transactions with suspected shell companies,active
+ALT-151,PER00434,Lakshit Pal,25,25,2025-09-02T15:43:23.598297,Risk flagged due to transactions with suspected shell companies,active
+ALT-150,PER00433,Caleb Nazareth,25,25,2025-09-02T15:43:23.580282,Risk flagged due to transactions with suspected shell companies,active
+ALT-149,PER00427,Praneel Nigam,25,25,2025-09-02T15:43:23.426727,Risk flagged due to transactions with suspected shell companies,active
+ALT-148,PER00426,Krisha Iyengar,25,25,2025-09-02T15:43:23.409727,Risk flagged due to transactions with suspected shell companies,active
+ALT-146,PER00421,Kabir Saran,25,25,2025-09-02T15:43:23.303835,Risk flagged due to transactions with suspected shell companies,active
+ALT-144,PER00415,Hritik Parekh,25,25,2025-09-02T15:43:23.172217,Risk flagged due to transactions with suspected shell companies,active
+ALT-143,PER00410,Anjali Nadig,25,25,2025-09-02T15:43:23.061461,Risk flagged due to transactions with suspected shell companies,active
+ALT-142,PER00400,Lakshit Narang,25,25,2025-09-02T15:43:22.874803,Risk flagged due to transactions with suspected shell companies,active
+ALT-141,PER00394,Girish Subramaniam,25,25,2025-09-02T15:43:22.759950,Risk flagged due to transactions with suspected shell companies,active
+ALT-140,PER00390,Kamala Shenoy,25,25,2025-09-02T15:43:22.681212,Risk flagged due to transactions with suspected shell companies,active
+ALT-139,PER00385,Faris Dass,25,25,2025-09-02T15:43:22.572522,Risk flagged due to transactions with suspected shell companies,active
+ALT-138,PER00384,Vincent Sanghvi,25,25,2025-09-02T15:43:22.542005,Risk flagged due to transactions with suspected shell companies,active
+ALT-169,PER00481,Darsh Dixit,25,25,2025-09-02T15:43:24.505677,Risk flagged due to transactions with suspected shell companies,active
+ALT-168,PER00480,Zansi Rajagopal,25,25,2025-09-02T15:43:24.484730,Risk flagged due to transactions with suspected shell companies,active
+ALT-059,PER00178,Isaac Kunda,25,25,2025-09-02T15:43:18.333449,Risk flagged due to transactions with suspected shell companies,active
+ALT-088,PER00254,Kashish Muni,25,25,2025-09-02T15:43:19.785341,Risk flagged due to transactions with suspected shell companies,active
+ALT-086,PER00251,Brijesh Atwal,25,25,2025-09-02T15:43:19.725918,Risk flagged due to transactions with suspected shell companies,active
+ALT-085,PER00249,Ikshita Ram,25,25,2025-09-02T15:43:19.665892,Risk flagged due to transactions with suspected shell companies,active
+ALT-084,PER00245,Leela Yogi,25,25,2025-09-02T15:43:19.582362,Risk flagged due to transactions with suspected shell companies,active
+ALT-083,PER00244,Eesha Bhardwaj,25,25,2025-09-02T15:43:19.562354,Risk flagged due to transactions with suspected shell companies,active
+ALT-082,PER00243,Logan Grewal,25,25,2025-09-02T15:43:19.539165,Risk flagged due to transactions with suspected shell companies,active
+ALT-080,PER00236,Anusha Anne,25,25,2025-09-02T15:43:19.410113,Risk flagged due to transactions with suspected shell companies,active
+ALT-079,PER00235,Aditya Varty,25,25,2025-09-02T15:43:19.395768,Risk flagged due to transactions with suspected shell companies,active
+ALT-078,PER00231,Zayyan Bora,25,25,2025-09-02T15:43:19.329426,Risk flagged due to transactions with suspected shell companies,active
+ALT-077,PER00222,Max Wali,25,25,2025-09-02T15:43:19.106051,Risk flagged due to transactions with suspected shell companies,active
+ALT-076,PER00220,Ishani Ravel,25,25,2025-09-02T15:43:19.061147,Risk flagged due to transactions with suspected shell companies,active
+ALT-075,PER00218,Mugdha Sabharwal,25,25,2025-09-02T15:43:19.015381,Risk flagged due to transactions with suspected shell companies,active
+ALT-159,PER00453,Panini Badami,25,25,2025-09-02T15:43:23.958601,Risk flagged due to transactions with suspected shell companies,active
+ALT-157,PER00443,Raksha Magar,25,25,2025-09-02T15:43:23.808374,Risk flagged due to transactions with suspected shell companies,active
+ALT-156,PER00442,Qushi Varkey,25,25,2025-09-02T15:43:23.787364,Risk flagged due to transactions with suspected shell companies,active
+ALT-155,PER00441,Yadavi Balasubramanian,25,25,2025-09-02T15:43:23.764471,Risk flagged due to transactions with suspected shell companies,active
+ALT-154,PER00439,Yatin Dubey,25,25,2025-09-02T15:43:23.712348,Risk flagged due to transactions with suspected shell companies,active
+ALT-185,PER00533,Devansh Pandya,25,25,2025-09-02T15:43:25.604599,Risk flagged due to transactions with suspected shell companies,active
+ALT-182,PER00530,Charita Rao,25,25,2025-09-02T15:43:25.538986,Risk flagged due to transactions with suspected shell companies,active
+ALT-179,PER00525,Yahvi Gill,25,25,2025-09-02T15:43:25.356052,Risk flagged due to transactions with suspected shell companies,active
+ALT-177,PER00521,Jeet Talwar,25,25,2025-09-02T15:43:25.280995,Risk flagged due to transactions with suspected shell companies,active
+ALT-176,PER00520,Harish Nagarajan,25,25,2025-09-02T15:43:25.266992,Risk flagged due to transactions with suspected shell companies,active
+ALT-175,PER00513,Madhav Ramesh,25,25,2025-09-02T15:43:25.115290,Risk flagged due to transactions with suspected shell companies,active
+ALT-174,PER00505,Wriddhish Dash,25,25,2025-09-02T15:43:24.929851,Risk flagged due to transactions with suspected shell companies,active
+ALT-173,PER00486,Yashodhara Rama,25,25,2025-09-02T15:43:24.606617,Risk flagged due to transactions with suspected shell companies,active
+ALT-172,PER00484,Parth Purohit,25,25,2025-09-02T15:43:24.552508,Risk flagged due to transactions with suspected shell companies,active
+ALT-171,PER00483,Kalpit Chandran,25,25,2025-09-02T15:43:24.537775,Risk flagged due to transactions with suspected shell companies,active
+ALT-170,PER00482,Lopa Bassi,25,25,2025-09-02T15:43:24.521671,Risk flagged due to transactions with suspected shell companies,active
+ALT-201,PER00564,Ethan Agate,25,25,2025-09-02T15:43:26.145618,Risk flagged due to transactions with suspected shell companies,active
+ALT-199,PER00559,Fiyaz Golla,25,25,2025-09-02T15:43:26.073590,Risk flagged due to transactions with suspected shell companies,active
+ALT-196,PER00554,Pallavi Barman,25,25,2025-09-02T15:43:25.976066,Risk flagged due to transactions with suspected shell companies,active
+ALT-195,PER00549,Ronith Bahri,25,25,2025-09-02T15:43:25.890326,Risk flagged due to transactions with suspected shell companies,active
+ALT-194,PER00548,Niharika Soni,25,25,2025-09-02T15:43:25.870223,Risk flagged due to transactions with suspected shell companies,active
+ALT-193,PER00547,Baghyawati Yohannan,25,25,2025-09-02T15:43:25.857220,Risk flagged due to transactions with suspected shell companies,active
+ALT-192,PER00544,Dhruv Vaidya,25,25,2025-09-02T15:43:25.784595,Risk flagged due to transactions with suspected shell companies,active
+ALT-191,PER00543,Arunima Bhattacharyya,25,25,2025-09-02T15:43:25.770543,Risk flagged due to transactions with suspected shell companies,active
+ALT-190,PER00542,Reyansh Bhatia,25,25,2025-09-02T15:43:25.759601,Risk flagged due to transactions with suspected shell companies,active
+ALT-189,PER00541,Dayamai Sarkar,25,25,2025-09-02T15:43:25.745931,Risk flagged due to transactions with suspected shell companies,active
+ALT-188,PER00539,Warinder Bora,25,25,2025-09-02T15:43:25.718504,Risk flagged due to transactions with suspected shell companies,active
+ALT-187,PER00536,Balvan Grover,25,25,2025-09-02T15:43:25.661514,Risk flagged due to transactions with suspected shell companies,active
+ALT-186,PER00535,Vasatika Sinha,25,25,2025-09-02T15:43:25.642800,Risk flagged due to transactions with suspected shell companies,active
+ALT-217,PER00610,Kamya Guha,25,25,2025-09-02T15:43:26.868170,Risk flagged due to transactions with suspected shell companies,active
+ALT-215,PER00605,Xalak Ravi,25,25,2025-09-02T15:43:26.771811,Risk flagged due to transactions with suspected shell companies,active
+ALT-214,PER00600,Hitesh Kumar,25,25,2025-09-02T15:43:26.702552,Risk flagged due to transactions with suspected shell companies,active
+ALT-213,PER00594,Dayamai Golla,25,25,2025-09-02T15:43:26.610674,Risk flagged due to transactions with suspected shell companies,active
+ALT-212,PER00591,Januja Buch,25,25,2025-09-02T15:43:26.561685,Risk flagged due to transactions with suspected shell companies,active
+ALT-211,PER00586,Shaurya Varughese,25,25,2025-09-02T15:43:26.477918,Risk flagged due to transactions with suspected shell companies,active
+ALT-210,PER00585,Samarth Sidhu,25,25,2025-09-02T15:43:26.464918,Risk flagged due to transactions with suspected shell companies,active
+ALT-209,PER00582,Kai Baria,25,25,2025-09-02T15:43:26.416307,Risk flagged due to transactions with suspected shell companies,active
+ALT-208,PER00580,Anirudh Mani,25,25,2025-09-02T15:43:26.374404,Risk flagged due to transactions with suspected shell companies,active
+ALT-206,PER00578,Anay Mukhopadhyay,25,25,2025-09-02T15:43:26.347872,Risk flagged due to transactions with suspected shell companies,active
+ALT-205,PER00577,Unnati Sabharwal,25,25,2025-09-02T15:43:26.329842,Risk flagged due to transactions with suspected shell companies,active
+ALT-204,PER00573,Ojas Yadav,25,25,2025-09-02T15:43:26.274572,Risk flagged due to transactions with suspected shell companies,active
+ALT-203,PER00572,Ansh Aggarwal,25,25,2025-09-02T15:43:26.256568,Risk flagged due to transactions with suspected shell companies,active
+ALT-202,PER00571,Bahadurjit Aggarwal,25,25,2025-09-02T15:43:26.242850,Risk flagged due to transactions with suspected shell companies,active
+ALT-232,PER00653,Qasim Garde,25,25,2025-09-02T15:43:27.895200,Risk flagged due to transactions with suspected shell companies,active
+ALT-231,PER00651,Neha Ranganathan,25,25,2025-09-02T15:43:27.860127,Risk flagged due to transactions with suspected shell companies,active
+ALT-230,PER00648,Rajata Sani,25,25,2025-09-02T15:43:27.798974,Risk flagged due to transactions with suspected shell companies,active
+ALT-229,PER00644,Chanchal Mohanty,25,25,2025-09-02T15:43:27.704089,Risk flagged due to transactions with suspected shell companies,active
+ALT-045,PER00139,Imaran Bera,25,25,2025-09-02T15:43:17.449405,Risk flagged due to transactions with suspected shell companies,active
+ALT-043,PER00127,Sarthak Naik,25,25,2025-09-02T15:43:17.226435,Risk flagged due to transactions with suspected shell companies,active
+ALT-042,PER00125,Ekta Mody,25,25,2025-09-02T15:43:17.197403,Risk flagged due to transactions with suspected shell companies,active
+ALT-073,PER00205,Omisha Ramachandran,25,25,2025-09-02T15:43:18.757914,Risk flagged due to transactions with suspected shell companies,active
+ALT-072,PER00204,Mason Rajagopalan,25,25,2025-09-02T15:43:18.747798,Risk flagged due to transactions with suspected shell companies,active
+ALT-071,PER00203,Kalpit Sehgal,25,25,2025-09-02T15:43:18.733616,Risk flagged due to transactions with suspected shell companies,active
+ALT-069,PER00199,Agastya Gera,25,25,2025-09-02T15:43:18.675477,Risk flagged due to transactions with suspected shell companies,active
+ALT-068,PER00198,Jhalak Ratta,25,25,2025-09-02T15:43:18.661472,Risk flagged due to transactions with suspected shell companies,active
+ALT-067,PER00197,Eshana Sahni,25,25,2025-09-02T15:43:18.644474,Risk flagged due to transactions with suspected shell companies,active
+ALT-066,PER00195,Peter Sawhney,25,25,2025-09-02T15:43:18.609718,Risk flagged due to transactions with suspected shell companies,active
+ALT-065,PER00193,Simon Purohit,25,25,2025-09-02T15:43:18.573616,Risk flagged due to transactions with suspected shell companies,active
+ALT-064,PER00183,Rohan Yohannan,25,25,2025-09-02T15:43:18.397970,Risk flagged due to transactions with suspected shell companies,active
+ALT-063,PER00182,Dayamai Raghavan,25,25,2025-09-02T15:43:18.381964,Risk flagged due to transactions with suspected shell companies,active
+ALT-061,PER00180,Brijesh More,25,25,2025-09-02T15:43:18.354954,Risk flagged due to transactions with suspected shell companies,active
+ALT-060,PER00179,Naveen Ravi,25,25,2025-09-02T15:43:18.343965,Risk flagged due to transactions with suspected shell companies,active
+ALT-228,PER00643,Charles Sule,25,25,2025-09-02T15:43:27.674125,Risk flagged due to transactions with suspected shell companies,active
+ALT-224,PER00627,Zaid Upadhyay,25,25,2025-09-02T15:43:27.208620,Risk flagged due to transactions with suspected shell companies,active
+ALT-223,PER00626,Ryan Tak,25,25,2025-09-02T15:43:27.187546,Risk flagged due to transactions with suspected shell companies,active
+ALT-222,PER00625,Pranit Chakrabarti,25,25,2025-09-02T15:43:27.167475,Risk flagged due to transactions with suspected shell companies,active
+ALT-221,PER00622,Vasatika Reddy,25,25,2025-09-02T15:43:27.105018,Risk flagged due to transactions with suspected shell companies,active
+ALT-220,PER00620,Neha Bal,25,25,2025-09-02T15:43:27.065033,Risk flagged due to transactions with suspected shell companies,active
+ALT-249,PER00701,Aarnav Padmanabhan,25,25,2025-09-02T15:43:28.827991,Risk flagged due to transactions with suspected shell companies,active
+ALT-247,PER00693,Ijaya Kumar,25,25,2025-09-02T15:43:28.632557,Risk flagged due to transactions with suspected shell companies,active
+ALT-246,PER00688,Alexander Mand,25,25,2025-09-02T15:43:28.536807,Risk flagged due to transactions with suspected shell companies,active
+ALT-244,PER00685,Bhavya Kumar,25,25,2025-09-02T15:43:28.468862,Risk flagged due to transactions with suspected shell companies,active
+ALT-241,PER00674,Isaiah Kari,25,25,2025-09-02T15:43:28.302768,Risk flagged due to transactions with suspected shell companies,active
+ALT-240,PER00673,Raagini Kaul,25,25,2025-09-02T15:43:28.287798,Risk flagged due to transactions with suspected shell companies,active
+ALT-239,PER00671,Balvan Chauhan,25,25,2025-09-02T15:43:28.253624,Risk flagged due to transactions with suspected shell companies,active
+ALT-238,PER00668,William Gandhi,25,25,2025-09-02T15:43:28.183607,Risk flagged due to transactions with suspected shell companies,active
+ALT-236,PER00664,Sanya Sabharwal,25,25,2025-09-02T15:43:28.118282,Risk flagged due to transactions with suspected shell companies,active
+ALT-265,PER00745,Shaurya Ram,25,25,2025-09-02T15:43:29.777689,Risk flagged due to transactions with suspected shell companies,active
+ALT-264,PER00742,Maya Kade,25,25,2025-09-02T15:43:29.737776,Risk flagged due to transactions with suspected shell companies,active
+ALT-262,PER00736,Yuvraj Prasad,25,25,2025-09-02T15:43:29.624294,Risk flagged due to transactions with suspected shell companies,active
+ALT-261,PER00734,Nidhi Narula,25,25,2025-09-02T15:43:29.573285,Risk flagged due to transactions with suspected shell companies,active
+ALT-260,PER00733,Panini Nayar,25,25,2025-09-02T15:43:29.551547,Risk flagged due to transactions with suspected shell companies,active
+ALT-259,PER00730,Theodore Lala,25,25,2025-09-02T15:43:29.485435,Risk flagged due to transactions with suspected shell companies,active
+ALT-258,PER00729,Charvi Sinha,25,25,2025-09-02T15:43:29.472441,Risk flagged due to transactions with suspected shell companies,active
+ALT-257,PER00725,Amol Dasgupta,25,25,2025-09-02T15:43:29.417588,Risk flagged due to transactions with suspected shell companies,active
+ALT-256,PER00723,Ronith Arora,25,25,2025-09-02T15:43:29.365575,Risk flagged due to transactions with suspected shell companies,active
+ALT-255,PER00720,Rudra Bhatt,25,25,2025-09-02T15:43:29.305740,Risk flagged due to transactions with suspected shell companies,active
+ALT-254,PER00716,Victor Goswami,25,25,2025-09-02T15:43:29.237243,Risk flagged due to transactions with suspected shell companies,active
+ALT-253,PER00713,Raghav Banerjee,25,25,2025-09-02T15:43:29.161910,Risk flagged due to transactions with suspected shell companies,active
+ALT-252,PER00709,Geetika Dyal,25,25,2025-09-02T15:43:29.036273,Risk flagged due to transactions with suspected shell companies,active
+ALT-251,PER00708,Ekta Subramanian,25,25,2025-09-02T15:43:29.002372,Risk flagged due to transactions with suspected shell companies,active
+ALT-281,PER00788,Oni Chacko,25,25,2025-09-02T15:43:30.595990,Risk flagged due to transactions with suspected shell companies,active
+ALT-280,PER00787,Sneha Kanda,25,25,2025-09-02T15:43:30.577989,Risk flagged due to transactions with suspected shell companies,active
+ALT-279,PER00786,Jackson Kunda,25,25,2025-09-02T15:43:30.555059,Risk flagged due to transactions with suspected shell companies,active
+ALT-278,PER00785,Jason Nori,25,25,2025-09-02T15:43:30.540387,Risk flagged due to transactions with suspected shell companies,active
+ALT-276,PER00776,Theodore Gandhi,25,25,2025-09-02T15:43:30.341564,Risk flagged due to transactions with suspected shell companies,active
+ALT-274,PER00774,Falak Tank,25,25,2025-09-02T15:43:30.298552,Risk flagged due to transactions with suspected shell companies,active
+ALT-030,PER00083,Devika Banik,25,25,2025-09-02T15:43:16.339014,Risk flagged due to transactions with suspected shell companies,active
+ALT-029,PER00076,Dayita Bora,25,25,2025-09-02T15:43:16.200433,Risk flagged due to transactions with suspected shell companies,active
+ALT-028,PER00075,Arjun Venkatesh,25,25,2025-09-02T15:43:16.177437,Risk flagged due to transactions with suspected shell companies,active
+ALT-026,PER00072,Ojasvi Mukherjee,25,25,2025-09-02T15:43:16.124616,Risk flagged due to transactions with suspected shell companies,active
+ALT-056,PER00174,Gauri Loke,25,25,2025-09-02T15:43:18.274430,Risk flagged due to transactions with suspected shell companies,active
+ALT-055,PER00168,Sai Srinivasan,25,25,2025-09-02T15:43:18.172900,Risk flagged due to transactions with suspected shell companies,active
+ALT-054,PER00166,Tara Bath,25,25,2025-09-02T15:43:18.143906,Risk flagged due to transactions with suspected shell companies,active
+ALT-052,PER00163,Varsha Ramesh,25,25,2025-09-02T15:43:18.061794,Risk flagged due to transactions with suspected shell companies,active
+ALT-050,PER00153,Girik Subramaniam,25,25,2025-09-02T15:43:17.846063,Risk flagged due to transactions with suspected shell companies,active
+ALT-049,PER00152,Tripti Gaba,25,25,2025-09-02T15:43:17.816849,Risk flagged due to transactions with suspected shell companies,active
+ALT-273,PER00771,Damini Pillay,25,25,2025-09-02T15:43:30.238898,Risk flagged due to transactions with suspected shell companies,active
+ALT-272,PER00768,Rajeshri Kadakia,25,25,2025-09-02T15:43:30.191890,Risk flagged due to transactions with suspected shell companies,active
+ALT-271,PER00763,Oeshi Sarna,25,25,2025-09-02T15:43:30.105052,Risk flagged due to transactions with suspected shell companies,active
+ALT-270,PER00762,Lila Khanna,25,25,2025-09-02T15:43:30.083046,Risk flagged due to transactions with suspected shell companies,active
+ALT-267,PER00754,Abdul Bhagat,25,25,2025-09-02T15:43:29.915348,Risk flagged due to transactions with suspected shell companies,active
+ALT-266,PER00746,Rehaan Tailor,25,25,2025-09-02T15:43:29.794688,Risk flagged due to transactions with suspected shell companies,active
+ALT-296,PER00826,Nidra Sarma,25,25,2025-09-02T15:43:31.559498,Risk flagged due to transactions with suspected shell companies,active
+ALT-295,PER00823,Yuvraj Date,25,25,2025-09-02T15:43:31.511006,Risk flagged due to transactions with suspected shell companies,active
+ALT-294,PER00819,Gautami Din,25,25,2025-09-02T15:43:31.385308,Risk flagged due to transactions with suspected shell companies,active
+ALT-293,PER00815,Rudra Sabharwal,25,25,2025-09-02T15:43:31.266172,Risk flagged due to transactions with suspected shell companies,active
+ALT-292,PER00813,Maanav Srinivas,25,25,2025-09-02T15:43:31.224240,Risk flagged due to transactions with suspected shell companies,active
+ALT-291,PER00811,Lucky Dani,25,25,2025-09-02T15:43:31.174251,Risk flagged due to transactions with suspected shell companies,active
+ALT-290,PER00808,Hardik Dara,25,25,2025-09-02T15:43:31.104664,Risk flagged due to transactions with suspected shell companies,active
+ALT-289,PER00806,Manbir Nayak,25,25,2025-09-02T15:43:31.037837,Risk flagged due to transactions with suspected shell companies,active
+ALT-287,PER00799,Bishakha Keer,25,25,2025-09-02T15:43:30.875700,Risk flagged due to transactions with suspected shell companies,active
+ALT-285,PER00794,Vanya Wason,25,25,2025-09-02T15:43:30.719671,Risk flagged due to transactions with suspected shell companies,active
+ALT-284,PER00792,Aahana Keer,25,25,2025-09-02T15:43:30.675338,Risk flagged due to transactions with suspected shell companies,active
+ALT-282,PER00790,Atharv Majumdar,25,25,2025-09-02T15:43:30.632611,Risk flagged due to transactions with suspected shell companies,active
+ALT-311,PER00897,Chameli Cheema,25,25,2025-09-02T15:43:32.952599,Risk flagged due to transactions with suspected shell companies,active
+ALT-310,PER00896,Bahadurjit Trivedi,25,25,2025-09-02T15:43:32.928585,Risk flagged due to transactions with suspected shell companies,active
+ALT-308,PER00891,Aadi Prabhu,25,25,2025-09-02T15:43:32.829487,Risk flagged due to transactions with suspected shell companies,active
+ALT-307,PER00876,Ekantika Swamy,25,25,2025-09-02T15:43:32.474031,Risk flagged due to transactions with suspected shell companies,active
+ALT-305,PER00864,Mahika Aggarwal,25,25,2025-09-02T15:43:32.237378,Risk flagged due to transactions with suspected shell companies,active
+ALT-336,PER00962,Anvi Sharma,25,25,2025-09-02T15:43:34.373935,Risk flagged due to transactions with suspected shell companies,active
+ALT-335,PER00960,Janani Mall,25,25,2025-09-02T15:43:34.303202,Risk flagged due to transactions with suspected shell companies,active
+ALT-333,PER00956,Ati Talwar,25,25,2025-09-02T15:43:34.197932,Risk flagged due to transactions with suspected shell companies,active
+ALT-331,PER00953,Siya Seshadri,25,25,2025-09-02T15:43:34.131187,Risk flagged due to transactions with suspected shell companies,active
+ALT-002,PER00005,Ojas Dua,25,25,2025-09-02T15:43:14.701433,Risk flagged due to transactions with suspected shell companies,active
+ALT-039,PER00116,Mahika Chaudhari,25,25,2025-09-02T15:43:17.014641,Risk flagged due to transactions with suspected shell companies,active
+ALT-036,PER00101,Jason Dass,25,25,2025-09-02T15:43:16.705983,Risk flagged due to transactions with suspected shell companies,active
+ALT-035,PER00098,Janaki Mammen,25,25,2025-09-02T15:43:16.648474,Risk flagged due to transactions with suspected shell companies,active
+ALT-034,PER00095,Advay Chadha,25,25,2025-09-02T15:43:16.577554,Risk flagged due to transactions with suspected shell companies,active
+ALT-033,PER00090,Shravya Banik,25,25,2025-09-02T15:43:16.464983,Risk flagged due to transactions with suspected shell companies,active
+ALT-032,PER00088,Wishi Nanda,25,25,2025-09-02T15:43:16.427237,Risk flagged due to transactions with suspected shell companies,active
+ALT-304,PER00860,Kai Nadkarni,25,25,2025-09-02T15:43:32.179489,Risk flagged due to transactions with suspected shell companies,active
+ALT-303,PER00859,Widisha Desai,25,25,2025-09-02T15:43:32.165483,Risk flagged due to transactions with suspected shell companies,active
+ALT-302,PER00844,Amara Chokshi,25,25,2025-09-02T15:43:31.883510,Risk flagged due to transactions with suspected shell companies,active
+ALT-301,PER00837,Indira Goel,25,25,2025-09-02T15:43:31.758945,Risk flagged due to transactions with suspected shell companies,active
+ALT-299,PER00832,Amruta Bath,25,25,2025-09-02T15:43:31.652672,Risk flagged due to transactions with suspected shell companies,active
+ALT-298,PER00829,Xiti Wable,25,25,2025-09-02T15:43:31.608023,Risk flagged due to transactions with suspected shell companies,active
+ALT-001,PER00003,Ikshita Zacharia,25,25,2025-09-02T15:43:14.658526,Risk flagged due to transactions with suspected shell companies,active
+ALT-022,PER00065,Kala Samra,25,25,2025-09-02T15:43:15.968254,Risk flagged due to transactions with suspected shell companies,active
+ALT-020,PER00058,Omya Kala,25,25,2025-09-02T15:43:15.858420,Risk flagged due to transactions with suspected shell companies,active
+ALT-018,PER00052,Nirja Verma,25,25,2025-09-02T15:43:15.731957,Risk flagged due to transactions with suspected shell companies,active
+ALT-017,PER00049,Amruta Raghavan,25,25,2025-09-02T15:43:15.675870,Risk flagged due to transactions with suspected shell companies,active
+ALT-318,PER00925,Mugdha Rau,25,25,2025-09-02T15:43:33.608370,Risk flagged due to transactions with suspected shell companies,active
+ALT-317,PER00917,Neelima Modi,25,25,2025-09-02T15:43:33.465921,Risk flagged due to transactions with suspected shell companies,active
+ALT-328,PER00948,Odika Shah,25,25,2025-09-02T15:43:34.054634,Risk flagged due to transactions with suspected shell companies,active
+ALT-315,PER00911,Hredhaan Nanda,25,25,2025-09-02T15:43:33.355092,Risk flagged due to transactions with suspected shell companies,active
+ALT-008,PER00026,Vamakshi Subramaniam,25,25,2025-09-02T15:43:15.057963,Risk flagged due to transactions with suspected shell companies,active
+ALT-041,PER00120,Damyanti Kashyap,25,25,2025-09-02T15:43:17.118943,Risk flagged due to transactions with suspected shell companies,active
+ALT-006,PER00020,Harita Swaminathan,25,25,2025-09-02T15:43:14.984276,Risk flagged due to transactions with suspected shell companies,active
+ALT-227,PER00636,Pushti Bakshi,19,19,2025-09-02T15:43:27.445796,Risk flagged due to high-value property ownership and 1 other factors.,active
+ALT-164,PER00464,Keya Pal,19,19,2025-09-02T15:43:24.175255,Risk flagged due to high-value property ownership and 1 other factors.,active
+ALT-087,PER00253,Manthan Maharaj,19,19,2025-09-02T15:43:19.768433,Risk flagged due to high-value property ownership and 1 other factors.,active
+ALT-062,PER00181,Oeshi Deep,19,19,2025-09-02T15:43:18.367964,Risk flagged due to high-value property ownership and 1 other factors.,active
+ALT-046,PER00147,Zehaan Khurana,19,19,2025-09-02T15:43:17.677796,Risk flagged due to high-value property ownership and 1 other factors.,active
+ALT-007,PER00025,Om Hayre,19,19,2025-09-02T15:43:15.046801,Risk flagged due to high-value property ownership and 1 other factors.,active
+ALT-286,PER00797,Farhan Mall,15,15,2025-09-02T15:43:30.827162,Risk flagged due to high-value property ownership,active
+ALT-145,PER00416,Balveer Modi,15,15,2025-09-02T15:43:23.191210,Risk flagged due to high-value property ownership,active
+ALT-162,PER00460,Arjun Ramachandran,15,15,2025-09-02T15:43:24.109444,Risk flagged due to high-value property ownership,active
+ALT-235,PER00663,Jonathan Rama,15,15,2025-09-02T15:43:28.098272,Risk flagged due to high-value property ownership,active
+ALT-218,PER00615,Hredhaan Barman,15,15,2025-09-02T15:43:26.978816,Risk flagged due to high-value property ownership,active
+ALT-104,PER00288,Fitan Saraf,15,15,2025-09-02T15:43:20.493640,Risk flagged due to high-value property ownership,active
+ALT-129,PER00363,Odika Yohannan,15,15,2025-09-02T15:43:21.967824,Risk flagged due to high-value property ownership,active
+ALT-147,PER00425,Maya Mitra,15,15,2025-09-02T15:43:23.389628,Risk flagged due to high-value property ownership,active
+ALT-070,PER00202,Maanav Sama,15,15,2025-09-02T15:43:18.719632,Risk flagged due to high-value property ownership,active

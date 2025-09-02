@@ -635,6 +635,8 @@ import {
   Filter,
   ArrowRight,
   ArrowLeft,
+  CheckCircle,
+  AlertCircle,
 } from "lucide-react";
 import ReactFlow, {
   MiniMap,
@@ -958,7 +960,57 @@ const InvestigationWorkspace = () => {
   } = useFetchData(
     caseId && !caseId.includes("-placeholder") ? `/cases/${caseId}` : null
   );
+  const { data: notesData, refetch: refetchNotes } = useFetchData(
+    caseId && !caseId.includes("-placeholder") ? `/cases/${caseId}/notes` : null
+  );
   const [isGraphFullscreen, setIsGraphFullscreen] = useState(false);
+  const [notes, setNotes] = useState("");
+  const [savingNotes, setSavingNotes] = useState(false);
+  const [notesStatus, setNotesStatus] = useState(null); // {type, message}
+  const API_BASE = (
+    import.meta.env?.VITE_API_URL || "http://localhost:5001/api"
+  ).replace(/\/$/, "");
+
+  useEffect(() => {
+    if (notesData && typeof notesData.notes === "string") {
+      setNotes(notesData.notes);
+      console.log(
+        "Loaded notes for case",
+        caseId,
+        "length",
+        notesData.notes.length,
+        "source",
+        notesData.source
+      );
+    }
+  }, [notesData, caseId]);
+
+  const handleSaveNotes = async () => {
+    if (!caseId) return;
+    setSavingNotes(true);
+    setNotesStatus(null);
+    try {
+      // Using mock token fallback (align with backend auth decorator behavior)
+      const token = "mock-jwt-token-12345";
+      const resp = await fetch(`${API_BASE}/cases/${caseId}/notes`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ notes }),
+      });
+      const result = await resp.json().catch(() => ({}));
+      if (!resp.ok) throw new Error(result.error || "Failed to save notes");
+      setNotesStatus({ type: "success", message: "Notes saved" });
+      refetchNotes();
+    } catch (e) {
+      setNotesStatus({ type: "error", message: e.message });
+    } finally {
+      setSavingNotes(false);
+      setTimeout(() => setNotesStatus(null), 3000);
+    }
+  };
 
   if (!caseId || caseId.includes("-placeholder")) {
     return (
@@ -1087,12 +1139,41 @@ const InvestigationWorkspace = () => {
                   </InfoPanel>
                   <InfoPanel title="Investigator Notes" icon={StickyNote}>
                     <textarea
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
                       className="w-full h-48 bg-gray-900/70 border border-gray-600 rounded-lg p-3 text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:outline-none transition"
                       placeholder="Add your observations..."
-                    ></textarea>
-                    <button className="mt-3 w-full bg-purple-600/50 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg transition">
-                      Save Notes
-                    </button>
+                    />
+                    <div className="mt-3 flex items-center gap-3">
+                      <button
+                        onClick={handleSaveNotes}
+                        disabled={savingNotes}
+                        className="flex-1 bg-purple-600/60 hover:bg-purple-600 disabled:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition"
+                      >
+                        {savingNotes ? "Saving..." : "Save Notes"}
+                      </button>
+                      {notesStatus && (
+                        <div
+                          className={`flex items-center gap-1 text-xs px-3 py-2 rounded-md ${
+                            notesStatus.type === "success"
+                              ? "bg-green-500/20 text-green-300"
+                              : "bg-red-500/20 text-red-300"
+                          }`}
+                        >
+                          {notesStatus.type === "success" ? (
+                            <CheckCircle className="h-4 w-4" />
+                          ) : (
+                            <AlertCircle className="h-4 w-4" />
+                          )}
+                          <span>{notesStatus.message}</span>
+                        </div>
+                      )}
+                      {notesData?.source && (
+                        <span className="text-[10px] text-gray-500 italic">
+                          source: {notesData.source}
+                        </span>
+                      )}
+                    </div>
                   </InfoPanel>
                 </div>
               )}
