@@ -80,7 +80,8 @@ const AlertsList = ({ refetchTrigger }) => {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+  const API_BASE_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:5001/api";
 
   const fetchAlerts = React.useCallback(async () => {
     try {
@@ -88,7 +89,7 @@ const AlertsList = ({ refetchTrigger }) => {
       setError(null);
       const token = await user.getIdToken();
       const res = await fetch(`${API_BASE_URL}/alerts?limit=30`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) {
         throw new Error(`Failed to load alerts (${res.status})`);
@@ -102,7 +103,9 @@ const AlertsList = ({ refetchTrigger }) => {
     }
   }, [API_BASE_URL, user]);
 
-  useEffect(() => { if (user) fetchAlerts(); }, [user, fetchAlerts]);
+  useEffect(() => {
+    if (user) fetchAlerts();
+  }, [user, fetchAlerts]);
 
   // --- IMPORTANT: This effect listens for changes to the trigger ---
   // When the parent component changes 'refetchTrigger', this will run.

@@ -16,7 +16,7 @@
 //   const fetchData = useCallback(async () => {
 //     setLoading(true);
 //     setError(null);
-    
+
 //     // Get the currently logged-in user
 //     const user = auth.currentUser;
 //     if (!user) {
@@ -37,12 +37,12 @@
 //         },
 //       });
 //       // -----------------------------
-      
+
 //       if (!response.ok) {
 //         const errorData = await response.json();
 //         throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
 //       }
-      
+
 //       const result = await response.json();
 //       setData(result);
 
@@ -77,15 +77,14 @@
 
 // export default useFetchData;
 
-
-
-
-
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 // We are now using the useAuth hook to get the authenticated user state
-import { useAuth } from './useAuth.jsx';
+import { useAuth } from "./useAuth.jsx";
 
-const API_BASE_URL = 'https://netra-8j8n.onrender.com/api';
+// Prefer env-configured API base (local dev) with remote fallback
+const API_BASE_URL = (
+  import.meta.env?.VITE_API_URL || "http://localhost:5001/api"
+).replace(/\/$/, "");
 
 /**
  * A custom React hook for fetching data from the backend API.
@@ -98,7 +97,7 @@ const useFetchData = (initialUrl) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [url, setUrl] = useState(initialUrl);
-  
+
   // Get authentication state from our dedicated auth hook
   const { user, loading: authLoading } = useAuth();
 
@@ -124,18 +123,18 @@ const useFetchData = (initialUrl) => {
 
     setLoading(true);
     setError(null);
-    
+
     try {
       // Get the token from the now-confirmed authenticated user
       const token = await user.getIdToken();
 
       const response = await fetch(`${API_BASE_URL}${url}`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       });
-      
+
       if (!response.ok) {
         let errorMessage = `HTTP error! Status: ${response.status}`;
         try {
@@ -146,10 +145,9 @@ const useFetchData = (initialUrl) => {
         }
         throw new Error(errorMessage);
       }
-      
+
       const result = await response.json();
       setData(result);
-
     } catch (err) {
       console.error("Fetch Error:", err);
       setError(err);
@@ -172,4 +170,3 @@ const useFetchData = (initialUrl) => {
 };
 
 export default useFetchData;
-

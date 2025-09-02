@@ -553,10 +553,92 @@ def get_case(case_id):
 @app.route('/api/graph/<string:person_id>', methods=['GET'])
 @token_required
 def get_graph_data(person_id):
+    """Return transaction network for an entity. Always 200 with empty graph if no data.
+
+    Query params:
+      limit: optional int (default 100) max 500
+    """
     try:
-        network_data = graph_analyzer.get_transaction_network(person_id)
+        try:
+            limit = int(request.args.get('limit', 100))
+        except ValueError:
+            limit = 100
+        limit = max(1, min(limit, 500))
+
+        network_data = graph_analyzer.get_transaction_network(person_id, limit=limit)
         if not network_data or not network_data.get("nodes"):
-            return jsonify({"message": f"No transaction network found for {person_id}."}), 404
+            # --- Fallback: synthesize a tiny network from CSV data (no Neo4j) ---
+            try:
+                persons_df = all_datasets.get('persons')
+                accounts_df = all_datasets.get('accounts')
+                tx_df = all_datasets.get('transactions')
+                if persons_df is not None and accounts_df is not None and tx_df is not None:
+                    # Find accounts belonging to this person
+                    person_accounts = accounts_df[accounts_df['owner_id'] == person_id]['account_number'].tolist()
+                    if person_accounts:
+                        # Get up to N related transactions where person is source or target
+                        related_tx = tx_df[(tx_df['from_account'].isin(person_accounts)) | (tx_df['to_account'].isin(person_accounts))].head(25)
+                        # Map counterpart accounts -> owners
+                        counterpart_accounts = set()
+                        for _, row in related_tx.iterrows():
+                            if row['from_account'] in person_accounts:
+                                counterpart_accounts.add(row['to_account'])
+                            if row['to_account'] in person_accounts:
+                                counterpart_accounts.add(row['from_account'])
+                        counterpart_owners = accounts_df[accounts_df['account_number'].isin(list(counterpart_accounts))]
+                        # Build nodes
+                        nodes = []
+                        person_row = persons_df[persons_df['person_id'] == person_id]
+                        label = person_row.iloc[0]['full_name'] if not person_row.empty else person_id
+                        nodes.append({"id": person_id, "label": label, "type": "Person", "isCenter": True})
+                        for _, acct in counterpart_owners.iterrows():
+                            owner_id = acct['owner_id']
+                            if owner_id == person_id:
+                                continue
+                            owner_row = persons_df[persons_df['person_id'] == owner_id]
+                            owner_label = owner_row.iloc[0]['full_name'] if not owner_row.empty else owner_id
+                            # Avoid duplicates
+                            if not any(n['id'] == owner_id for n in nodes):
+                                nodes.append({"id": owner_id, "label": owner_label, "type": "Person", "isCenter": False})
+                        # Build edges (aggregate amounts per counterpart for brevity)
+                        edges_map = {}
+                        for _, tx in related_tx.iterrows():
+                            src_is_person = tx['from_account'] in person_accounts
+                            dst_is_person = tx['to_account'] in person_accounts
+                            if src_is_person or dst_is_person:
+                                counterpart_acct = tx['to_account'] if src_is_person else tx['from_account']
+                                counterpart_owner_row = accounts_df[accounts_df['account_number'] == counterpart_acct]
+                                if counterpart_owner_row.empty:
+                                    continue
+                                counterpart_owner = counterpart_owner_row.iloc[0]['owner_id']
+                                if counterpart_owner == person_id:
+                                    continue
+                                key = counterpart_owner
+                                amt = int(tx['amount_inr']) if not pd.isna(tx['amount_inr']) else 0
+                                if key not in edges_map:
+                                    edges_map[key] = {"amount": 0, "isOutgoing": src_is_person}
+                                edges_map[key]["amount"] += amt
+                        edges = []
+                        for target_id, meta in edges_map.items():
+                            edges.append({
+                                "source": person_id,
+                                "target": target_id,
+                                "label": f"₹{meta['amount']:,}",
+                                "isOutgoing": meta['isOutgoing']
+                            })
+                        synthesized = {"person_id": person_id, "nodes": nodes, "edges": edges, "message": "Synthesized network (Neo4j unavailable or no data)."}
+                        return jsonify(synthesized), 200
+            except Exception as synth_err:
+                print(f"WARN: Failed to synthesize fallback graph for {person_id}: {synth_err}")
+            # Return empty graph if synthesis not possible
+            return jsonify({
+                "person_id": person_id,
+                "nodes": [],
+                "edges": [],
+                "message": f"No transaction network found for {person_id}."
+            }), 200
+        # Attach person_id for consistency
+        network_data["person_id"] = person_id
         return jsonify(network_data), 200
     except Exception as e:
         print(f"ERROR in /api/graph/{person_id}: {e}")
