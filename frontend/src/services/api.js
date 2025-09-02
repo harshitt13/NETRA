@@ -91,7 +91,8 @@
 
 // The base URL for our Flask API
 // Use environment variable for production deployment
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://netra-8j8n.onrender.com/api';
+import { API_BASE } from '../utils/apiBase.js';
+const API_BASE_URL = API_BASE;
 
 /**
  * A generic helper function to handle API requests with authentication.

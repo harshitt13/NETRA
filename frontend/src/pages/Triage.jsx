@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
+import { API_BASE } from "../utils/apiBase.js";
 import Sidebar from "../components/common/Sidebar";
 import Loader from "../components/common/Loader";
 import {
@@ -100,9 +101,7 @@ const Triage = () => {
     error,
   } = useFetchData(`/investigate/${personId}`);
 
-  const API_BASE = (
-    import.meta.env?.VITE_API_URL || "http://localhost:5001/api"
-  ).replace(/\/$/, "");
+  const API_URL = API_BASE;
 
   const handleEscalate = async () => {
     if (!triageData) return;
@@ -115,7 +114,7 @@ const Triage = () => {
 
     try {
       const token = await user.getIdToken();
-      const response = await fetch(`${API_BASE}/cases`, {
+      const response = await fetch(`${API_URL}/cases`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

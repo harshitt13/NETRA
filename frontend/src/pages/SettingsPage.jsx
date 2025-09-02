@@ -172,6 +172,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Header from '../components/common/Header.jsx';
 import Sidebar from '../components/common/Sidebar.jsx';
 import { useTheme } from '../contexts/ThemeContext.jsx';
+import { API_BASE } from '../utils/apiBase.js';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { Settings, User, Key, Database, Sun, Moon, Save, RefreshCw, Trash2 } from 'lucide-react';
 
@@ -247,7 +248,7 @@ const SettingsPage = () => {
     const [feedback, setFeedback] = useState({ message: '', type: '' });
     const [loadingSettings, setLoadingSettings] = useState(true);
 
-    const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5001/api').replace(/\/$/, '');
+    
 
     // Handlers for updating state
     const handleProfileChange = (e) => {
@@ -285,7 +286,7 @@ const SettingsPage = () => {
         } finally {
             setLoadingSettings(false);
         }
-    }, [API_BASE, authHeaders]);
+    }, [authHeaders]);
 
     useEffect(() => { if (user) fetchSettings(); }, [user, fetchSettings]);
 

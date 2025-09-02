@@ -78,13 +78,9 @@
 // export default useFetchData;
 
 import { useState, useEffect, useCallback } from "react";
-// We are now using the useAuth hook to get the authenticated user state
 import { useAuth } from "./useAuth.jsx";
-
-// Prefer env-configured API base (local dev) with remote fallback
-const API_BASE_URL = (
-  import.meta.env?.VITE_API_URL || "http://localhost:5001/api"
-).replace(/\/$/, "");
+import { API_BASE } from "../utils/apiBase.js";
+const API_BASE_URL = API_BASE;
 
 /**
  * A custom React hook for fetching data from the backend API.

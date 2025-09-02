@@ -618,6 +618,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
+import { API_BASE } from "../utils/apiBase.js";
 import Header from "../components/common/Header";
 import Sidebar from "../components/common/Sidebar";
 import Loader from "../components/common/Loader";
@@ -967,9 +968,7 @@ const InvestigationWorkspace = () => {
   const [notes, setNotes] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
   const [notesStatus, setNotesStatus] = useState(null); // {type, message}
-  const API_BASE = (
-    import.meta.env?.VITE_API_URL || "http://localhost:5001/api"
-  ).replace(/\/$/, "");
+  const API_URL = API_BASE;
 
   useEffect(() => {
     if (notesData && typeof notesData.notes === "string") {
@@ -992,7 +991,7 @@ const InvestigationWorkspace = () => {
     try {
       // Using mock token fallback (align with backend auth decorator behavior)
       const token = "mock-jwt-token-12345";
-      const resp = await fetch(`${API_BASE}/cases/${caseId}/notes`, {
+  const resp = await fetch(`${API_URL}/cases/${caseId}/notes`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

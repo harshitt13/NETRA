@@ -4,6 +4,7 @@ import Sidebar from '../components/common/Sidebar';
 import { FileDown, BookCheck, Loader2 } from 'lucide-react';
 import useFetchData from '../hooks/useFetchData';
 import { useAuth } from '../hooks/useAuth';
+import { API_BASE } from '../utils/apiBase.js';
 
 const Reporting = () => {
     // --- THIS IS THE FIX: The URL no longer includes the '/api' prefix ---
@@ -12,8 +13,6 @@ const Reporting = () => {
     const { user } = useAuth(); // Get user to provide token for downloads
 
     // --- A functional report generation handler ---
-        const API_BASE = (import.meta.env?.VITE_API_URL || 'http://localhost:5001/api').replace(/\/$/, '');
-
         const handleGenerateReport = async (caseId, subjectName) => {
         setLoadingStates(prev => ({ ...prev, [caseId]: true }));
         

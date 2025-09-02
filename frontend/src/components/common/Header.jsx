@@ -2,6 +2,7 @@ import { UserCircle, Bell, Menu, X, Settings } from "lucide-react";
 import { useState, useEffect } from "react";
 import LogoutButton from "./LogoutButton.jsx";
 import NotificationBell from "./NotificationBell.jsx";
+import { API_BASE } from "../../utils/apiBase.js";
 import { useAuth } from "../../hooks/useAuth.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -142,8 +143,7 @@ const Header = () => {
       if (!user) return;
       try {
         const token = await user.getIdToken();
-        const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5001/api').replace(/\/$/, '');
-        const res = await fetch(`${API_BASE}/settings/profile`, { headers: { Authorization: `Bearer ${token}` } });
+  const res = await fetch(`${API_BASE}/settings/profile`, { headers: { Authorization: `Bearer ${token}` } });
         if (!res.ok) return;
         const data = await res.json();
         if (!aborted) {

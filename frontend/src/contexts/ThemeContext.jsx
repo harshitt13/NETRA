@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { API_BASE } from '../utils/apiBase.js';
 
 // Create the theme context
 const ThemeContext = createContext();
@@ -16,7 +17,6 @@ export const ThemeProvider = ({ children }) => {
   });
   const [loading, setLoading] = useState(false);
   const saveTimer = useRef(null);
-  const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5001/api').replace(/\/$/, '');
 
   // Initial fetch from backend (if available)
   useEffect(() => {
@@ -42,7 +42,7 @@ export const ThemeProvider = ({ children }) => {
       }
     };
     fetchRemoteTheme();
-  }, [API_BASE]);
+  }, []);
 
   // Apply theme changes to the document
   useEffect(() => {

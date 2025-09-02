@@ -73,6 +73,7 @@ import { Link } from "react-router-dom";
 import Loader from "../common/Loader";
 import { AlertCircle, User, ArrowRight } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth.jsx";
+import { API_BASE } from "../../utils/apiBase.js";
 
 const AlertsList = ({ refetchTrigger }) => {
   const { user } = useAuth();
@@ -80,15 +81,12 @@ const AlertsList = ({ refetchTrigger }) => {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
 
-  const API_BASE_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:5001/api";
-
   const fetchAlerts = React.useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       const token = await user.getIdToken();
-      const res = await fetch(`${API_BASE_URL}/alerts?limit=30`, {
+  const res = await fetch(`${API_BASE}/alerts?limit=30`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) {
@@ -101,7 +99,7 @@ const AlertsList = ({ refetchTrigger }) => {
     } finally {
       setLoading(false);
     }
-  }, [API_BASE_URL, user]);
+  }, [user]);
 
   useEffect(() => {
     if (user) fetchAlerts();

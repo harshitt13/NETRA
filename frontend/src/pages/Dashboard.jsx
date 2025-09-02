@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_BASE } from "../utils/apiBase.js";
 import Header from "../components/common/Header.jsx";
 import Sidebar from "../components/common/Sidebar.jsx";
 import AlertsList from "../components/dashboard/AlertsList.jsx";
@@ -56,9 +57,7 @@ const Dashboard = () => {
 
     try {
       const token = await user.getIdToken();
-      const API_BASE_URL =
-        import.meta.env.VITE_API_URL || "http://localhost:5001/api";
-      const response = await fetch(`${API_BASE_URL}/run-analysis`, {
+  const response = await fetch(`${API_BASE}/run-analysis`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -1,8 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Bell, Check, Loader2, Trash2, Eye, EyeOff, Plus } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth.jsx';
-
-const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5001/api').replace(/\/$/, '');
+import { API_BASE } from '../../utils/apiBase.js';
 
 export default function NotificationBell() {
   const { user } = useAuth();
