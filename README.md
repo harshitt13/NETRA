@@ -50,7 +50,7 @@ flowchart LR
   end
 
   %% Backend API and Services
-  subgraph Backend (Flask API)
+  subgraph Backend
     API[REST API (/api)]
     RS[risk_scoring.py]
     RG[report_generator.py]
@@ -174,13 +174,13 @@ flowchart TD
     end
 
     subgraph Settings_and_Datasets
-      Settings[Open Settings] --> Upload[POST /datasets/upload (CSV/ZIP)]
+      Settings[Open Settings] --> Upload[POST /datasets/upload - CSV or ZIP]
       Upload --> Reanalyze[Run analysis]
       Reanalyze --> AlertsUpdated[Updated AlertScores.csv]
       AlertsUpdated --> FetchAlerts
     end
 
-    GoLogin --> LoginFlow[Login (Firebase/mock token)]
+  GoLogin --> LoginFlow[Login - Firebase or mock token]
     LoginFlow --> AuthCheck
 ```
 
