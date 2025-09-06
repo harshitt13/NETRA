@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../common/Loader";
+import LoadingOverlay from "../common/LoadingOverlay";
 import ErrorBanner from "../common/ErrorBanner";
 import EmptyState from "../common/EmptyState";
 import { User, ArrowRight } from "lucide-react";
@@ -12,17 +13,29 @@ const AlertsList = ({ refetchTrigger }) => {
   const [alerts, setAlerts] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const [justRefreshed, setJustRefreshed] = React.useState(false);
 
-  const fetchAlerts = React.useCallback(async () => {
+  const fetchAlerts = React.useCallback(async (isRefetch = false) => {
     try {
-      setLoading(true);
+      if (isRefetch) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
+      }
       setError(null);
       const data = await getAlerts({ limit: 30 });
       setAlerts(data);
     } catch (e) {
       setError(e);
     } finally {
-      setLoading(false);
+      if (isRefetch) {
+        setRefreshing(false);
+        setJustRefreshed(true);
+        setTimeout(() => setJustRefreshed(false), 1800);
+      } else {
+        setLoading(false);
+      }
     }
   }, []);
 
@@ -34,7 +47,7 @@ const AlertsList = ({ refetchTrigger }) => {
   // When the parent component changes 'refetchTrigger', this will run.
   useEffect(() => {
     // Don't refetch on the initial render (when trigger is 0)
-    if (refetchTrigger > 0) fetchAlerts();
+  if (refetchTrigger > 0) fetchAlerts(true);
   }, [refetchTrigger, fetchAlerts]);
 
   if (loading) {
@@ -52,7 +65,14 @@ const AlertsList = ({ refetchTrigger }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeIn">
+    <div className="relative">
+      {refreshing && (
+        <LoadingOverlay overlay message="Refreshing alerts..." />
+      )}
+      {justRefreshed && (
+        <div className="mb-3"><ErrorBanner message="Alerts refreshed." variant="success" /></div>
+      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeIn">
       {alerts.map((alert) => (
         <div
           key={alert.person_id}
@@ -81,6 +101,7 @@ const AlertsList = ({ refetchTrigger }) => {
           </Link>
         </div>
       ))}
+      </div>
     </div>
   );
 };

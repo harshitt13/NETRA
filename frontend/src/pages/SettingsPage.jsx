@@ -4,6 +4,7 @@ import Sidebar from '../components/common/Sidebar.jsx';
 import { useTheme } from '../contexts/useTheme.js';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { getProfile, updateProfile, getApiKeyMasked, updateApiKey, regenerateDataset, clearAllCases } from '../services/api.js';
+import LoadingOverlay from '../components/common/LoadingOverlay.jsx';
 import { Settings, User, Key, Database, Sun, Moon, Save, RefreshCw, Trash2 } from 'lucide-react';
 
 // A reusable card component for different settings sections
@@ -182,7 +183,11 @@ const SettingsPage = () => {
                         <div className="space-y-8">
                             {/* User Profile Settings */}
                             <SettingsCard title="User Profile" icon={User}>
-                                {loadingSettings && <p className="text-xs text-gray-500">Loading profile...</p>}
+                                {loadingSettings && (
+                                    <div className="relative h-12 mb-2">
+                                        <LoadingOverlay message="Loading profile..." className="h-12" />
+                                    </div>
+                                )}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <InputField
                                         label="Display Name"

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '../components/common/Header';
 import Sidebar from '../components/common/Sidebar';
 import { FileDown, BookCheck, Loader2 } from 'lucide-react';
@@ -7,11 +7,13 @@ import { useAuth } from '../hooks/useAuth';
 import { generatePdfReport } from '../services/api.js';
 import ErrorBanner from '../components/common/ErrorBanner.jsx';
 import EmptyState from '../components/common/EmptyState.jsx';
+import LoadingOverlay from '../components/common/LoadingOverlay.jsx';
 
 const Reporting = () => {
     // --- THIS IS THE FIX: The URL no longer includes the '/api' prefix ---
     const { data: cases, loading: isLoading, error } = useFetchData('/cases');
     const [loadingStates, setLoadingStates] = useState({});
+    const [successMsg, setSuccessMsg] = useState('');
     useAuth(); // Initialize auth for token provider
 
     // --- A functional report generation handler ---
@@ -30,6 +32,7 @@ const Reporting = () => {
             a.click();
             window.URL.revokeObjectURL(downloadUrl);
             document.body.removeChild(a);
+            setSuccessMsg(`Report downloaded for ${subjectName} (${caseId}).`);
 
         } catch (err) {
             if (import.meta.env?.DEV) console.error('Report generation failed:', err);
@@ -38,6 +41,12 @@ const Reporting = () => {
             setLoadingStates(prev => ({ ...prev, [caseId]: false }));
         }
     };
+
+    useEffect(() => {
+        if (!successMsg) return;
+        const t = setTimeout(() => setSuccessMsg(''), 2500);
+        return () => clearTimeout(t);
+    }, [successMsg]);
 
     return (
         <div className="flex h-screen bg-gray-900 text-white font-sans">
@@ -55,14 +64,18 @@ const Reporting = () => {
                                 <p className="text-gray-400">Generate and download final investigation reports for escalated cases.</p>
                             </div>
                         </div>
-
-                        <div className="w-full bg-gray-900/60 backdrop-blur-md border border-cyan-500/20 rounded-lg shadow-lg overflow-hidden animate-fadeInUp">
-                            {isLoading ? (
-                                <div className="flex justify-center items-center h-64">
-                                    <Loader2 className="h-8 w-8 animate-spin text-cyan-400"/>
-                                    <span className="ml-4 text-lg text-gray-300">Loading Completed Cases...</span>
-                                </div>
-                            ) : error ? (
+                        
+                                                <div className="relative w-full bg-gray-900/60 backdrop-blur-md border border-cyan-500/20 rounded-lg shadow-lg overflow-hidden animate-fadeInUp">
+                                                        {successMsg && (
+                                                            <div className="p-4">
+                                                                <ErrorBanner message={successMsg} variant="success" />
+                                                            </div>
+                                                        )}
+                                                        {isLoading ? (
+                                                                <div className="h-64">
+                                                                    <LoadingOverlay overlay message="Loading Completed Cases..." />
+                                                                </div>
+                                                        ) : error ? (
                                 <div className="p-6"><ErrorBanner message={`Failed to load cases: ${error.message}`} /></div>
                             ) : (
                                 <table className="w-full text-left">

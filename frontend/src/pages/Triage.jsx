@@ -6,7 +6,6 @@ import Sidebar from "../components/common/Sidebar";
 import Loader from "../components/common/Loader";
 import {
   AlertOctagon,
-  ShieldX,
   FolderUp,
   CheckCircle,
   AlertCircle,
@@ -15,6 +14,7 @@ import {
 import useFetchData from "../hooks/useFetchData";
 import { useAuth } from "../hooks/useAuth";
 import { createCase } from "../services/api.js";
+import ErrorBanner from "../components/common/ErrorBanner.jsx";
 
 // Enhanced RiskFactorSummary: always show all categories in consistent order (including 0 scores)
 const RiskFactorSummary = ({ riskProfile, aiSummary }) => {
@@ -129,12 +129,8 @@ const Triage = () => {
   if (error)
     return (
       <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
-        <div className="text-center">
-          <ShieldX className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-red-400">
-            Failed to Load Triage Data
-          </h2>
-          <p className="text-gray-400 mt-2">{error.message}</p>
+        <div className="w-full max-w-xl px-6">
+          <ErrorBanner message={`Failed to Load Triage Data: ${error.message}`} />
         </div>
       </div>
     );

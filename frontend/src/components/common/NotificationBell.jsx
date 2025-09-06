@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback } from 'react';
 import { Bell, Check, Loader2, Trash2, Eye, EyeOff, Plus } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth.jsx';
 import { getNotifications, markAllNotificationsRead, updateNotification, deleteNotification as apiDeleteNotification, createNotification } from '../../services/api.js';
+import ErrorBanner from '../common/ErrorBanner.jsx';
+import EmptyState from '../common/EmptyState.jsx';
 
 export default function NotificationBell() {
   const { user } = useAuth();
@@ -113,10 +115,10 @@ export default function NotificationBell() {
               <div className="flex items-center gap-2 px-4 py-6 text-gray-400 text-sm"><Loader2 className="animate-spin" size={16}/>Loading...</div>
             )}
             {error && !loading && (
-              <div className="px-4 py-6 text-red-400 text-sm">{error}</div>
+              <div className="p-3"><ErrorBanner message={error} /></div>
             )}
             {!loading && !error && items.length === 0 && (
-              <div className="px-4 py-6 text-gray-500 text-sm">No notifications.</div>
+              <div className="p-3"><EmptyState title="No notifications" subtitle="You're all caught up." /></div>
             )}
             {!loading && !error && items.map(n => {
               return (

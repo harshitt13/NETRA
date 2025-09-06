@@ -7,6 +7,7 @@ import AlertsList from "../components/dashboard/AlertsList.jsx";
 import useFetchData from "../hooks/useFetchData.jsx";
 import { useAuth } from "../hooks/useAuth.jsx";
 import { runAnalysis, getAnalysisStatus } from "../services/api.js";
+import LoadingOverlay from "../components/common/LoadingOverlay.jsx";
 import {
   LayoutDashboard,
   Search,
@@ -194,7 +195,11 @@ const Dashboard = () => {
                 <h2 className="text-xl font-semibold mb-4 text-gray-300">
                   Search Results
                 </h2>
-                {searchLoading && <p className="text-gray-400">Searching...</p>}
+                {searchLoading && (
+                  <div className="relative h-24">
+                    <LoadingOverlay message="Searching..." className="h-24" />
+                  </div>
+                )}
                 {!searchLoading &&
                   searchResults &&
                   searchResults.length > 0 && (
@@ -223,12 +228,10 @@ const Dashboard = () => {
                       ))}
                     </div>
                   )}
-                {!searchLoading &&
+        {!searchLoading &&
                   searchResults &&
                   searchResults.length === 0 && (
-                    <p className="text-gray-400">
-                      No results found for &quot;{searchQuery}&quot;.
-                    </p>
+          <ErrorBanner variant="info" message={`No results found for "${searchQuery}".`} />
                   )}
               </div>
             )}

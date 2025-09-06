@@ -6,6 +6,7 @@ import Header from "../components/common/Header";
 import Sidebar from "../components/common/Sidebar";
 import Loader from "../components/common/Loader";
 import ErrorBanner from "../components/common/ErrorBanner.jsx";
+import LoadingOverlay from "../components/common/LoadingOverlay.jsx";
 import useFetchData from "../hooks/useFetchData";
 import {
   Files,
@@ -19,8 +20,6 @@ import {
   Filter,
   ArrowRight,
   ArrowLeft,
-  CheckCircle,
-  AlertCircle,
 } from "lucide-react";
 import ReactFlow, {
   MiniMap,
@@ -489,6 +488,10 @@ const InvestigationWorkspace = () => {
                     </div>
                   </InfoPanel>
                   <InfoPanel title="Investigator Notes" icon={StickyNote}>
+                    <div className="relative">
+                    {savingNotes && (
+                      <LoadingOverlay overlay message="Saving notes..." />
+                    )}
                     <textarea
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
@@ -503,27 +506,18 @@ const InvestigationWorkspace = () => {
                       >
                         {savingNotes ? "Saving..." : "Save Notes"}
                       </button>
-                      {notesStatus && (
-                        <div
-                          className={`flex items-center gap-1 text-xs px-3 py-2 rounded-md ${
-                            notesStatus.type === "success"
-                              ? "bg-green-500/20 text-green-300"
-                              : "bg-red-500/20 text-red-300"
-                          }`}
-                        >
-                          {notesStatus.type === "success" ? (
-                            <CheckCircle className="h-4 w-4" />
-                          ) : (
-                            <AlertCircle className="h-4 w-4" />
-                          )}
-                          <span>{notesStatus.message}</span>
-                        </div>
+                      {notesStatus?.type === 'error' && (
+                        <div className="flex-1"><ErrorBanner message={notesStatus.message} /></div>
                       )}
                       {notesData?.source && (
                         <span className="text-[10px] text-gray-500 italic">
                           source: {notesData.source}
                         </span>
                       )}
+                    </div>
+                    {notesStatus?.type === 'success' && (
+                      <div className="mt-3"><ErrorBanner message={notesStatus.message} variant="success" /></div>
+                    )}
                     </div>
                   </InfoPanel>
                 </div>
