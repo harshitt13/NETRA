@@ -1,4 +1,4 @@
-import { UserCircle, Menu, X, Settings } from "lucide-react";
+import { UserCircle, Menu, X, Settings, LayoutDashboard, FileText, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import LogoutButton from "./LogoutButton.jsx";
 // Notifications removed
@@ -63,8 +63,8 @@ const MobileMenu = ({ isOpen, onClose, navigate, profile }) => (
     isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
   }`}>
     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose}></div>
-    <div className={`absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-gray-900 border-l border-cyan-500/30
-                     transform transition-transform duration-300 ${
+  <div className={`absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-gray-900 border-l border-cyan-500/30
+           transform transition-transform duration-300 flex flex-col ${
                        isOpen ? 'translate-x-0' : 'translate-x-full'
                      }`}>
       <div className="p-6 border-b border-gray-700">
@@ -79,7 +79,7 @@ const MobileMenu = ({ isOpen, onClose, navigate, profile }) => (
         </div>
       </div>
       
-      <div className="p-6 space-y-6">
+  <div className="p-6 space-y-6 flex-1 overflow-y-auto">
         {/* User Profile */}
         <div className="flex items-center space-x-3 p-4 bg-gray-800/50 rounded-lg">
           <UserCircle size={48} className="text-cyan-400" />
@@ -89,22 +89,40 @@ const MobileMenu = ({ isOpen, onClose, navigate, profile }) => (
           </div>
         </div>
         
-        {/* Menu Items */}
-        <div className="space-y-2">
+        {/* Menu Items (match desktop sidebar) */}
+        <nav className="space-y-2">
+          <button
+            onClick={() => { navigate('/dashboard'); onClose(); }}
+            className="w-full flex items-center space-x-3 p-3 text-gray-300 hover:text-cyan-400 hover:bg-gray-800/50 rounded-lg transition-colors"
+          >
+            <LayoutDashboard size={20} />
+            <span>Dashboard</span>
+          </button>
+
+          <button
+            onClick={() => { navigate('/workspace/case-placeholder'); onClose(); }}
+            className="w-full flex items-center space-x-3 p-3 text-gray-300 hover:text-cyan-400 hover:bg-gray-800/50 rounded-lg transition-colors"
+          >
+            <Search size={20} />
+            <span>Investigation</span>
+          </button>
+
+          <button
+            onClick={() => { navigate('/reporting'); onClose(); }}
+            className="w-full flex items-center space-x-3 p-3 text-gray-300 hover:text-cyan-400 hover:bg-gray-800/50 rounded-lg transition-colors"
+          >
+            <FileText size={20} />
+            <span>Reporting</span>
+          </button>
+
           <button 
-            onClick={() => {
-              navigate('/settings');
-              onClose();
-            }}
-            className="w-full flex items-center space-x-3 p-3 text-gray-300 hover:text-cyan-400 
-                       hover:bg-gray-800/50 rounded-lg transition-colors"
+            onClick={() => { navigate('/settings'); onClose(); }}
+            className="w-full flex items-center space-x-3 p-3 text-gray-300 hover:text-cyan-400 hover:bg-gray-800/50 rounded-lg transition-colors"
           >
             <Settings size={20} />
             <span>Settings</span>
           </button>
-          
-          {/* Notifications removed */}
-        </div>
+        </nav>
         
         {/* Logout Button */}
         <div className="pt-6 border-t border-gray-700 flex justify-center">
