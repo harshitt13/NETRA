@@ -115,6 +115,22 @@ export const getGraphData = (personId, params = {}) => {
 
 // --- Dataset metadata (seed, snapshot, counts) ---
 export const getDatasetMetadata = () => apiRequest('/datasets/metadata');
+export const uploadDataset = async (file, datasetKey = null) => {
+  const token = await (async () => {
+    try { return localStorage.getItem('authToken') || null; } catch { return null; }
+  })();
+  const form = new FormData();
+  form.append('file', file);
+  if (datasetKey) form.append('dataset', datasetKey);
+  const res = await fetch(`${API_BASE_URL}/datasets/upload`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    body: form,
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json?.error || res.statusText);
+  return json?.data ?? json;
+};
 
 // --- Analysis controls ---
 export const runAnalysis = () => apiRequest('/run-analysis', { method: 'POST' });

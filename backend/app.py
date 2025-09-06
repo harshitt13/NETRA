@@ -8,6 +8,9 @@ from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 import pandas as pd
 import subprocess # We'll use this to run our data generation script
+import zipfile
+import io
+from werkzeug.utils import secure_filename
 
 # Import all our custom services and utilities
 from utils.data_loader import DataLoader
@@ -153,6 +156,93 @@ def dataset_metadata():
     except Exception as e:
         logger.error(f"ERROR in /api/datasets/metadata: {e}")
         return api_err("Failed to retrieve dataset metadata", 500)
+
+# --- Dataset upload (CSV or ZIP) ---
+ALLOWED_DATASETS = {
+    'persons': 'Persons.csv',
+    'accounts': 'BankAccounts.csv',
+    'transactions': 'Transactions.csv',
+    'companies': 'Companies.csv',
+    'directorships': 'Directorships.csv',
+    'properties': 'Properties.csv',
+    'cases': 'PoliceCases.csv'
+}
+
+def _validate_csv_schema(dataset_key: str, df: pd.DataFrame):
+    required = data_loader.schemas.get(dataset_key)
+    if not required:
+        return True
+    missing = [c for c in required if c not in df.columns]
+    if missing:
+        raise ValueError(f"{dataset_key} missing columns: {', '.join(missing)}")
+    return True
+
+@app.route('/api/datasets/upload', methods=['POST'])
+@token_required
+def upload_dataset():
+    """Accept a CSV (with dataset param) or a ZIP of CSVs matching expected names.
+
+    - CSV: requires form field 'dataset' in {persons,accounts,transactions,companies,directorships,properties,cases}
+    - ZIP: files named as in ALLOWED_DATASETS will overwrite existing datasets
+    After upload, reload datasets and run analysis to refresh alerts.
+    """
+    if 'file' not in request.files:
+        return api_err("No file uploaded. Use form field 'file'.", 400)
+    file = request.files['file']
+    if file.filename == '':
+        return api_err("Empty filename.", 400)
+
+    filename = secure_filename(file.filename)
+    updated = []
+    try:
+        if filename.lower().endswith('.zip'):
+            # Process ZIP: extract to memory and write matching CSVs
+            with zipfile.ZipFile(io.BytesIO(file.read())) as zf:
+                names = zf.namelist()
+                for key, target in ALLOWED_DATASETS.items():
+                    # Find case-insensitive match
+                    match = next((n for n in names if n.lower().endswith(target.lower())), None)
+                    if not match:
+                        continue
+                    with zf.open(match) as member:
+                        df = pd.read_csv(member)
+                        _validate_csv_schema(key, df)
+                        out_path = os.path.join(DATA_PATH, target)
+                        df.to_csv(out_path, index=False)
+                        updated.append(target)
+        else:
+            # Single CSV: need dataset param
+            dataset_key = request.form.get('dataset', '').strip().lower()
+            if dataset_key not in ALLOWED_DATASETS:
+                return api_err("For CSV uploads, provide form field 'dataset' with a valid dataset name.", 400)
+            df = pd.read_csv(file)
+            _validate_csv_schema(dataset_key, df)
+            out_path = os.path.join(DATA_PATH, ALLOWED_DATASETS[dataset_key])
+            df.to_csv(out_path, index=False)
+            updated.append(ALLOWED_DATASETS[dataset_key])
+
+        if not updated:
+            return api_err("No recognized CSVs found in upload.", 400)
+
+        # Reload datasets and rerun analysis
+        global all_datasets, risk_scorer, report_generator
+        all_datasets = data_loader.load_all_data()
+        risk_scorer = HybridRiskScorer(all_datasets)
+        alerts = risk_scorer.run_full_analysis() or []
+        report_generator = ReportGenerator(all_datasets)
+
+        return api_ok({
+            "updated_files": updated,
+            "alerts_generated": len(alerts)
+        }, 200)
+    except ValueError as ve:
+        logger.error(f"[UPLOAD] Schema validation failed: {ve}")
+        return api_err(str(ve), 400)
+    except zipfile.BadZipFile:
+        return api_err("Invalid ZIP file.", 400)
+    except Exception as e:
+        logger.error(f"[UPLOAD] Failed: {e}")
+        return api_err("Failed to process uploaded data.", 500)
 
 # ... (all your other endpoints like /api/alerts, /api/investigate, etc., go here) ...
 @app.route('/api/persons', methods=['GET'])

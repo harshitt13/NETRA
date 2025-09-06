@@ -3,7 +3,7 @@ import Header from '../components/common/Header.jsx';
 import Sidebar from '../components/common/Sidebar.jsx';
 import { useTheme } from '../contexts/useTheme.js';
 import { useAuth } from '../hooks/useAuth.jsx';
-import { getProfile, updateProfile, getApiKeyMasked, updateApiKey, regenerateDataset, clearAllCases, getDatasetMetadata } from '../services/api.js';
+import { getProfile, updateProfile, getApiKeyMasked, updateApiKey, regenerateDataset, clearAllCases, getDatasetMetadata, uploadDataset } from '../services/api.js';
 import LoadingOverlay from '../components/common/LoadingOverlay.jsx';
 import { Settings, User, Key, Database, Sun, Moon, Save, RefreshCw, Trash2 } from 'lucide-react';
 
@@ -79,6 +79,9 @@ const SettingsPage = () => {
     const [feedback, setFeedback] = useState({ message: '', type: '' });
     const [loadingSettings, setLoadingSettings] = useState(true);
     const [meta, setMeta] = useState(null);
+    const [uploadBusy, setUploadBusy] = useState(false);
+    const [uploadResult, setUploadResult] = useState(null);
+    const [datasetKey, setDatasetKey] = useState('persons');
 
     
 
@@ -162,6 +165,29 @@ const SettingsPage = () => {
             setIsClearing(false);
         }
     };
+
+    const handleFileDrop = async (ev) => {
+        ev.preventDefault();
+        const f = ev.dataTransfer?.files?.[0];
+        if (!f) return;
+        setUploadBusy(true);
+        setUploadResult(null);
+        try {
+            const isZip = f.name.toLowerCase().endsWith('.zip');
+            const res = await uploadDataset(f, isZip ? null : datasetKey);
+            setUploadResult(res);
+            showFeedback(`Uploaded. Updated ${res.updated_files?.length || 0} files; alerts: ${res.alerts_generated ?? 0}.`, 'success');
+            // Refresh metadata after upload
+            const m = await getDatasetMetadata();
+            setMeta(m || null);
+        } catch (e) {
+            showFeedback(e.message || 'Upload failed', 'error');
+        } finally {
+            setUploadBusy(false);
+        }
+    };
+
+    const prevent = (e) => { e.preventDefault(); e.stopPropagation(); };
 
     return (
         <div className="flex h-screen bg-gray-900 text-white font-sans">
@@ -272,6 +298,60 @@ const SettingsPage = () => {
                                     <p className="text-sm text-gray-400">
                                         Manage the synthetic dataset used by the application. Be careful, these actions are destructive.
                                     </p>
+
+                                    {/* Drag-and-Drop Uploader */}
+                                    <div
+                                        onDrop={handleFileDrop}
+                                        onDragOver={prevent}
+                                        onDragEnter={prevent}
+                                        className={`border-2 border-dashed rounded-lg p-6 text-center ${uploadBusy ? 'opacity-60' : ''} ${uploadBusy ? 'border-purple-500/60' : 'border-gray-600 hover:border-purple-500/60'}`}
+                                    >
+                                        <p className="text-gray-300 font-medium mb-1">Drag & drop a ZIP of CSVs here</p>
+                                        <p className="text-xs text-gray-500 mb-3">Or drop a single CSV (choose which dataset it represents)</p>
+                                        <div className="flex items-center justify-center gap-2 mb-3">
+                                            <label className="text-xs text-gray-400">Single CSV type:</label>
+                                            <select
+                                                className="bg-gray-900/70 border border-gray-600 text-sm rounded px-2 py-1 text-gray-200"
+                                                value={datasetKey}
+                                                onChange={(e) => setDatasetKey(e.target.value)}
+                                                disabled={uploadBusy}
+                                            >
+                                                <option value="persons">Persons.csv</option>
+                                                <option value="accounts">BankAccounts.csv</option>
+                                                <option value="transactions">Transactions.csv</option>
+                                                <option value="companies">Companies.csv</option>
+                                                <option value="directorships">Directorships.csv</option>
+                                                <option value="properties">Properties.csv</option>
+                                                <option value="cases">PoliceCases.csv</option>
+                                            </select>
+                                        </div>
+                                        <input
+                                            type="file"
+                                            accept=".zip,.csv"
+                                            disabled={uploadBusy}
+                                            onChange={async (e) => {
+                                                const f = e.target.files?.[0];
+                                                if (!f) return;
+                                                // Simulate drop handling
+                                                const dt = new DataTransfer();
+                                                dt.items.add(f);
+                                                const ev = { preventDefault: () => {}, dataTransfer: { files: dt.files } };
+                                                await handleFileDrop(ev);
+                                                e.target.value = '';
+                                            }}
+                                            className="hidden"
+                                            id="dataset-file-input"
+                                        />
+                                        <label htmlFor="dataset-file-input" className="inline-block bg-purple-600/60 hover:bg-purple-600 text-white text-sm font-semibold px-4 py-2 rounded cursor-pointer">
+                                            {uploadBusy ? 'Uploading...' : 'Browse File'}
+                                        </label>
+                                        {uploadResult && (
+                                            <div className="mt-3 text-xs text-gray-400">
+                                                <div>Updated: {Array.isArray(uploadResult.updated_files) ? uploadResult.updated_files.join(', ') : '—'}</div>
+                                                <div>Alerts generated: {uploadResult.alerts_generated ?? 0}</div>
+                                            </div>
+                                        )}
+                                    </div>
                                     
                                     <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
                                         <h4 className="text-yellow-400 font-semibold mb-2">⚠️ Warning</h4>
