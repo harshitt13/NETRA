@@ -22,6 +22,10 @@ An AI‑powered financial intelligence platform for detecting and investigating 
 
 </div>
 
+## Demo
+
+Watch the demo on YouTube: [https://youtu.be/r_G-eIlJKkU](https://youtu.be/r_G-eIlJKkU)
+
 ## Overview
 
 Project NETRA provides a unified workflow for ingesting datasets (CSV/ZIP), calculating hybrid risk scores, inspecting networks, and generating AI‑assisted PDF reports. It ships with synthetic datasets and lets investigators upload data from the UI.
@@ -35,6 +39,56 @@ Highlights:
 - Authentication is token‑based; mock tokens are supported for local/demo.
 
 ## Architecture
+
+Below is a high-level architecture and request flow for NETRA:
+
+```mermaid
+flowchart LR
+  %% Client Layer
+  subgraph Client
+    U[User]
+    FE[Frontend (React + Vite)]
+  end
+
+  %% Backend API and Services
+  subgraph Backend[Backend (Flask API)]
+    API[/REST: /api/*/]
+    RS[risk_scoring.py]
+    RG[report_generator.py]
+    GA[graph_analysis.py]
+    CM[case_manager.py]
+    AS[ai_summarizer.py]
+  end
+
+  %% Data Sources
+  subgraph Data[Data Sources]
+    CSV[(CSV files\nbackend/generated-data)]
+    NEO[(Neo4j\noptional)]
+    FS[(Firestore\noptional)]
+  end
+
+  %% Client -> API
+  U -->|actions| FE
+  FE -->|Fetch JSON/PDF| API
+  FE -->|Upload ZIP/CSV| API
+
+  %% API -> Services
+  API --> RS
+  API --> RG
+  API --> GA
+  API --> CM
+  API --> AS
+
+  %% Services <-> Data
+  RS <--> CSV
+  GA --> NEO
+  CM <--> FS
+  RS -->|AlertScores.csv| CSV
+
+  %% Responses
+  RG -->|PDF| FE
+  API -->|JSON| FE
+```
 
 Backend (Flask):
 - Data loader with schema validation (CSVs under `backend/generated-data/`).
