@@ -1,6 +1,8 @@
 import os
 import requests
 import json
+import logging
+from typing import Dict, Any
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -11,14 +13,15 @@ class AI_Summarizer:
     This class is initialized once and does not load any data itself.
     """
     def __init__(self):
+        self._logger = logging.getLogger(__name__)
         self.api_key = os.getenv("GEMINI_API_KEY")
         if not self.api_key:
-            print("WARNING: GEMINI_API_KEY environment variable not set. AI Summarizer will not work.")
+            self._logger.warning("GEMINI_API_KEY not set; AI Summarizer will use fallback")
         
         # --- THIS IS THE FIX 1: Use the correct, modern model name ---
         self.api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key={self.api_key}"
 
-    def generate_summary_from_details(self, risk_details):
+    def generate_summary_from_details(self, risk_details: Dict[str, Any]) -> str:
         """
         Generates a summary from a dictionary of risk details for one person.
         """
@@ -47,7 +50,7 @@ class AI_Summarizer:
                 facts.extend(triggered_risks)
 
         except Exception as e:
-            print(f"Error gathering facts for AI prompt: {e}")
+            self._logger.error(f"Error gathering facts for AI prompt: {e}")
             return "Error: Could not process the provided risk data to generate a summary."
 
         # --- Construct the prompt ---
@@ -76,10 +79,10 @@ class AI_Summarizer:
 
         # --- THIS IS THE FIX 2: Graceful fallback on API failure ---
         except requests.exceptions.RequestException as e:
-            print(f"AI API Request Error: {e}")
+            self._logger.warning(f"AI API Request Error: {e}")
             return fallback_summary + " (AI request failed)"
         except (KeyError, IndexError) as e:
-            print(f"AI API Parsing Error: {e}. Full Response: {response.text if 'response' in locals() else 'N/A'}")
+            self._logger.warning(f"AI API Parsing Error: {e}. Full Response: {response.text if 'response' in locals() else 'N/A'}")
             return fallback_summary + " (AI parse fallback)"
 
     def _rule_based_fallback(self, risk_details):

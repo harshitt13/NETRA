@@ -1,4 +1,5 @@
 import os
+import logging
 from functools import wraps
 from flask import request, jsonify
 
@@ -9,7 +10,7 @@ try:
     from firebase_admin import credentials, auth  # type: ignore
 except Exception as imp_err:
     FIREBASE_AVAILABLE = False
-    print(f"WARN: firebase_admin not available ({imp_err}). Running in mock auth mode.")
+    logging.getLogger(__name__).warning(f"firebase_admin not available ({imp_err}). Running in mock auth mode.")
 
 # --- Initialize Firebase Admin SDK ---
 # This looks for the service account key file you downloaded.
@@ -17,11 +18,11 @@ if FIREBASE_AVAILABLE:
     try:
         cred = credentials.Certificate('serviceAccountKey.json')
         firebase_admin.initialize_app(cred)
-        print("Firebase Admin SDK initialized successfully.")
+        logging.getLogger(__name__).info("Firebase Admin SDK initialized successfully.")
     except Exception as e:
         FIREBASE_AVAILABLE = False
-        print(f"ERROR initializing Firebase Admin SDK: {e}")
-        print("Proceeding in mock auth mode. Place 'serviceAccountKey.json' in backend/ to enable real token verification.")
+        logging.getLogger(__name__).error(f"ERROR initializing Firebase Admin SDK: {e}")
+        logging.getLogger(__name__).warning("Proceeding in mock auth mode. Place 'serviceAccountKey.json' in backend/ to enable real token verification.")
 
 def token_required(f):
     """A decorator to protect API routes."""
@@ -51,7 +52,7 @@ def token_required(f):
             else:
                 return jsonify({"error": "Firebase authentication not available. Use a mock token (prefix 'mock-')."}), 403
         except Exception as e:
-            print(f"Token verification failed: {e}")
+            logging.getLogger(__name__).warning(f"Token verification failed: {e}")
             return jsonify({"error": "Invalid or expired token!"}), 403
         
         return f(*args, **kwargs)

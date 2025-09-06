@@ -1,32 +1,33 @@
-import os
+import logging
+from typing import Dict, List, Any
 from neo4j import GraphDatabase
-from dotenv import load_dotenv
+from utils.config import CONFIG
 
-load_dotenv()
 
 class GraphAnalyzer:
+    """Query transaction networks from Neo4j with safe fallbacks."""
+
     def __init__(self):
-        uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-        user = os.getenv("NEO4J_USER", "neo4j")
-        password = os.getenv("NEO4J_PASSWORD", "password")
-        
+        self._logger = logging.getLogger(__name__)
+        uri = CONFIG.neo4j.uri
+        user = CONFIG.neo4j.user
+        password = CONFIG.neo4j.password
         try:
             self._driver = GraphDatabase.driver(uri, auth=(user, password))
             self._driver.verify_connectivity()
-            print("Successfully connected to Neo4j.")
+            self._logger.info("GraphAnalyzer connected to Neo4j")
         except Exception as e:
-            print(f"ERROR: Could not connect to Neo4j. Details: {e}")
+            self._logger.warning(f"Could not connect to Neo4j. Falling back to CSV synth. Details: {e}")
             self._driver = None
 
     def close(self):
         if self._driver is not None:
             self._driver.close()
 
-    def get_transaction_network(self, entity_id, limit=100): # Increased limit for more data
+    def get_transaction_network(self, entity_id: str, limit: int = 100) -> Dict[str, List[Dict[str, Any]]]:  # Increased limit for more data
         if self._driver is None:
             return {"nodes": [], "edges": []}
-            
-        with self._driver.session() as session:
+        with self._driver.session(database=CONFIG.neo4j.database) as session:
             query = """
             MATCH (entity)
             WHERE entity.person_id = $entity_id OR entity.cin = $entity_id

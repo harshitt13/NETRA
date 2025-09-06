@@ -1,5 +1,6 @@
 import os
 import random
+import logging
 import pandas as pd
 from faker import Faker
 import numpy as np
@@ -21,6 +22,8 @@ OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'backend', 'generated
 # Initialize Faker for Indian data with deterministic seeding
 fake = Faker('en_IN')
 
+logger = logging.getLogger(__name__)
+
 # Deterministic seeding via env var
 def _init_seed():
     env_seed = os.getenv('DATA_SEED') or os.getenv('SEED')
@@ -38,7 +41,7 @@ def _init_seed():
     fake.seed_instance(seed)
     np.random.seed(seed)
     random.seed(seed)
-    print(f"[DATA-GEN] Using deterministic seed: {seed}")
+    logger.info(f"[DATA-GEN] Using deterministic seed: {seed}")
     return seed
 
 def generate_persons_data(num_persons):
@@ -191,41 +194,41 @@ def generate_normal_transactions(accounts_df, num_transactions):
 
 def generate_all_data():
     """Main function to generate all datasets and save them to CSV."""
-    print("--- Starting Synthetic Data Generation ---")
+    logger.info("--- Starting Synthetic Data Generation ---")
     seed = _init_seed()
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
     # 1. Generate Base Entities
-    print("Generating Persons...")
+    logger.info("Generating Persons...")
     persons_df = generate_persons_data(NUM_PERSONS)
     persons_df.to_csv(os.path.join(OUTPUT_DIR, 'Persons.csv'), index=False)
     
-    print("Generating Companies...")
+    logger.info("Generating Companies...")
     companies_df = generate_companies_data(NUM_COMPANIES)
     companies_df.to_csv(os.path.join(OUTPUT_DIR, 'Companies.csv'), index=False)
 
     # 2. Generate Relational Data
-    print("Generating Bank Accounts...")
+    logger.info("Generating Bank Accounts...")
     accounts_df = generate_bank_accounts_data(persons_df, companies_df)
     accounts_df.to_csv(os.path.join(OUTPUT_DIR, 'BankAccounts.csv'), index=False)
     
-    print("Generating Directorships...")
+    logger.info("Generating Directorships...")
     directorships_df = generate_directorships_data(persons_df, companies_df)
     directorships_df.to_csv(os.path.join(OUTPUT_DIR, 'Directorships.csv'), index=False)
 
-    print("Generating Properties...")
+    logger.info("Generating Properties...")
     properties_df = generate_properties_data(persons_df)
     properties_df.to_csv(os.path.join(OUTPUT_DIR, 'Properties.csv'), index=False)
     
-    print("Generating Police Cases...")
+    logger.info("Generating Police Cases...")
     police_cases_df = generate_police_cases_data(persons_df)
     police_cases_df.to_csv(os.path.join(OUTPUT_DIR, 'PoliceCases.csv'), index=False)
     
     # 3. Generate Transactions with Embedded Patterns
-    print("Generating normal transactions baseline...")
+    logger.info("Generating normal transactions baseline...")
     transactions = generate_normal_transactions(accounts_df, NUM_TRANSACTIONS_NORMAL)
     
-    print("Injecting money laundering patterns...")
+    logger.info("Injecting money laundering patterns...")
     # Inject Structuring / Smurfing patterns
     for _ in range(5): # Create 5 instances of this pattern
         transactions = create_structuring_pattern(transactions, accounts_df)
@@ -240,7 +243,7 @@ def generate_all_data():
         transactions = create_mule_account_pattern(transactions, accounts_df, mule_candidates)
 
     transactions_df = pd.DataFrame(transactions)
-    print(f"Total transactions generated: {len(transactions_df)}")
+    logger.info(f"Total transactions generated: {len(transactions_df)}")
     transactions_df.to_csv(os.path.join(OUTPUT_DIR, 'Transactions.csv'), index=False)
 
     # Create an empty AlertScores.csv file as a placeholder for the backend
@@ -266,14 +269,15 @@ def generate_all_data():
         import json as _json
         with open(os.path.join(OUTPUT_DIR, 'metadata.json'), 'w', encoding='utf-8') as f:
             _json.dump(metadata, f, indent=2)
-        print("[DATA-GEN] metadata.json written")
+        logger.info("[DATA-GEN] metadata.json written")
     except Exception as _e:
-        print(f"[WARN] Failed to write metadata.json: {_e}")
+        logger.warning(f"Failed to write metadata.json: {_e}")
     
-    print("\n--- Data Generation Complete! ---")
-    print(f"All files have been saved to the '{OUTPUT_DIR}' directory.")
+    logger.info("--- Data Generation Complete! ---")
+    logger.info(f"All files have been saved to the '{OUTPUT_DIR}' directory.")
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=os.getenv('LOG_LEVEL', 'INFO').upper(), format='[%(levelname)s] %(message)s')
     generate_all_data()
 

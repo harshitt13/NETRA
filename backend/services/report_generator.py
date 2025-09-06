@@ -1,4 +1,5 @@
 import os
+import logging
 import pandas as pd
 from fpdf import FPDF
 from datetime import datetime
@@ -17,7 +18,7 @@ class ReportGenerator:
         self.metadata = all_datasets.get('metadata') if isinstance(all_datasets, dict) else None
         # Guard against missing dataset
         if self.properties_df is None:
-            print("WARN: properties dataset missing; proceeding with empty DataFrame for reports.")
+            logging.getLogger(__name__).warning("properties dataset missing; proceeding with empty DataFrame for reports.")
             import pandas as _pd
             self.properties_df = _pd.DataFrame(columns=['person_id','property_address','purchase_value_inr'])
         elif 'owner_person_id' in self.properties_df.columns:
@@ -73,10 +74,12 @@ class ReportGenerator:
                     # Last resort: truncate the text and write with cell
                     trunc = self._safe_text(str(txt))[:120]
                     pdf.cell(content_width, h, trunc, 0, 1, 'L')
-                    print(f"WARN: safe_mc fallback used ({mc_err}). Text truncated.")
+                    logging.getLogger(__name__).warning(f"safe_mc fallback used ({mc_err}). Text truncated.")
             
             # Debug info
-            print(f"DEBUG: PDF content width: {content_width}mm (page width {pdf.w} minus margins {pdf.l_margin}+{pdf.r_margin})")
+            logging.getLogger(__name__).debug(
+                f"PDF content width: {content_width}mm (page width {pdf.w} minus margins {pdf.l_margin}+{pdf.r_margin})"
+            )
             
             # --- Header (use core PDF font 'Helvetica' to avoid undefined font errors) ---
             pdf.set_font("Helvetica", 'B', 18)
@@ -253,18 +256,18 @@ class ReportGenerator:
             os.makedirs(output_dir, exist_ok=True)
             file_path = os.path.join(output_dir, f"report_{person_id}.pdf")
             pdf.output(file_path)
-            print(f"Successfully generated report: {file_path}")
+            logging.getLogger(__name__).info(f"Successfully generated report: {file_path}")
             return file_path
 
         except Exception as e:
             import traceback
-            print(f"FATAL ERROR during primary PDF generation for {person_id}: {e}")
-            print(f"TRACE: {traceback.format_exc()}")
+            logging.getLogger(__name__).error(f"FATAL ERROR during primary PDF generation for {person_id}: {e}")
+            logging.getLogger(__name__).error(f"TRACE: {traceback.format_exc()}")
             if not allow_fallback:
                 return None
             # --- Fallback minimal PDF attempt ---
             try:
-                print(f"Attempting fallback minimal PDF for {person_id}...")
+                logging.getLogger(__name__).warning(f"Attempting fallback minimal PDF for {person_id}...")
                 pdf = FPDF()
                 pdf.set_margins(15, 15, 15)
                 pdf.add_page()
@@ -284,10 +287,10 @@ class ReportGenerator:
                 os.makedirs(output_dir, exist_ok=True)
                 file_path = os.path.join(output_dir, f"report_{person_id}_fallback.pdf")
                 pdf.output(file_path)
-                print(f"Fallback PDF generated: {file_path}")
+                logging.getLogger(__name__).info(f"Fallback PDF generated: {file_path}")
                 return file_path
             except Exception as fe:
-                print(f"FATAL: Fallback PDF generation also failed for {person_id}: {fe}")
+                logging.getLogger(__name__).error(f"FATAL: Fallback PDF generation also failed for {person_id}: {fe}")
                 return None
 
     def _add_section_title(self, pdf, title):

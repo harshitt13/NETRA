@@ -177,6 +177,9 @@ def dataset_metadata():
 @token_required
 def search_persons():
     search_query = request.args.get('q', '')
+    # Minimal validation: require at least 2 non-space chars
+    if not isinstance(search_query, str) or len(search_query.strip()) < 2:
+        return api_err("Query 'q' must be at least 2 characters.", 400)
     try:
         search_results = risk_scorer.search_persons(search_query)
         # Return plain array for frontend compatibility
@@ -444,12 +447,12 @@ def test_alerts():
     """Test endpoint to verify alert generation without authentication"""
     try:
         alerts_path = os.path.join(DATA_PATH, 'AlertScores.csv')
-        print(f"DEBUG: Looking for alerts at: {alerts_path}")
+        logger.debug(f"[TEST-ALERTS] Looking for alerts at: {alerts_path}")
         
         if os.path.exists(alerts_path):
             alerts_df = pd.read_csv(alerts_path)
-            print(f"DEBUG: Found {len(alerts_df)} alerts")
-            print(f"DEBUG: Columns: {list(alerts_df.columns)}")
+            logger.debug(f"[TEST-ALERTS] Found {len(alerts_df)} alerts")
+            logger.debug(f"[TEST-ALERTS] Columns: {list(alerts_df.columns)}")
             
             # Test the same logic as the main alerts endpoint
             if len(alerts_df) == 0:
@@ -471,10 +474,10 @@ def test_alerts():
                 "sample_alert": alerts_df.iloc[0].to_dict() if len(alerts_df) > 0 else None
             })
         else:
-            print(f"DEBUG: AlertScores.csv not found at {alerts_path}")
+            logger.debug(f"[TEST-ALERTS] AlertScores.csv not found at {alerts_path}")
             return jsonify({"alerts_file_exists": False, "path_checked": alerts_path})
     except Exception as e:
-        print(f"DEBUG: Error in test-alerts: {e}")
+        logger.error(f"[TEST-ALERTS] Error: {e}")
         import traceback
         traceback.print_exc()
         return jsonify({"error": str(e)})
@@ -505,21 +508,25 @@ def handle_cases():
         try:
             logger.info("[CASES] Listing all cases")
             all_cases = case_manager.get_all_cases()
-            return jsonify(all_cases), 200
+            return api_ok(all_cases)
         except Exception as e:
             logger.error(f"ERROR in /api/cases [GET]: {e}")
             return api_err("An unexpected error occurred while fetching cases.", 500)
             
     elif request.method == 'POST':
-        case_data = request.get_json()
-        if not case_data:
-            return api_err("Invalid request body.", 400)
+        case_data = request.get_json(silent=True) or {}
+        # Minimal validation
+        if not isinstance(case_data, dict):
+            return api_err("Invalid JSON body.", 400)
+        person_id = case_data.get('person_id') or case_data.get('risk_profile', {}).get('person_details', {}).get('person_id')
+        if not person_id:
+            return api_err("'person_id' is required in body or risk_profile.person_details.", 400)
         try:
             logger.info("[CASES] Creating new case")
             case_id = case_manager.create_case(case_data)
             if case_id:
                 logger.info(f"[CASES] Created case {case_id}")
-                return jsonify({"message": "Case created successfully.", "case_id": case_id}), 201
+                return api_ok({"message": "Case created successfully.", "case_id": case_id}, 201)
             else:
                 return api_err("Failed to create case in database.", 500)
         except Exception as e:
@@ -533,7 +540,7 @@ def get_case(case_id):
         logger.info(f"[CASES] Fetching case {case_id}")
         case = case_manager.get_case(case_id)
         if case:
-            return jsonify(case), 200
+            return api_ok(case)
         else:
             return api_err("Case not found.", 404)
     except Exception as e:
@@ -570,13 +577,13 @@ def case_notes(case_id):
             case = case_manager.get_case(case_id)
             firestore_notes = case.get('notes') if case else None
             if firestore_notes is not None:
-                return jsonify({"case_id": case_id, "notes": firestore_notes, "source": "firestore"}), 200
+                return api_ok({"case_id": case_id, "notes": firestore_notes, "source": "firestore"})
             # Fallback to local file
             local_notes_map = _read_local_notes()
             notes_text = local_notes_map.get(case_id, '')
             if case is None and not notes_text:
                 return api_err("Case not found.", 404)
-            return jsonify({"case_id": case_id, "notes": notes_text, "source": "local"}), 200
+            return api_ok({"case_id": case_id, "notes": notes_text, "source": "local"})
         else:  # PUT
             body = request.get_json() or {}
             notes = body.get('notes')
@@ -590,8 +597,8 @@ def case_notes(case_id):
             _write_local_notes(local_notes_map)
             if not updated:
                 # Firestore failed but local saved
-                return jsonify({"message": "Notes saved locally (Firestore unavailable).", "fallback": True}), 200
-            return jsonify({"message": "Notes saved successfully.", "fallback": False}), 200
+                return api_ok({"message": "Notes saved locally (Firestore unavailable).", "fallback": True})
+            return api_ok({"message": "Notes saved successfully.", "fallback": False})
     except Exception as e:
         logger.error(f"ERROR in /api/cases/{case_id}/notes: {e}")
         return api_err("Failed to process notes request.", 500)
@@ -615,67 +622,11 @@ def get_graph_data(person_id):
         if not network_data or not network_data.get("nodes"):
             # --- Fallback: synthesize a tiny network from CSV data (no Neo4j) ---
             try:
-                persons_df = all_datasets.get('persons')
-                accounts_df = all_datasets.get('accounts')
-                tx_df = all_datasets.get('transactions')
-                if persons_df is not None and accounts_df is not None and tx_df is not None:
-                    # Find accounts belonging to this person
-                    person_accounts = accounts_df[accounts_df['owner_id'] == person_id]['account_number'].tolist()
-                    if person_accounts:
-                        # Get up to N related transactions where person is source or target
-                        related_tx = tx_df[(tx_df['from_account'].isin(person_accounts)) | (tx_df['to_account'].isin(person_accounts))].head(25)
-                        # Map counterpart accounts -> owners
-                        counterpart_accounts = set()
-                        for _, row in related_tx.iterrows():
-                            if row['from_account'] in person_accounts:
-                                counterpart_accounts.add(row['to_account'])
-                            if row['to_account'] in person_accounts:
-                                counterpart_accounts.add(row['from_account'])
-                        counterpart_owners = accounts_df[accounts_df['account_number'].isin(list(counterpart_accounts))]
-                        # Build nodes
-                        nodes = []
-                        person_row = persons_df[persons_df['person_id'] == person_id]
-                        label = person_row.iloc[0]['full_name'] if not person_row.empty else person_id
-                        nodes.append({"id": person_id, "label": label, "type": "Person", "isCenter": True})
-                        for _, acct in counterpart_owners.iterrows():
-                            owner_id = acct['owner_id']
-                            if owner_id == person_id:
-                                continue
-                            owner_row = persons_df[persons_df['person_id'] == owner_id]
-                            owner_label = owner_row.iloc[0]['full_name'] if not owner_row.empty else owner_id
-                            # Avoid duplicates
-                            if not any(n['id'] == owner_id for n in nodes):
-                                nodes.append({"id": owner_id, "label": owner_label, "type": "Person", "isCenter": False})
-                        # Build edges (aggregate amounts per counterpart for brevity)
-                        edges_map = {}
-                        for _, tx in related_tx.iterrows():
-                            src_is_person = tx['from_account'] in person_accounts
-                            dst_is_person = tx['to_account'] in person_accounts
-                            if src_is_person or dst_is_person:
-                                counterpart_acct = tx['to_account'] if src_is_person else tx['from_account']
-                                counterpart_owner_row = accounts_df[accounts_df['account_number'] == counterpart_acct]
-                                if counterpart_owner_row.empty:
-                                    continue
-                                counterpart_owner = counterpart_owner_row.iloc[0]['owner_id']
-                                if counterpart_owner == person_id:
-                                    continue
-                                key = counterpart_owner
-                                amt = int(tx['amount_inr']) if not pd.isna(tx['amount_inr']) else 0
-                                if key not in edges_map:
-                                    edges_map[key] = {"amount": 0, "isOutgoing": src_is_person}
-                                edges_map[key]["amount"] += amt
-                        edges = []
-                        for target_id, meta in edges_map.items():
-                            edges.append({
-                                "source": person_id,
-                                "target": target_id,
-                                "label": f"₹{meta['amount']:,}",
-                                "isOutgoing": meta['isOutgoing']
-                            })
-                        synthesized = {"person_id": person_id, "nodes": nodes, "edges": edges, "message": "Synthesized network (Neo4j unavailable or no data)."}
-                        return jsonify(synthesized), 200
+                synthesized = _synthesize_csv_graph(person_id)
+                if synthesized is not None:
+                    return jsonify(synthesized), 200
             except Exception as synth_err:
-                print(f"WARN: Failed to synthesize fallback graph for {person_id}: {synth_err}")
+                logger.warning(f"Failed to synthesize fallback graph for {person_id}: {synth_err}")
             # Return empty graph if synthesis not possible
             return jsonify({
                 "person_id": person_id,
@@ -689,6 +640,75 @@ def get_graph_data(person_id):
     except Exception as e:
         logger.error(f"ERROR in /api/graph/{person_id}: {e}")
         return api_err("Failed to fetch graph data from Neo4j.", 500)
+
+# --- helpers ---
+def _synthesize_csv_graph(person_id: str):
+    """Build a tiny graph from CSVs as a fallback when Neo4j has no data.
+    Returns a dict with nodes/edges or None if not possible.
+    """
+    persons_df = all_datasets.get('persons')
+    accounts_df = all_datasets.get('accounts')
+    tx_df = all_datasets.get('transactions')
+    if persons_df is None or accounts_df is None or tx_df is None:
+        return None
+    # Find accounts belonging to this person
+    person_accounts = accounts_df[accounts_df['owner_id'] == person_id]['account_number'].tolist()
+    if not person_accounts:
+        return None
+    # Get up to N related transactions where person is source or target
+    related_tx = tx_df[(tx_df['from_account'].isin(person_accounts)) | (tx_df['to_account'].isin(person_accounts))].head(25)
+    if related_tx.empty:
+        return None
+    # Map counterpart accounts -> owners
+    counterpart_accounts = set()
+    for _, row in related_tx.iterrows():
+        if row['from_account'] in person_accounts:
+            counterpart_accounts.add(row['to_account'])
+        if row['to_account'] in person_accounts:
+            counterpart_accounts.add(row['from_account'])
+    counterpart_owners = accounts_df[accounts_df['account_number'].isin(list(counterpart_accounts))]
+    # Build nodes
+    nodes = []
+    person_row = persons_df[persons_df['person_id'] == person_id]
+    label = person_row.iloc[0]['full_name'] if not person_row.empty else person_id
+    nodes.append({"id": person_id, "label": label, "type": "Person", "isCenter": True})
+    for _, acct in counterpart_owners.iterrows():
+        owner_id = acct['owner_id']
+        if owner_id == person_id:
+            continue
+        owner_row = persons_df[persons_df['person_id'] == owner_id]
+        owner_label = owner_row.iloc[0]['full_name'] if not owner_row.empty else owner_id
+        # Avoid duplicates
+        if not any(n['id'] == owner_id for n in nodes):
+            nodes.append({"id": owner_id, "label": owner_label, "type": "Person", "isCenter": False})
+    # Build edges (aggregate amounts per counterpart for brevity)
+    edges_map = {}
+    for _, tx in related_tx.iterrows():
+        src_is_person = tx['from_account'] in person_accounts
+        dst_is_person = tx['to_account'] in person_accounts
+        if src_is_person or dst_is_person:
+            counterpart_acct = tx['to_account'] if src_is_person else tx['from_account']
+            counterpart_owner_row = accounts_df[accounts_df['account_number'] == counterpart_acct]
+            if counterpart_owner_row.empty:
+                continue
+            counterpart_owner = counterpart_owner_row.iloc[0]['owner_id']
+            if counterpart_owner == person_id:
+                continue
+            key = counterpart_owner
+            amt = int(tx['amount_inr']) if not pd.isna(tx['amount_inr']) else 0
+            if key not in edges_map:
+                edges_map[key] = {"amount": 0, "isOutgoing": src_is_person}
+            edges_map[key]["amount"] += amt
+    edges = []
+    for target_id, meta in edges_map.items():
+        edges.append({
+            "source": person_id,
+            "target": target_id,
+            "label": f"₹{meta['amount']:,}",
+            "isOutgoing": meta['isOutgoing']
+        })
+    synthesized = {"person_id": person_id, "nodes": nodes, "edges": edges, "message": "Synthesized network (Neo4j unavailable or no data)."}
+    return synthesized
 
 @app.route('/api/report/<string:person_id>', methods=['GET'])
 @token_required

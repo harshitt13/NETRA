@@ -3,6 +3,16 @@ import os
 import logging
 
 class DataLoader:
+    """Load CSV datasets and optional metadata.json with light schema validation.
+
+    Attributes:
+        data_path: Base directory containing generated CSVs and optional metadata.json.
+        datasets: In-memory cache of loaded DataFrames keyed by dataset name.
+        file_names: Mapping of dataset keys to CSV filenames.
+        schemas: Minimal required columns per dataset for fail-fast validation.
+        metadata_file: Path to metadata.json (if present).
+        metadata: Parsed metadata contents.
+    """
     def __init__(self, data_path='./generated-data/'):
         self.data_path = data_path
         self.datasets = {}
@@ -59,7 +69,7 @@ class DataLoader:
                         raise ValueError(f"{key}.{col} contains non-numeric values")
 
     def load_all_data(self):
-        print("--- Starting Data Loading Process ---")
+        self.logger.info("--- Starting Data Loading Process ---")
         for key, file_name in self.file_names.items():
             full_path = os.path.join(self.data_path, file_name)
             try:
@@ -67,20 +77,20 @@ class DataLoader:
                 # Validate schema and types
                 self._validate_schema(key, df)
                 self.datasets[key] = df
-                print(f"[SUCCESS] Loaded '{file_name}' into memory.")
+                self.logger.info(f"[SUCCESS] Loaded '{file_name}' into memory.")
             except FileNotFoundError:
-                print(f"[ERROR] File not found: '{full_path}'. Cannot load '{key}' dataset.")
+                self.logger.error(f"File not found: '{full_path}'. Cannot load '{key}' dataset.")
                 self.datasets[key] = None
             except ValueError as ve:
                 # Fail fast with concise message
                 msg = f"[SCHEMA ERROR] {ve}. File: '{file_name}'"
-                print(msg)
+                self.logger.error(msg)
                 # Re-raise to stop startup if core schemas are broken
                 raise
             except Exception as e:
-                print(f"[ERROR] Failed reading '{file_name}': {e}")
+                self.logger.error(f"Failed reading '{file_name}': {e}")
                 self.datasets[key] = None
-        print("--- Data Loading Process Finished ---")
+        self.logger.info("--- Data Loading Process Finished ---")
         # Load metadata if present
         try:
             if os.path.exists(self.metadata_file):
@@ -90,10 +100,10 @@ class DataLoader:
                 # Light schema validation (non-fatal)
                 valid_meta, warn_msg = self._validate_metadata(self.metadata)
                 if not valid_meta and warn_msg:
-                    print(f"[WARN] metadata.json validation: {warn_msg}")
-                print("[INFO] Loaded metadata.json")
+                    self.logger.warning(f"metadata.json validation: {warn_msg}")
+                self.logger.info("[INFO] Loaded metadata.json")
         except Exception as me:
-            print(f"[WARN] Failed to read metadata.json: {me}")
+            self.logger.warning(f"Failed to read metadata.json: {me}")
         return self.datasets
 
     def get_metadata(self):
@@ -141,24 +151,24 @@ class DataLoader:
             return False, str(e)
 
 if __name__ == '__main__':
-    print("Running DataLoader in standalone mode for testing...")
-    
+    logging.basicConfig(level=os.getenv('LOG_LEVEL', 'INFO').upper(), format='[%(levelname)s] %(message)s')
+    logger = logging.getLogger(__name__)
+    logger.info("Running DataLoader in standalone mode for testing...")
+
     loader = DataLoader(data_path='./generated-data/')
     all_data = loader.load_all_data()
-    
-    print("\n--- Verifying Loaded Data ---")
+
+    logger.info("\n--- Verifying Loaded Data ---")
     all_loaded = True
     for name, df in all_data.items():
         if df is not None:
-            print(f"Dataset '{name}': {df.shape[0]} rows, {df.shape[1]} columns. Preview:")
-            print(df.head(2))
-            print("-" * 30)
+            logger.info(f"Dataset '{name}': {df.shape[0]} rows, {df.shape[1]} columns. Preview:")
+            logger.info("\n%s\n%s", df.head(2), "-" * 30)
         else:
             all_loaded = False
-            print(f"Dataset '{name}': FAILED TO LOAD.")
+            logger.warning(f"Dataset '{name}': FAILED TO LOAD.")
 
     if not all_loaded:
-        print("\nWARNING: Some datasets failed to load.")
-        print("Please ensure you have run 'data-generation/generate_data.py' first.")
+        logger.warning("Some datasets failed to load. Ensure 'data-generation/generate_data.py' has been run.")
     else:
-        print("\nAll datasets loaded successfully.")
+        logger.info("All datasets loaded successfully.")

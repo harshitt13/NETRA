@@ -2,6 +2,7 @@ import os
 import json
 import base64
 import firebase_admin
+import logging
 from firebase_admin import credentials, firestore
 from datetime import datetime
 
@@ -10,6 +11,7 @@ class CaseManager:
     Manages all interactions with the Firestore database for investigation cases.
     """
     def __init__(self):
+        self._logger = logging.getLogger(__name__)
         self.db = None
         self._local_cases_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'generated-data', 'cases_local.json'))
         try:
@@ -30,7 +32,7 @@ class CaseManager:
                         cred_dict = json.loads(decoded)
                     cred = credentials.Certificate(cred_dict)
                 except Exception as e:
-                    print(f"WARN: Failed to parse FIREBASE_CREDENTIALS. Details: {e}")
+                    self._logger.warning(f"Failed to parse FIREBASE_CREDENTIALS: {e}")
             elif creds_path and os.path.exists(creds_path):
                 cred = credentials.Certificate(creds_path)
             elif os.path.exists(local_key_path):
@@ -46,9 +48,9 @@ class CaseManager:
             # If app is initialized, obtain Firestore client
             if firebase_admin._apps:
                 self.db = firestore.client()
-                print("CaseManager initialized. Firestore client is available." if self.db else "CaseManager initialized without Firestore client.")
+                self._logger.info("CaseManager initialized with Firestore client" if self.db else "CaseManager initialized without Firestore client")
         except Exception as e:
-            print(f"ERROR: Failed to initialize Firestore. Details: {e}")
+            self._logger.error(f"Failed to initialize Firestore: {e}")
             self.db = None
 
     def create_case(self, case_data):
@@ -65,7 +67,7 @@ class CaseManager:
                     case_ref.set(case_data)
                     return case_id
                 except Exception as e:
-                    print(f"ERROR: Could not create case in Firestore. Details: {e}")
+                    self._logger.error(f"Could not create case in Firestore: {e}")
                     # fall through to local fallback
 
             # Local fallback: persist to JSON
@@ -75,10 +77,10 @@ class CaseManager:
             case_data_local['createdAt'] = datetime.utcnow().isoformat() + 'Z'
             existing[case_id] = case_data_local
             self._write_local_cases(existing)
-            print(f"INFO: Created case {case_id} in local store (fallback).")
+            self._logger.info(f"Created case {case_id} in local store (fallback)")
             return case_id
         except Exception as e:
-            print(f"ERROR: create_case failed. Details: {e}")
+            self._logger.error(f"create_case failed: {e}")
             return None
 
     def get_case(self, case_id):
@@ -93,7 +95,7 @@ class CaseManager:
             cases = self._read_local_cases()
             return cases.get(case_id)
         except Exception as e:
-            print(f"ERROR: Could not retrieve case {case_id}. Details: {e}")
+            self._logger.error(f"Could not retrieve case {case_id}: {e}")
             return None
 
     def update_case_notes(self, case_id, notes):
@@ -102,19 +104,19 @@ class CaseManager:
             if self.db:
                 case_ref = self.db.collection('cases').document(case_id)
                 if not case_ref.get().exists:
-                    print(f"WARN: Tried to update notes for non-existent case {case_id}")
+                    self._logger.warning(f"Tried to update notes for non-existent case {case_id}")
                     return False
                 case_ref.update({
                     'notes': notes,
                     'updatedAt': firestore.SERVER_TIMESTAMP
                 })
-                print(f"DEBUG: Updated notes for case {case_id} (length={len(notes)})")
+                self._logger.debug(f"Updated notes for case {case_id} (length={len(notes)})")
                 return True
 
             # Local fallback
             cases = self._read_local_cases()
             if case_id not in cases:
-                print(f"WARN: Tried to update notes for non-existent local case {case_id}")
+                self._logger.warning(f"Tried to update notes for non-existent local case {case_id}")
                 return False
             case = cases[case_id]
             case['notes'] = notes
@@ -123,7 +125,7 @@ class CaseManager:
             self._write_local_cases(cases)
             return True
         except Exception as e:
-            print(f"ERROR: Failed to update notes for {case_id}. Details: {e}")
+            self._logger.error(f"Failed to update notes for {case_id}: {e}")
             return False
 
     # --- THIS IS THE NEW METHOD ---
@@ -151,7 +153,7 @@ class CaseManager:
                         })
                     return cases
                 except Exception as e:
-                    print(f"WARN: Firestore get_all_cases failed. Falling back to local. Details: {e}")
+                    self._logger.warning(f"Firestore get_all_cases failed. Falling back to local: {e}")
 
             # Local fallback
             local_cases = self._read_local_cases()
@@ -170,7 +172,7 @@ class CaseManager:
                 })
             return cases
         except Exception as e:
-            print(f"ERROR: Could not retrieve all cases. Details: {e}")
+            self._logger.error(f"Could not retrieve all cases: {e}")
             return []
 
     def clear_all_cases(self):
@@ -189,22 +191,22 @@ class CaseManager:
                             batch.commit()
                             batch = self.db.batch()
                     batch.commit()
-                    print(f"INFO: Deleted {count} case documents from Firestore.")
+                    self._logger.info(f"Deleted {count} case documents from Firestore")
                     return count
                 except Exception as e:
-                    print(f"WARN: Firestore clear_all_cases failed. Falling back to local. Details: {e}")
+                    self._logger.warning(f"Firestore clear_all_cases failed. Falling back to local: {e}")
 
             # Local fallback: remove local file
             if os.path.exists(self._local_cases_path):
                 try:
                     os.remove(self._local_cases_path)
-                    print("INFO: Cleared local cases store.")
+                    self._logger.info("Cleared local cases store")
                     return 1
                 except Exception:
                     pass
             return 0
         except Exception as e:
-            print(f"ERROR: Failed to clear cases. Details: {e}")
+            self._logger.error(f"Failed to clear cases: {e}")
             return 0
 
     # ---- Local store helpers ----
@@ -214,7 +216,7 @@ class CaseManager:
                 with open(self._local_cases_path, 'r', encoding='utf-8') as f:
                     return json.load(f)
         except Exception as e:
-            print(f"WARN: Failed reading local cases store: {e}")
+            self._logger.warning(f"Failed reading local cases store: {e}")
         return {}
 
     def _write_local_cases(self, data):
@@ -224,6 +226,6 @@ class CaseManager:
                 json.dump(data, f, ensure_ascii=False, indent=2)
             return True
         except Exception as e:
-            print(f"WARN: Failed writing local cases store: {e}")
+            self._logger.warning(f"Failed writing local cases store: {e}")
             return False
 
