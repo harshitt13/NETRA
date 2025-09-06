@@ -62,8 +62,8 @@ flowchart LR
   %% Data Sources
   subgraph Data Sources
     CSV[CSV files<br/>backend/generated-data]
-    NEO[Neo4j (optional)]
-    FS[Firestore (optional)]
+    NEO[Neo4j optional]
+    FS[Firestore optional]
   end
 
   %% Client -> API
