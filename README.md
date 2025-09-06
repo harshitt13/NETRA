@@ -11,205 +11,164 @@
 ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝
 </pre>
 
-**An AI-Powered Intelligence Platform for Detecting and Dismantling Complex Money Laundering Networks**
+An AI‑powered financial intelligence platform for detecting and investigating suspicious activity across accounts, persons, and companies.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
-[![React](https://img.shields.io/badge/react-18.2+-blue.svg)](https://reactjs.org)
-[![Neo4j](https://img.shields.io/badge/neo4j-5.x-green.svg)](https://neo4j.com)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
+[![React](https://img.shields.io/badge/react-18.2%2B-blue.svg)](https://reactjs.org)
+[![Neo4j (optional)](https://img.shields.io/badge/neo4j-optional-green.svg)](https://neo4j.com)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/AnuragWaskle/project-NETRA&dir=backend)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/AnuragWaskle/project-NETRA&root-directory=frontend&project-name=netra-frontend&repository-name=netra-frontend)
 
 </div>
 
-## 🔍 Overview
+## Overview
 
-Project Netra (Sanskrit for "eye") is a next-generation financial investigation platform designed to provide law enforcement and financial intelligence units with a clear, unified view of complex financial networks. By leveraging a hybrid risk-scoring engine, graph analytics, and AI-powered summarization, Netra empowers investigators to detect, analyze, and dismantle sophisticated money laundering operations with unprecedented speed and accuracy.
+Project NETRA provides a unified workflow for ingesting datasets (CSV/ZIP), calculating hybrid risk scores, inspecting networks, and generating AI‑assisted PDF reports. It ships with synthetic datasets and lets investigators upload their own data from the UI.
 
-## ✨ Core Features
+Highlights:
+- Hybrid risk scoring (rules) with CSV pipeline; AlertScores.csv is the canonical output.
+- Upload your own CSVs or a ZIP of CSVs from Settings; schema validation and re‑analysis runs automatically.
+- Graph view uses Neo4j when available; otherwise a small network is synthesized from CSVs.
+- PDF report generation; endpoint now accepts either a person_id or a case_id.
+- Optional AI summary via Google Gemini with deterministic local fallback.
+- Authentication is token‑based; mock tokens are supported for local/demo.
 
-- 🧠 **Hybrid Risk-Scoring Engine**: Combines rule-based detection with machine learning (Isolation Forest) to identify anomalous financial patterns
-- 🕸️ **Interactive Network Graph**: Neo4j-powered visualizations of financial networks and transaction flows
-- 🤖 **AI-Powered Case Summaries**: Google Gemini LLM integration for automated case narrative generation
-- 📋 **Comprehensive Investigation Workspace**: Multi-tabbed interface with entity details, timelines, and real-time notes
-- 📄 **Automated PDF Reporting**: Professional investigation reports with complete case documentation
-- 🔑 **Secure Authentication**: Firebase-based authentication and authorization system
+## Architecture
 
-## 🏗️ Architecture
+Backend (Flask):
+- Data loader with schema validation (CSV under `backend/generated-data/`).
+- Risk scoring (`services/risk_scoring.py`), AI summarizer, report generator, optional graph analyzer.
+- Case management with Firebase Firestore if configured, else local JSON fallback.
 
-### Backend (`/backend/`)
+Frontend (React + Vite):
+- Centralized API client with envelope unwrapping and token provider.
+- Pages: Dashboard, Triage, Investigation Workspace, Reporting, Settings.
+- Settings provides dataset upload (CSV/ZIP) and metadata view.
 
-- **Framework**: Flask (Python)
-- **Database**: Neo4j (graph), Firebase Firestore (documents), CSV (synthetic data)
-- **AI/ML**: Google Gemini API, Scikit-learn
-- **Key Services**:
-  - Risk scoring and anomaly detection
-  - Graph analytics and network analysis
-  - AI-powered summarization
-  - Case management
-  - PDF report generation
+Data generation:
+- `data-generation/generate_data.py` produces CSVs into `backend/generated-data/`.
+- Optional Neo4j loading via scripts in `backend/data-generation/`.
 
-### Frontend (`/frontend/`)
+## Quick Start (Local)
 
-- **Framework**: React 18 with Vite
-- **Styling**: Tailwind CSS
-- **Authentication**: Firebase Auth
-- **Visualization**: React-Force-Graph-2D, Recharts
-- **State Management**: Custom hooks and context
+Prereqs: Python 3.10+, Node 18+.
 
-### Data Generation (`/data-generation/`)
+Backend:
+1) `cd backend`
+2) `python -m venv venv` (Windows: `venv\Scripts\activate`, macOS/Linux: `source venv/bin/activate`)
+3) `pip install -r requirements.txt`
+4) Set env (optional but recommended):
+   - `GEMINI_API_KEY` for AI summaries (else a rule‑based fallback is used)
+   - `FRONTEND_URL` for CORS (e.g. http://localhost:5173)
+   - `FIREBASE_CREDENTIALS` or `GOOGLE_APPLICATION_CREDENTIALS` if using Firestore
+5) Run: `python app.py` (serves on http://localhost:5001)
 
-- **Synthetic Data**: Faker-based generation with embedded money laundering patterns
-- **Neo4j Integration**: Automated data loading scripts
-- **Pattern Detection**: Structuring, shell company layering, mule account patterns
+Frontend:
+1) `cd frontend`
+2) `npm install`
+3) Optional: set `VITE_API_URL` to your backend API base (e.g. http://localhost:5001/api). If unset, it auto‑detects localhost and uses `http://localhost:5001/api`.
+4) `npm run dev` (http://localhost:5173)
 
-## 🚀 Quick Start
+Authentication (local/mock):
+- The backend accepts `Authorization: Bearer mock-jwt-token-12345`.
+- The frontend includes a mock token provider in development to call protected APIs.
 
-### Prerequisites
+## Dataset Uploads (CSV/ZIP)
 
-- Python 3.10+
-- Node.js 18.x+
-- Neo4j Desktop or Cloud instance
-- Firebase project (for authentication and case management)
+Upload via UI: Settings → Data Management.
 
-### 1. Clone the Repository
+- ZIP upload: include any of these exact filenames (case‑insensitive):
+  - Persons.csv, BankAccounts.csv, Transactions.csv, Companies.csv, Directorships.csv, Properties.csv, PoliceCases.csv
+- Single CSV upload: choose which dataset it represents (dropdown in the UI).
+- After upload, the server reloads all CSVs and re‑runs analysis to regenerate alerts.
 
-```bash
-git clone https://github.com/AnuragWaskle/project-NETRA.git
-cd project-NETRA
-```
+Schemas (minimal required columns):
+- persons: person_id, full_name, dob, pan_number, address, monthly_salary_inr, tax_filing_status
+- accounts: account_number, owner_id, bank_name, account_type, open_date, balance_inr
+- transactions: transaction_id, from_account, to_account, amount_inr, timestamp, payment_mode, remarks
+- companies: cin, company_name, registered_address, incorporation_date, company_status, paid_up_capital_inr
+- directorships: directorship_id, person_id, cin, appointment_date
+- properties: property_id, owner_person_id, property_address, purchase_date, purchase_value_inr
+- cases: case_id, person_id, case_details, case_date, status
 
-### 2. Backend Setup
+Sample data that triggers alerts:
+- See `samples/` at the repo root (ready‑named CSVs) or `frontend/public/samples/` for individual examples and a README.
 
-```bash
-cd backend
+## Key Endpoints (Backend)
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+Base path is `/api`.
 
-# Install dependencies
-pip install -r requirements.txt
+- GET `/alerts` → list of alerts (reads `AlertScores.csv`).
+- GET `/persons?q=<query>` → search persons.
+- GET `/investigate/<person_id>` → risk breakdown for a person.
+- GET `/graph/<person_id>` → network; synthesizes from CSVs if Neo4j empty/unavailable.
+- GET `/report/<person_or_case_id>` → PDF report; accepts person_id or case_id.
+- POST `/cases` → create case; body must include `person_id` or embed it in `risk_profile.person_details`.
+- GET `/cases` → list cases (Firestore or local fallback).
+- POST `/datasets/upload` → upload CSV/ZIP; validates, reloads, reruns analysis.
+- GET `/datasets/metadata` → seed/snapshot/counts (if metadata.json present; counts are derived regardless).
+- POST `/run-analysis` (or `?sync=1`) and GET `/run-analysis/status` → control risk analysis.
+- Settings: `/settings/profile`, `/settings/api-key`, `/settings/theme`, `/settings/regenerate-data`, `/settings/clear-cases`.
 
-# Set up environment variables
-# Create .env file with:
-# GEMINI_API_KEY=your_gemini_api_key
-# NEO4J_URI=bolt://localhost:7687
-# NEO4J_USER=neo4j
-# NEO4J_PASSWORD=your_password
+Auth:
+- All protected routes use `Authorization: Bearer <token>`.
+- Mock token accepted: `mock-jwt-token-12345`.
 
-# Run the application
-python app.py
-```
+## Reporting
 
-### 3. Frontend Setup
+- The Reporting page downloads PDF via `/api/report/<id>`. You can pass a caseId or personId.
+- The PDF score is harmonized with `AlertScores.csv` to match the dashboard.
 
-```bash
-cd frontend
+## Data Generation
 
-# Install dependencies
-npm install
+- `data-generation/generate_data.py` writes CSVs to `backend/generated-data/`.
+- From the backend Settings page you can trigger regeneration.
+- If using Neo4j, see `backend/data-generation/load_to_neo4j.py` for loading.
 
-# Configure Firebase
-# Update src/firebase/firebaseConfig.js with your Firebase project details
-
-# Start development server
-npm run dev
-```
-
-### 4. Data Setup
-
-```bash
-# Generate synthetic data
-cd data-generation
-python generate_data.py
-
-# Load data into Neo4j
-cd ../backend/data-generation
-python load_to_neo4j.py
-```
-
-## 📊 Money Laundering Detection Patterns
-
-The system detects several sophisticated financial crime patterns:
-
-- **Structuring**: Breaking large transactions into smaller amounts to avoid reporting thresholds
-- **Shell Company Layering**: Using corporate entities to obscure the source of funds
-- **Income-Expense Discrepancies**: Identifying lifestyle vs. declared income mismatches
-- **Property Investment Anomalies**: Detecting unexplained real estate acquisitions
-- **Tax Evasion Indicators**: Non-filing and inconsistent reporting patterns
-
-## 🛡️ Security Features
-
-- **Token-based Authentication**: Firebase JWT integration
-- **API Security**: Protected endpoints with authorization middleware
-- **Data Privacy**: Secure handling of sensitive financial information
-- **Audit Trail**: Comprehensive logging of user actions and system events
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 project-NETRA/
-├── backend/                    # Flask API server
-│   ├── app.py                 # Main application entry point
-│   ├── requirements.txt       # Python dependencies
-│   ├── services/              # Business logic services
-│   ├── utils/                 # Utility functions
-│   ├── data-generation/       # Neo4j data loading
-│   └── generated-data/        # CSV data files
-├── frontend/                   # React application
-│   ├── src/                   # Source code
-│   ├── public/                # Static assets
-│   ├── package.json          # Node.js dependencies
-│   └── README.md             # Frontend documentation
-├── data-generation/           # Synthetic data generation
-│   ├── generate_data.py      # Main data generation script
-│   └── patterns.py           # Money laundering patterns
-└── .gitignore                # Git ignore rules
+├── backend/
+│   ├── app.py                 # Flask API (CORS, endpoints, uploads, reports)
+│   ├── services/              # risk_scoring, report_generator, graph_analysis, case_manager, ai_summarizer
+│   ├── utils/                 # data_loader (schemas), auth (mock/real)
+│   └── generated-data/        # CSVs + AlertScores.csv (+ metadata.json if present)
+├── frontend/
+│   ├── src/pages/             # Dashboard, Triage, Investigation, Reporting, Settings
+│   ├── src/services/api.js    # API base resolver + token provider + endpoints
+│   └── public/samples/        # Downloadable sample CSVs
+├── data-generation/           # generate_data.py, patterns.py (synthetic data)
+├── samples/                   # Ready‑named CSVs to ZIP & upload (alerts guaranteed)
+└── README.md
 ```
 
-## 📈 Performance & Scalability
+## Configuration
 
-- **Database**: Neo4j for high-performance graph queries
-- **Caching**: Redis integration for frequently accessed data
-- **Background Processing**: Celery for long-running analysis tasks
-- **API Rate Limiting**: Built-in request throttling
-- **Monitoring**: Comprehensive logging and metrics collection
+Backend env:
+- `FRONTEND_URL` (for CORS), e.g. http://localhost:5173
+- `GEMINI_API_KEY` (optional): for AI summaries
+- `FIREBASE_CREDENTIALS` (JSON or base64 JSON) or `GOOGLE_APPLICATION_CREDENTIALS` (path) for Firestore
+- `RISK_ALERT_THRESHOLD` (optional, default 10)
 
-## 🤝 Contributing
+Frontend env:
+- `VITE_API_URL` (optional): override API base; otherwise auto‑detects localhost `http://localhost:5001/api` or same‑origin `/api` in production
+- `VITE_USE_MOCK_AUTH` (optional): use mock auth in local dev
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## Notes
 
-## 📄 License
+- Notifications feature was removed.
+- Graph view gracefully falls back to synthesized edges if Neo4j is not available.
+- If reports fail with “Person ID not found”, ensure the case points to a person present in current CSVs; the report endpoint now also resolves from `caseId`.
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Contributing
 
-## 👥 Group Members
+1) Fork the repo
+2) Create a feature branch (`git checkout -b feature/your-change`)
+3) Commit & push
+4) Open a PR
 
-<table style="width: 100%; border-collapse: collapse; text-align:center;">
-        <tr>
-            <th><a href="https://github.com/AnuragWaskle">Anurag Waskle</a></th>
-            <th><a href="https://github.com/Soham16Malvankar">Soham S. Malvankar</a></th>
-            <th><a href="https://github.com/harshitt13">Harshit Kushwaha</a></th>
-            <th><a href="https://github.com/aaryan01313">Aryan Pandey</a></th>
-            <th><a href="https://github.com/deeptisingh27">Deepti Singh</a></th>
-        </tr>
-        <tr>
-            <td><img src="https://avatars.githubusercontent.com/AnuragWaskle" alt="Anurag Waskle"></td>
-            <td><img src="https://avatars.githubusercontent.com/Soham16Malvankar" alt="Soham S. Malvankar"></td>
-            <td><img src="https://avatars.githubusercontent.com/harshitt13" alt="Harshit Kushwaha"></td>
-            <td><img src="https://avatars.githubusercontent.com/aaryan01313" alt="Aryan Pandey"></td>
-            <td><img src="https://avatars.githubusercontent.com/deeptisingh27" alt="Deepti Singh"></td>
-        </tr>
-</table>
+## License
 
-## 📞 Support
-
-For questions, issues, or contributions, please:
-
-- Open an issue on GitHub
-- Check the documentation in each module's README
-
----
+MIT © Project NETRA contributors
