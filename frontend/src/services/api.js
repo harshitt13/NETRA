@@ -75,7 +75,14 @@ export const apiRequest = async (endpoint, options = {}) => {
         return null;
     }
     
-    return response.json();
+    // Parse JSON and unwrap common { success, data, error } envelope if present
+    const json = await response.json();
+    if (json && typeof json === 'object' && 'success' in json && ('data' in json || 'error' in json)) {
+      // If backend indicated success, return the data payload; otherwise throw with error
+      if (json.success) return json.data;
+      throw new Error(json.error || 'Unknown API error');
+    }
+    return json;
 
   } catch (error) {
     console.error(`API request to ${endpoint} failed:`, error);
