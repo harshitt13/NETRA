@@ -58,7 +58,8 @@ def _cors_debug_log():
 
 logger.info("Initializing Project Netra Backend Services...")
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'generated-data')
-DATA_GENERATION_SCRIPT_PATH = os.path.join(os.path.dirname(__file__), '..', 'data-generation', 'generate_data.py')
+# Point to the in-repo generator within backend/ to avoid missing path issues
+DATA_GENERATION_SCRIPT_PATH = os.path.join(os.path.dirname(__file__), 'data-generation', 'generate_data.py')
 
 data_loader = DataLoader(data_path=DATA_PATH)
 all_datasets = data_loader.load_all_data()
@@ -851,20 +852,37 @@ def regenerate_data():
         logger.info("[SETTINGS] Regenerate dataset requested")
         # We use subprocess to run the script in a way that doesn't block the server
         # for too long. For a hackathon, this is a very effective demonstration.
-        process = subprocess.Popen(['python', DATA_GENERATION_SCRIPT_PATH], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # Use the same Python interpreter to avoid PATH issues
+        import sys
+        process = subprocess.Popen([sys.executable, DATA_GENERATION_SCRIPT_PATH], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
-        
+
         if process.returncode == 0:
             # Important: After generating new data, we must reload it into our services
             logger.info("[SETTINGS] Data regeneration successful. Reloading services...")
             global all_datasets, risk_scorer, report_generator
             all_datasets = data_loader.load_all_data()
             risk_scorer = HybridRiskScorer(all_datasets)
+            # Run analysis so alerts are refreshed immediately
+            try:
+                alerts = risk_scorer.run_full_analysis() or []
+                alerts_count = len(alerts)
+            except Exception as _ra_err:
+                logger.warning(f"[SETTINGS] Analysis after regeneration failed: {_ra_err}")
+                alerts_count = None
             report_generator = ReportGenerator(all_datasets)
             logger.info("[SETTINGS] Services reloaded with new data.")
-            return jsonify({"message": "New synthetic dataset generated and loaded successfully."}), 200
+            payload = {"message": "New synthetic dataset generated and loaded successfully."}
+            if alerts_count is not None:
+                payload["alerts_generated"] = alerts_count
+            return jsonify(payload), 200
         else:
-            logger.error(f"ERROR during data regeneration: {stderr.decode()}")
+            try:
+                logger.error(f"ERROR during data regeneration: {stderr.decode()}")
+                if stdout:
+                    logger.error(f"[regen stdout] {stdout.decode()}")
+            except Exception:
+                pass
             return api_err("Failed to regenerate dataset.", 500)
             
     except Exception as e:
