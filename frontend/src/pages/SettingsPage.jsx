@@ -3,7 +3,7 @@ import Header from '../components/common/Header.jsx';
 import Sidebar from '../components/common/Sidebar.jsx';
 import { useTheme } from '../contexts/useTheme.js';
 import { useAuth } from '../hooks/useAuth.jsx';
-import { getProfile, updateProfile, getApiKeyMasked, updateApiKey, regenerateDataset, clearAllCases } from '../services/api.js';
+import { getProfile, updateProfile, getApiKeyMasked, updateApiKey, regenerateDataset, clearAllCases, getDatasetMetadata } from '../services/api.js';
 import LoadingOverlay from '../components/common/LoadingOverlay.jsx';
 import { Settings, User, Key, Database, Sun, Moon, Save, RefreshCw, Trash2 } from 'lucide-react';
 
@@ -78,6 +78,7 @@ const SettingsPage = () => {
     const [isClearing, setIsClearing] = useState(false);
     const [feedback, setFeedback] = useState({ message: '', type: '' });
     const [loadingSettings, setLoadingSettings] = useState(true);
+    const [meta, setMeta] = useState(null);
 
     
 
@@ -98,6 +99,13 @@ const SettingsPage = () => {
         if (pData) setProfile(prev => ({ ...prev, ...pData }));
         const kData = await getApiKeyMasked();
         if (kData && typeof kData.apiKeyMasked === 'string') setApiKeyMasked(kData.apiKeyMasked);
+        // Fetch dataset metadata for About section
+        try {
+            const m = await getDatasetMetadata();
+            setMeta(m || null);
+        } catch (e) {
+            if (import.meta.env?.DEV) console.warn('Failed to load metadata', e);
+        }
         } catch (e) {
             if (import.meta.env?.DEV) console.warn('Failed to load settings', e);
         } finally {
@@ -295,6 +303,38 @@ const SettingsPage = () => {
                                         </Button>
                                     </div>
                                 </div>
+                            </SettingsCard>
+
+                            {/* About & Dataset Metadata */}
+                            <SettingsCard title="About / Dataset Metadata" icon={Database}>
+                                {!meta ? (
+                                    <div className="relative h-12 mb-2">
+                                        <LoadingOverlay message="Loading metadata..." className="h-12" />
+                                    </div>
+                                ) : (
+                                    <div className="space-y-2 text-sm">
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <div className="text-gray-400">Seed</div>
+                                            <div className="text-gray-200 font-mono">{String(meta.seed ?? 'N/A')}</div>
+                                            <div className="text-gray-400">Snapshot</div>
+                                            <div className="text-gray-200 font-mono">{meta.snapshot || 'N/A'}</div>
+                                        </div>
+                                        <div className="mt-2">
+                                            <p className="text-gray-400 mb-1">Row counts</p>
+                                            <div className="grid grid-cols-2 gap-1 text-xs text-gray-300">
+                                                {meta.counts && Object.keys(meta.counts).sort().map(k => (
+                                                    <div key={k} className="flex justify-between border-b border-gray-700/40 py-1">
+                                                        <span className="text-gray-400">{k}</span>
+                                                        <span className="font-mono">{meta.counts[k]}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="pt-2">
+                                            <Button onClick={() => fetchSettings()} variant="secondary">Reload Metadata</Button>
+                                        </div>
+                                    </div>
+                                )}
                             </SettingsCard>
 
                             {/* Appearance Settings */}

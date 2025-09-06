@@ -106,6 +106,9 @@ export const getGraphData = (personId, params = {}) => {
   return apiRequest(`/graph/${personId}${qs ? `?${qs}` : ''}`);
 };
 
+// --- Dataset metadata (seed, snapshot, counts) ---
+export const getDatasetMetadata = () => apiRequest('/datasets/metadata');
+
 // --- Analysis controls ---
 export const runAnalysis = () => apiRequest('/run-analysis', { method: 'POST' });
 export const getAnalysisStatus = () => apiRequest('/run-analysis/status');

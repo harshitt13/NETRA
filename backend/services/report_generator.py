@@ -13,6 +13,8 @@ class ReportGenerator:
         """
         self.persons_df = all_datasets.get('persons')
         self.properties_df = all_datasets.get('properties')
+        # Optional metadata provided by DataLoader (seed/snapshot/counts)
+        self.metadata = all_datasets.get('metadata') if isinstance(all_datasets, dict) else None
         # Guard against missing dataset
         if self.properties_df is None:
             print("WARN: properties dataset missing; proceeding with empty DataFrame for reports.")
@@ -89,7 +91,23 @@ class ReportGenerator:
             safe_mc(f"Subject: {subject_name} (ID: {person_id})", h=8)
             
             pdf.set_font("Helvetica", '', 12)
-            safe_mc(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", h=6)
+            gen_ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            # Metadata: basic counts to aid traceability
+            factors_count = len((risk_details or {}).get('breakdown', {}) or {})
+            props_count = int(self.properties_df[self.properties_df['person_id'] == person_id].shape[0])
+            safe_mc(f"Generated on: {gen_ts}", h=6)
+            safe_mc(f"Rows: risk_factors={factors_count}, properties={props_count}", h=6)
+            # Include dataset seed/snapshot if available
+            try:
+                if self.metadata:
+                    seed = self.metadata.get('seed')
+                    snapshot = self.metadata.get('snapshot')
+                    if seed is not None:
+                        safe_mc(f"Dataset seed: {seed}", h=6)
+                    if snapshot:
+                        safe_mc(f"Dataset snapshot: {snapshot}", h=6)
+            except Exception:
+                pass
             pdf.ln(5)
             
             # --- Risk Score ---

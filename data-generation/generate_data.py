@@ -1,4 +1,5 @@
 import os
+import random
 import pandas as pd
 from faker import Faker
 import numpy as np
@@ -17,8 +18,28 @@ NUM_COMPANIES = 200
 NUM_TRANSACTIONS_NORMAL = 20000
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'backend', 'generated-data')
 
-# Initialize Faker for Indian data
+# Initialize Faker for Indian data with deterministic seeding
 fake = Faker('en_IN')
+
+# Deterministic seeding via env var
+def _init_seed():
+    env_seed = os.getenv('DATA_SEED') or os.getenv('SEED')
+    if env_seed is not None:
+        try:
+            seed = int(env_seed)
+        except ValueError:
+            # Derive an int from string hash consistently
+            seed = abs(hash(env_seed)) % (2**32)
+    else:
+        # Generate a random seed if none provided
+        seed = int.from_bytes(os.urandom(4), 'big')
+    # Apply seeds
+    Faker.seed(seed)
+    fake.seed_instance(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+    print(f"[DATA-GEN] Using deterministic seed: {seed}")
+    return seed
 
 def generate_persons_data(num_persons):
     """Generates synthetic data for individuals."""
@@ -171,6 +192,7 @@ def generate_normal_transactions(accounts_df, num_transactions):
 def generate_all_data():
     """Main function to generate all datasets and save them to CSV."""
     print("--- Starting Synthetic Data Generation ---")
+    seed = _init_seed()
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
     # 1. Generate Base Entities
@@ -223,6 +245,30 @@ def generate_all_data():
 
     # Create an empty AlertScores.csv file as a placeholder for the backend
     pd.DataFrame(columns=['alert_id', 'person_id', 'risk_score', 'timestamp', 'summary', 'status']).to_csv(os.path.join(OUTPUT_DIR, 'AlertScores.csv'), index=False)
+    
+    # --- Persist metadata for determinism & auditability ---
+    try:
+        from datetime import datetime as _dt
+        metadata = {
+            "seed": int(seed),
+            "snapshot": _dt.now().isoformat(timespec='seconds'),
+            "counts": {
+                "persons": int(persons_df.shape[0]),
+                "companies": int(companies_df.shape[0]),
+                "accounts": int(accounts_df.shape[0]),
+                "directorships": int(directorships_df.shape[0]),
+                "properties": int(properties_df.shape[0]),
+                "cases": int(police_cases_df.shape[0]),
+                "transactions": int(transactions_df.shape[0]),
+                "alerts": 0
+            }
+        }
+        import json as _json
+        with open(os.path.join(OUTPUT_DIR, 'metadata.json'), 'w', encoding='utf-8') as f:
+            _json.dump(metadata, f, indent=2)
+        print("[DATA-GEN] metadata.json written")
+    except Exception as _e:
+        print(f"[WARN] Failed to write metadata.json: {_e}")
     
     print("\n--- Data Generation Complete! ---")
     print(f"All files have been saved to the '{OUTPUT_DIR}' directory.")

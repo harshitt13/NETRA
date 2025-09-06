@@ -64,6 +64,14 @@ all_datasets = data_loader.load_all_data()
 risk_scorer = HybridRiskScorer(all_datasets)
 ai_summarizer = AI_Summarizer()
 graph_analyzer = GraphAnalyzer()
+# Attach metadata to datasets dict for downstream consumers (e.g., reports)
+try:
+    md = data_loader.get_metadata()
+    if isinstance(all_datasets, dict):
+        all_datasets['metadata'] = md
+except Exception as _e:
+    logger.warning(f"Failed to attach metadata: {_e}")
+
 report_generator = ReportGenerator(all_datasets)
 case_manager = CaseManager()
 
@@ -154,6 +162,16 @@ def _server_error(e):
 def health_check():
     return api_ok({"status": "healthy", "message": "Project Netra backend is running."})
 
+@app.route('/api/datasets/metadata', methods=['GET'])
+@token_required
+def dataset_metadata():
+    try:
+        meta = data_loader.get_metadata()
+        return api_ok(meta)
+    except Exception as e:
+        logger.error(f"ERROR in /api/datasets/metadata: {e}")
+        return api_err("Failed to retrieve dataset metadata", 500)
+
 # ... (all your other endpoints like /api/alerts, /api/investigate, etc., go here) ...
 @app.route('/api/persons', methods=['GET'])
 @token_required
@@ -181,14 +199,27 @@ _analysis_lock = threading.Lock()
 def _background_full_analysis():
     global analysis_state
     try:
-        logger.info("[ANALYSIS] Background full analysis started...")
+        # Traceability: include dataset seed/snapshot in logs if available
+        try:
+            _md = data_loader.get_metadata() or {}
+            _seed = _md.get('seed')
+            _snap = _md.get('snapshot')
+            logger.info(f"[ANALYSIS] Background full analysis started... (seed={_seed}, snapshot={_snap})")
+        except Exception:
+            logger.info("[ANALYSIS] Background full analysis started...")
         results = risk_scorer.run_full_analysis()
         with _analysis_lock:
             analysis_state.running = False
             analysis_state.completed_at = datetime.now(timezone.utc).isoformat()
             analysis_state.alerts_generated = len(results)
             analysis_state.error = None
-        logger.info(f"[ANALYSIS] Completed. {len(results)} alerts generated.")
+        try:
+            _md = data_loader.get_metadata() or {}
+            _seed = _md.get('seed')
+            _snap = _md.get('snapshot')
+            logger.info(f"[ANALYSIS] Completed. {len(results)} alerts generated. (seed={_seed}, snapshot={_snap})")
+        except Exception:
+            logger.info(f"[ANALYSIS] Completed. {len(results)} alerts generated.")
     except Exception as e:
         with _analysis_lock:
             analysis_state.running = False
@@ -216,7 +247,13 @@ def run_analysis():
     sync_mode = request.args.get('sync') == '1'
     try:
         if sync_mode:
-            logger.info("[ANALYSIS] Synchronous run requested...")
+            try:
+                _md = data_loader.get_metadata() or {}
+                _seed = _md.get('seed')
+                _snap = _md.get('snapshot')
+                logger.info(f"[ANALYSIS] Synchronous run requested... (seed={_seed}, snapshot={_snap})")
+            except Exception:
+                logger.info("[ANALYSIS] Synchronous run requested...")
             results = risk_scorer.run_full_analysis()
             with _analysis_lock:
                 analysis_state.running = False
