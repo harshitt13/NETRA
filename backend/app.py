@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import threading
 import logging
@@ -55,7 +56,7 @@ def _cors_debug_log():
 
 logger.info("Initializing Project Netra Backend Services...")
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'generated-data')
-DATA_GENERATION_SCRIPT_PATH = os.path.join(os.path.dirname(__file__), '..', 'data-generation', 'generate_data.py')
+DATA_GENERATION_SCRIPT_PATH = os.path.join(os.path.dirname(__file__), 'data-generation', 'generate_data.py')
 
 data_loader = DataLoader(data_path=DATA_PATH)
 all_datasets = data_loader.load_all_data()
@@ -745,7 +746,8 @@ def regenerate_data():
         logger.info("[SETTINGS] Regenerate dataset requested")
         # We use subprocess to run the script in a way that doesn't block the server
         # for too long. For a hackathon, this is a very effective demonstration.
-        process = subprocess.Popen(['python', DATA_GENERATION_SCRIPT_PATH], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # Use the current Python interpreter to avoid virtualenv mismatches
+    process = subprocess.Popen([sys.executable, DATA_GENERATION_SCRIPT_PATH], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
         
         if process.returncode == 0:

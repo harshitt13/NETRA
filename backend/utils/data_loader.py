@@ -169,6 +169,6 @@ if __name__ == '__main__':
             logger.warning(f"Dataset '{name}': FAILED TO LOAD.")
 
     if not all_loaded:
-        logger.warning("Some datasets failed to load. Ensure 'data-generation/generate_data.py' has been run.")
+        logger.warning("Some datasets failed to load. Ensure 'backend/data-generation/generate_data.py' has been run.")
     else:
         logger.info("All datasets loaded successfully.")
