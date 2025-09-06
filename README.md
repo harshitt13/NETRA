@@ -22,25 +22,6 @@ An AI‑powered financial intelligence platform for detecting and investigating 
 
 </div>
 
-## Group Members
-
-<table style="width: 100%; border-collapse: collapse; text-align:center;">
-        <tr>
-            <th><a href="https://github.com/AnuragWaskle">Anurag Waskle</a></th>
-            <th><a href="https://github.com/Soham16Malvankar">Soham S. Malvankar</a></th>
-            <th><a href="https://github.com/harshitt13">Harshit Kushwaha</a></th>
-            <th><a href="https://github.com/aaryan01313">Aryan Pandey</a></th>
-            <th><a href="https://github.com/deeptisingh27">Deepti Singh</a></th>
-        </tr>
-        <tr>
-            <td><img src="https://avatars.githubusercontent.com/AnuragWaskle" alt="Anurag Waskle"></td>
-            <td><img src="https://avatars.githubusercontent.com/Soham16Malvankar" alt="Soham S. Malvankar"></td>
-            <td><img src="https://avatars.githubusercontent.com/harshitt13" alt="Harshit Kushwaha"></td>
-            <td><img src="https://avatars.githubusercontent.com/aaryan01313" alt="Aryan Pandey"></td>
-            <td><img src="https://avatars.githubusercontent.com/deeptisingh27" alt="Deepti Singh"></td>
-        </tr>
-</table>
-
 ## Overview
 
 Project NETRA provides a unified workflow for ingesting datasets (CSV/ZIP), calculating hybrid risk scores, inspecting networks, and generating AI‑assisted PDF reports. It ships with synthetic datasets and lets investigators upload data from the UI.
@@ -186,6 +167,25 @@ Frontend environment:
 2) Create a feature branch (`git checkout -b feature/your-change`).
 3) Commit and push.
 4) Open a pull request.
+
+## Group Members
+
+<table style="width: 100%; border-collapse: collapse; text-align:center;">
+        <tr>
+            <th><a href="https://github.com/AnuragWaskle">Anurag Waskle</a></th>
+            <th><a href="https://github.com/Soham16Malvankar">Soham S. Malvankar</a></th>
+            <th><a href="https://github.com/harshitt13">Harshit Kushwaha</a></th>
+            <th><a href="https://github.com/aaryan01313">Aryan Pandey</a></th>
+            <th><a href="https://github.com/deeptisingh27">Deepti Singh</a></th>
+        </tr>
+        <tr>
+            <td><img src="https://avatars.githubusercontent.com/AnuragWaskle" alt="Anurag Waskle"></td>
+            <td><img src="https://avatars.githubusercontent.com/Soham16Malvankar" alt="Soham S. Malvankar"></td>
+            <td><img src="https://avatars.githubusercontent.com/harshitt13" alt="Harshit Kushwaha"></td>
+            <td><img src="https://avatars.githubusercontent.com/aaryan01313" alt="Aryan Pandey"></td>
+            <td><img src="https://avatars.githubusercontent.com/deeptisingh27" alt="Deepti Singh"></td>
+        </tr>
+</table>
 
 ## License
 
