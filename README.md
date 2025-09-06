@@ -24,27 +24,27 @@ An AI‑powered financial intelligence platform for detecting and investigating 
 
 ## Overview
 
-Project NETRA provides a unified workflow for ingesting datasets (CSV/ZIP), calculating hybrid risk scores, inspecting networks, and generating AI‑assisted PDF reports. It ships with synthetic datasets and lets investigators upload their own data from the UI.
+Project NETRA provides a unified workflow for ingesting datasets (CSV/ZIP), calculating hybrid risk scores, inspecting networks, and generating AI‑assisted PDF reports. It ships with synthetic datasets and lets investigators upload data from the UI.
 
 Highlights:
-- Hybrid risk scoring (rules) with CSV pipeline; AlertScores.csv is the canonical output.
-- Upload your own CSVs or a ZIP of CSVs from Settings; schema validation and re‑analysis runs automatically.
-- Graph view uses Neo4j when available; otherwise a small network is synthesized from CSVs.
-- PDF report generation; endpoint now accepts either a person_id or a case_id.
-- Optional AI summary via Google Gemini with deterministic local fallback.
+- Hybrid risk scoring (rules) with a CSV pipeline; AlertScores.csv is the canonical output.
+- Upload your own CSVs or a ZIP of CSVs from Settings; schema validation and re‑analysis run automatically.
+- Graph view uses Neo4j when available; otherwise, a small network is synthesized from CSVs.
+- PDF report generation; the endpoint accepts either a person_id or a case_id.
+- Optional AI summary via Google Gemini with a deterministic local fallback.
 - Authentication is token‑based; mock tokens are supported for local/demo.
 
 ## Architecture
 
 Backend (Flask):
-- Data loader with schema validation (CSV under `backend/generated-data/`).
+- Data loader with schema validation (CSVs under `backend/generated-data/`).
 - Risk scoring (`services/risk_scoring.py`), AI summarizer, report generator, optional graph analyzer.
-- Case management with Firebase Firestore if configured, else local JSON fallback.
+- Case management with Firebase Firestore if configured; otherwise, a local JSON fallback.
 
 Frontend (React + Vite):
-- Centralized API client with envelope unwrapping and token provider.
-- Pages: Dashboard, Triage, Investigation Workspace, Reporting, Settings.
-- Settings provides dataset upload (CSV/ZIP) and metadata view.
+- Centralized API client with envelope unwrapping and a token provider.
+- Pages: Dashboard, Triage, Investigation Workspace, Reporting, and Settings.
+- Settings provides dataset uploads (CSV/ZIP) and a metadata view.
 
 Data generation:
 - `data-generation/generate_data.py` produces CSVs into `backend/generated-data/`.
@@ -52,22 +52,22 @@ Data generation:
 
 ## Quick Start (Local)
 
-Prereqs: Python 3.10+, Node 18+.
+Prerequisites: Python 3.10+, Node 18+.
 
 Backend:
 1) `cd backend`
 2) `python -m venv venv` (Windows: `venv\Scripts\activate`, macOS/Linux: `source venv/bin/activate`)
 3) `pip install -r requirements.txt`
-4) Set env (optional but recommended):
-   - `GEMINI_API_KEY` for AI summaries (else a rule‑based fallback is used)
-   - `FRONTEND_URL` for CORS (e.g. http://localhost:5173)
-   - `FIREBASE_CREDENTIALS` or `GOOGLE_APPLICATION_CREDENTIALS` if using Firestore
-5) Run: `python app.py` (serves on http://localhost:5001)
+4) Set environment variables (optional but recommended):
+  - `GEMINI_API_KEY` for AI summaries (otherwise a rule‑based fallback is used)
+  - `FRONTEND_URL` for CORS (e.g., http://localhost:5173)
+  - `FIREBASE_CREDENTIALS` or `GOOGLE_APPLICATION_CREDENTIALS` if using Firestore
+5) Run: `python app.py` (serves at http://localhost:5001)
 
 Frontend:
 1) `cd frontend`
 2) `npm install`
-3) Optional: set `VITE_API_URL` to your backend API base (e.g. http://localhost:5001/api). If unset, it auto‑detects localhost and uses `http://localhost:5001/api`.
+3) Optional: set `VITE_API_URL` to your backend API base (e.g., http://localhost:5001/api). If unset, it auto‑detects localhost and uses `http://localhost:5001/api`.
 4) `npm run dev` (http://localhost:5173)
 
 Authentication (local/mock):
@@ -76,7 +76,7 @@ Authentication (local/mock):
 
 ## Dataset Uploads (CSV/ZIP)
 
-Upload via UI: Settings → Data Management.
+Upload via the UI: Settings → Data Management.
 
 - ZIP upload: include any of these exact filenames (case‑insensitive):
   - Persons.csv, BankAccounts.csv, Transactions.csv, Companies.csv, Directorships.csv, Properties.csv, PoliceCases.csv
@@ -97,17 +97,17 @@ Sample data that triggers alerts:
 
 ## Key Endpoints (Backend)
 
-Base path is `/api`.
+Base path: `/api`.
 
-- GET `/alerts` → list of alerts (reads `AlertScores.csv`).
+- GET `/alerts` → list alerts (reads `AlertScores.csv`).
 - GET `/persons?q=<query>` → search persons.
 - GET `/investigate/<person_id>` → risk breakdown for a person.
-- GET `/graph/<person_id>` → network; synthesizes from CSVs if Neo4j empty/unavailable.
+- GET `/graph/<person_id>` → network; synthesizes from CSVs if Neo4j is empty or unavailable.
 - GET `/report/<person_or_case_id>` → PDF report; accepts person_id or case_id.
-- POST `/cases` → create case; body must include `person_id` or embed it in `risk_profile.person_details`.
+- POST `/cases` → create a case; body must include `person_id` or embed it in `risk_profile.person_details`.
 - GET `/cases` → list cases (Firestore or local fallback).
-- POST `/datasets/upload` → upload CSV/ZIP; validates, reloads, reruns analysis.
-- GET `/datasets/metadata` → seed/snapshot/counts (if metadata.json present; counts are derived regardless).
+- POST `/datasets/upload` → upload CSV/ZIP; validates, reloads, and reruns analysis.
+- GET `/datasets/metadata` → seed/snapshot/counts (if metadata.json is present; counts are derived regardless).
 - POST `/run-analysis` (or `?sync=1`) and GET `/run-analysis/status` → control risk analysis.
 - Settings: `/settings/profile`, `/settings/api-key`, `/settings/theme`, `/settings/regenerate-data`, `/settings/clear-cases`.
 
@@ -117,13 +117,13 @@ Auth:
 
 ## Reporting
 
-- The Reporting page downloads PDF via `/api/report/<id>`. You can pass a caseId or personId.
+- The Reporting page downloads a PDF via `/api/report/<id>`. You can pass a caseId or personId.
 - The PDF score is harmonized with `AlertScores.csv` to match the dashboard.
 
 ## Data Generation
 
 - `data-generation/generate_data.py` writes CSVs to `backend/generated-data/`.
-- From the backend Settings page you can trigger regeneration.
+- From the backend Settings page, you can trigger regeneration.
 - If using Neo4j, see `backend/data-generation/load_to_neo4j.py` for loading.
 
 ## Project Structure
@@ -146,28 +146,27 @@ project-NETRA/
 
 ## Configuration
 
-Backend env:
-- `FRONTEND_URL` (for CORS), e.g. http://localhost:5173
+Backend environment:
+- `FRONTEND_URL` (for CORS), e.g., http://localhost:5173
 - `GEMINI_API_KEY` (optional): for AI summaries
 - `FIREBASE_CREDENTIALS` (JSON or base64 JSON) or `GOOGLE_APPLICATION_CREDENTIALS` (path) for Firestore
 - `RISK_ALERT_THRESHOLD` (optional, default 10)
 
-Frontend env:
+Frontend environment:
 - `VITE_API_URL` (optional): override API base; otherwise auto‑detects localhost `http://localhost:5001/api` or same‑origin `/api` in production
-- `VITE_USE_MOCK_AUTH` (optional): use mock auth in local dev
+- `VITE_USE_MOCK_AUTH` (optional): use mock auth in local development
 
 ## Notes
 
-- Notifications feature was removed.
 - Graph view gracefully falls back to synthesized edges if Neo4j is not available.
-- If reports fail with “Person ID not found”, ensure the case points to a person present in current CSVs; the report endpoint now also resolves from `caseId`.
+- If reports fail with “Person ID not found,” ensure the case points to a person present in the current CSVs; the report endpoint also resolves from `caseId`.
 
 ## Contributing
 
-1) Fork the repo
-2) Create a feature branch (`git checkout -b feature/your-change`)
-3) Commit & push
-4) Open a PR
+1) Fork the repository.
+2) Create a feature branch (`git checkout -b feature/your-change`).
+3) Commit and push.
+4) Open a pull request.
 
 ## License
 
