@@ -69,7 +69,16 @@ const SettingsPage = () => {
     // --- Theme Management ---
     const { theme, setTheme, themeSaving } = useTheme();
     const { user } = useAuth();
-    
+    // Ensure a mock token exists in localStorage for mock auth environments (non-destructive)
+    useEffect(() => {
+        try {
+            const existing = localStorage.getItem('authToken');
+            if (!existing) {
+                localStorage.setItem('authToken', 'mock-jwt-token-12345');
+            }
+    } catch { /* ignore storage errors */ }
+    }, []);
+
     // --- State Management for Settings ---
     const [profile, setProfile] = useState({ displayName: '', email: '', department: '', badge: '' });
     const [apiKey, setApiKey] = useState('');
@@ -116,7 +125,7 @@ const SettingsPage = () => {
         }
     }, []);
 
-    useEffect(() => { if (user) fetchSettings(); }, [user, fetchSettings]);
+    useEffect(() => { fetchSettings(); }, [user, fetchSettings]);
 
     const handleSaveProfile = async () => {
         try {
