@@ -40,19 +40,18 @@ Highlights:
 
 ## Architecture
 
-Below is a high-level architecture and request flow for NETRA:
 
 ```mermaid
 flowchart LR
   %% Client Layer
   subgraph Client
     U[User]
-    FE[Frontend (React + Vite)]
+    FE[Frontend - React + Vite]
   end
 
   %% Backend API and Services
-  subgraph Backend[Backend (Flask API)]
-    API[/REST: /api/*/]
+  subgraph Backend (Flask API)
+    API[REST API (/api)]
     RS[risk_scoring.py]
     RG[report_generator.py]
     GA[graph_analysis.py]
@@ -61,10 +60,10 @@ flowchart LR
   end
 
   %% Data Sources
-  subgraph Data[Data Sources]
-    CSV[(CSV files\nbackend/generated-data)]
-    NEO[(Neo4j\noptional)]
-    FS[(Firestore\noptional)]
+  subgraph Data Sources
+    CSV[CSV files<br/>backend/generated-data]
+    NEO[Neo4j (optional)]
+    FS[Firestore (optional)]
   end
 
   %% Client -> API
@@ -80,9 +79,9 @@ flowchart LR
   API --> AS
 
   %% Services <-> Data
-  RS <--> CSV
+  RS --> CSV
   GA --> NEO
-  CM <--> FS
+  CM --> FS
   RS -->|AlertScores.csv| CSV
 
   %% Responses
@@ -165,7 +164,7 @@ flowchart TD
       NavWorkspace --> LoadGraph
       LoadGraph --> ViewGraph[React Flow graph + details]
       ViewGraph --> UpdateNotes[PUT /cases/:id/notes]
-      UpdateNotes --> NotesSaved[Notes persisted (Firestore/local)]
+  UpdateNotes --> NotesSaved[Notes saved - Firestore or local]
     end
 
     subgraph Reporting
