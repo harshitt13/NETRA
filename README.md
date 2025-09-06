@@ -17,8 +17,8 @@ An AI‑powered financial intelligence platform for detecting and investigating 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
 [![React](https://img.shields.io/badge/react-18.2%2B-blue.svg)](https://reactjs.org)
 [![Neo4j (optional)](https://img.shields.io/badge/neo4j-optional-green.svg)](https://neo4j.com)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://netra-8j8n.onrender.com)
 [![Deploy with Vercel](https://vercel.com/button)](https://netra-ai.vercel.app/)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://netra-8j8n.onrender.com)
 
 </div>
 
