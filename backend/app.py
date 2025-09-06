@@ -782,12 +782,28 @@ def _synthesize_csv_graph(person_id: str):
     synthesized = {"person_id": person_id, "nodes": nodes, "edges": edges, "message": "Synthesized network (Neo4j unavailable or no data)."}
     return synthesized
 
-@app.route('/api/report/<string:person_id>', methods=['GET'])
+@app.route('/api/report/<string:person_or_case_id>', methods=['GET'])
 @token_required
-def generate_report(person_id):
+def generate_report(person_or_case_id):
     try:
-        logger.info(f"[REPORT] Generate report for {person_id}")
-        risk_details = risk_scorer.get_person_risk_details(person_id)
+        logger.info(f"[REPORT] Generate report for {person_or_case_id}")
+        # First, attempt as person_id
+        risk_details = risk_scorer.get_person_risk_details(person_or_case_id)
+        resolved_person_id = person_or_case_id
+
+        # Fallback: if not found, treat input as case_id and resolve person_id from stored case
+        if not risk_details:
+            try:
+                case = case_manager.get_case(person_or_case_id)
+                pid = None
+                if isinstance(case, dict):
+                    pid = case.get('person_id') or case.get('risk_profile', {}).get('person_details', {}).get('person_id')
+                if pid:
+                    logger.info(f"[REPORT] Resolved case {person_or_case_id} to person_id {pid}")
+                    risk_details = risk_scorer.get_person_risk_details(pid)
+                    resolved_person_id = pid
+            except Exception as _res_err:
+                logger.warning(f"[REPORT] Could not resolve case/person: {_res_err}")
         if not risk_details:
             return api_err("Cannot generate report. Person ID not found.", 404)
         # Harmonize: ensure we use the canonical alert score (from AlertScores.csv) so PDF matches dashboard
@@ -795,28 +811,28 @@ def generate_report(person_id):
             alerts_path = os.path.join(DATA_PATH, 'AlertScores.csv')
             if os.path.exists(alerts_path):
                 alerts_df = pd.read_csv(alerts_path)
-                row = alerts_df[alerts_df['person_id'] == person_id]
+                row = alerts_df[alerts_df['person_id'] == resolved_person_id]
                 if not row.empty:
                     canonical_score = int(row.iloc[0].get('final_risk_score', row.iloc[0].get('risk_score', 0)))
                     # Only override if canonical differs; keep recalculated score accessible for debugging
                     risk_details['final_risk_score'] = canonical_score
                     risk_details['canonical_alert_score'] = canonical_score
-                    logger.info(f"[REPORT] Using canonical score {canonical_score} for {person_id} (recalc {risk_details.get('recalculated_risk_score')})")
+                    logger.info(f"[REPORT] Using canonical score {canonical_score} for {resolved_person_id} (recalc {risk_details.get('recalculated_risk_score')})")
                 else:
-                    logger.info(f"[REPORT] No canonical alert row found for {person_id}, using recalculated {risk_details.get('final_risk_score')}")
+                    logger.info(f"[REPORT] No canonical alert row found for {resolved_person_id}, using recalculated {risk_details.get('final_risk_score')}")
         except Exception as _harm_err:
-            logger.warning(f"Failed to harmonize PDF score for {person_id}: {_harm_err}")
+            logger.warning(f"Failed to harmonize PDF score for {resolved_person_id}: {_harm_err}")
         summary = ai_summarizer.generate_summary_from_details(risk_details)
-        pdf_path = report_generator.generate_pdf(person_id, risk_details, summary)
+        pdf_path = report_generator.generate_pdf(resolved_person_id, risk_details, summary)
         if not pdf_path or not os.path.exists(pdf_path):
             debug = request.args.get('debug') == '1' or os.environ.get('NETRA_REPORT_DEBUG') == '1'
             msg = {"error": "Failed to create the PDF report on the server."}
             if debug:
                 msg["details"] = "PDF generation returned no path. Check server logs for 'FATAL ERROR during primary PDF generation' entries."
             return jsonify(msg), 500
-        return send_file(pdf_path, as_attachment=True, download_name=f"Investigation_Report_{person_id}.pdf", mimetype='application/pdf')
+        return send_file(pdf_path, as_attachment=True, download_name=f"Investigation_Report_{resolved_person_id}.pdf", mimetype='application/pdf')
     except Exception as e:
-        logger.error(f"ERROR in /api/report/{person_id}: {e}")
+        logger.error(f"ERROR in /api/report/{person_or_case_id}: {e}")
         debug = request.args.get('debug') == '1' or os.environ.get('NETRA_REPORT_DEBUG') == '1'
         msg = {"error": "Failed to generate PDF report."}
         if debug:
