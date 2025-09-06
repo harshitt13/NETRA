@@ -235,6 +235,8 @@ import os
 import json
 import uuid
 import threading
+import logging
+from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
@@ -253,6 +255,10 @@ from services.case_manager import CaseManager
 # --- APPLICATION SETUP & SERVICE INITIALIZATION ---
 app = Flask(__name__)
 
+# Logging setup
+logging.basicConfig(level=os.getenv('LOG_LEVEL', 'INFO').upper(), format='[%(levelname)s] %(message)s')
+logger = app.logger
+
 # Configure CORS for production and development
 raw_frontend_url = os.environ.get('FRONTEND_URL', 'https://netra-ai.vercel.app/')
 # Normalize: remove trailing slash and whitespace
@@ -268,7 +274,7 @@ allowed_origins.append(frontend_url + '/')
 # Remove duplicates and None values
 allowed_origins = list(set(filter(None, allowed_origins)))
 
-print(f"Configuring CORS for origins: {allowed_origins}")
+logger.info(f"Configuring CORS for origins: {allowed_origins}")
 CORS(app, origins=allowed_origins, supports_credentials=True, allow_headers=['Content-Type','Authorization'], expose_headers=['Content-Type'])
 
 @app.before_request
@@ -278,10 +284,10 @@ def _cors_debug_log():
         app._cors_debug_count = 0
     if app._cors_debug_count < 25:  # cap logging
         origin = request.headers.get('Origin')
-        print(f"[CORS-DEBUG] Origin={origin} Path={request.path}")
+        logger.debug(f"[CORS-DEBUG] Origin={origin} Path={request.path}")
         app._cors_debug_count += 1
 
-print("Initializing Project Netra Backend Services...")
+logger.info("Initializing Project Netra Backend Services...")
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'generated-data')
 DATA_GENERATION_SCRIPT_PATH = os.path.join(os.path.dirname(__file__), '..', 'data-generation', 'generate_data.py')
 
@@ -294,7 +300,7 @@ graph_analyzer = GraphAnalyzer()
 report_generator = ReportGenerator(all_datasets)
 case_manager = CaseManager()
 
-print("All services initialized successfully. Backend is ready.")
+logger.info("All services initialized successfully. Backend is ready.")
 
 # --- Simple local settings persistence (non-sensitive demo storage) ---
 SETTINGS_FILE = os.path.join(os.path.dirname(__file__), 'app_settings.json')
@@ -306,7 +312,7 @@ def _load_settings():
             with open(SETTINGS_FILE, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except Exception as e:
-            print(f"WARN: Failed to load settings file: {e}")
+            logger.warning(f"Failed to load settings file: {e}")
     return {
         "profile": {"displayName": "Senior Investigator", "email": "admin@netra.com", "department": "Financial Crimes Unit", "badge": "FC-001"},
         "apiKey": "",
@@ -319,7 +325,7 @@ def _save_settings(data):
             json.dump(data, f, indent=2)
         return True
     except Exception as e:
-        print(f"WARN: Failed to save settings: {e}")
+        logger.warning(f"Failed to save settings: {e}")
         return False
 
 def _load_notifications():
@@ -328,7 +334,7 @@ def _load_notifications():
             with open(NOTIFICATIONS_FILE, 'r', encoding='utf-8') as f:
                 return json.load(f).get('notifications', [])
     except Exception as e:
-        print(f"WARN: Failed to load notifications: {e}")
+        logger.warning(f"Failed to load notifications: {e}")
     return []
 
 def _save_notifications(items):
@@ -337,22 +343,49 @@ def _save_notifications(items):
             json.dump({'notifications': items}, f, indent=2)
         return True
     except Exception as e:
-        print(f"WARN: Failed to save notifications: {e}")
+        logger.warning(f"Failed to save notifications: {e}")
         return False
 
 # Auto-run analysis once on startup if no existing alert scores cached
 try:
     if (risk_scorer.risk_scores_df is None) or risk_scorer.risk_scores_df.empty:
-        print("[Startup] Running initial full risk analysis to populate alert scores...")
+        logger.info("[Startup] Running initial full risk analysis to populate alert scores...")
         risk_scorer.run_full_analysis()
 except Exception as e:
-    print(f"WARN: Initial analysis run failed: {e}")
+    logger.warning(f"Initial analysis run failed: {e}")
+
+# --- Response helpers and error handlers ---
+def api_ok(data=None, status=200):
+    return jsonify({"success": True, "data": data, "error": None}), status
+
+def api_err(message, status=400):
+    return jsonify({"success": False, "data": None, "error": message}), status
+
+@app.errorhandler(400)
+def _bad_request(e):
+    return api_err("Bad Request", 400)
+
+@app.errorhandler(401)
+def _unauthorized(e):
+    return api_err("Unauthorized", 401)
+
+@app.errorhandler(403)
+def _forbidden(e):
+    return api_err("Forbidden", 403)
+
+@app.errorhandler(404)
+def _not_found(e):
+    return api_err("Not Found", 404)
+
+@app.errorhandler(500)
+def _server_error(e):
+    return api_err("Internal Server Error", 500)
 
 # --- API ENDPOINTS (Existing endpoints remain the same) ---
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
-    return jsonify({"status": "healthy", "message": "Project Netra backend is running."})
+    return api_ok({"status": "healthy", "message": "Project Netra backend is running."})
 
 # ... (all your other endpoints like /api/alerts, /api/investigate, etc., go here) ...
 @app.route('/api/persons', methods=['GET'])
@@ -361,45 +394,49 @@ def search_persons():
     search_query = request.args.get('q', '')
     try:
         search_results = risk_scorer.search_persons(search_query)
+        # Return plain array for frontend compatibility
         return jsonify(search_results), 200
     except Exception as e:
-        print(f"ERROR in /api/persons: {e}")
+        logger.error(f"ERROR in /api/persons: {e}")
         return jsonify({"error": "Failed to search for persons."}), 500
 
-analysis_state = {
-    'running': False,
-    'started_at': None,
-    'completed_at': None,
-    'alerts_generated': None,
-    'error': None
-}
+@dataclass
+class AnalysisState:
+    running: bool = False
+    started_at: str | None = None
+    completed_at: str | None = None
+    alerts_generated: int | None = None
+    error: str | None = None
+
+analysis_state = AnalysisState()
 _analysis_lock = threading.Lock()
 
 def _background_full_analysis():
     global analysis_state
     try:
-        print("[ANALYSIS] Background full analysis started...")
+        logger.info("[ANALYSIS] Background full analysis started...")
         results = risk_scorer.run_full_analysis()
         with _analysis_lock:
-            analysis_state['running'] = False
-            analysis_state['completed_at'] = datetime.now(timezone.utc).isoformat()
-            analysis_state['alerts_generated'] = len(results)
-            analysis_state['error'] = None
-        print(f"[ANALYSIS] Completed. {len(results)} alerts generated.")
+            analysis_state.running = False
+            analysis_state.completed_at = datetime.now(timezone.utc).isoformat()
+            analysis_state.alerts_generated = len(results)
+            analysis_state.error = None
+        logger.info(f"[ANALYSIS] Completed. {len(results)} alerts generated.")
     except Exception as e:
         with _analysis_lock:
-            analysis_state['running'] = False
-            analysis_state['completed_at'] = datetime.now(timezone.utc).isoformat()
-            analysis_state['error'] = str(e)
-        print(f"ERROR in background analysis: {e}")
+            analysis_state.running = False
+            analysis_state.completed_at = datetime.now(timezone.utc).isoformat()
+            analysis_state.error = str(e)
+        logger.error(f"ERROR in background analysis: {e}")
 
 @app.route('/api/run-analysis/status', methods=['GET'])
 @token_required
 def run_analysis_status():
     # Return current state; hide None values for cleanliness
     with _analysis_lock:
-        state_copy = {k: v for k, v in analysis_state.items() if v is not None}
-    return jsonify(state_copy), 200
+        state_dict = asdict(analysis_state)
+        state_copy = {k: v for k, v in state_dict.items() if v is not None}
+    return api_ok(state_copy)
 
 @app.route('/api/run-analysis', methods=['POST'])
 @token_required
@@ -412,69 +449,69 @@ def run_analysis():
     sync_mode = request.args.get('sync') == '1'
     try:
         if sync_mode:
-            print("[ANALYSIS] Synchronous run requested...")
+            logger.info("[ANALYSIS] Synchronous run requested...")
             results = risk_scorer.run_full_analysis()
             with _analysis_lock:
-                analysis_state.update({
-                    'running': False,
-                    'started_at': analysis_state.get('started_at') or datetime.now(timezone.utc).isoformat(),
-                    'completed_at': datetime.now(timezone.utc).isoformat(),
-                    'alerts_generated': len(results),
-                    'error': None
-                })
-            return jsonify({
+                analysis_state.running = False
+                analysis_state.started_at = analysis_state.started_at or datetime.now(timezone.utc).isoformat()
+                analysis_state.completed_at = datetime.now(timezone.utc).isoformat()
+                analysis_state.alerts_generated = len(results)
+                analysis_state.error = None
+            return api_ok({
                 "message": f"Full risk analysis complete. {len(results)} alerts generated.",
                 "alerts_generated": len(results),
                 "mode": "sync"
-            }), 200
+            }, 200)
         # Async path
         with _analysis_lock:
-            if analysis_state['running']:
-                return jsonify({
+            if analysis_state.running:
+                return api_ok({
                     'message': 'Analysis already running.',
                     'running': True,
-                    'started_at': analysis_state['started_at']
-                }), 202
+                    'started_at': analysis_state.started_at
+                }, 202)
             # Initialize state and launch thread
-            analysis_state.update({
-                'running': True,
-                'started_at': datetime.now(timezone.utc).isoformat(),
-                'completed_at': None,
-                'alerts_generated': None,
-                'error': None
-            })
+            analysis_state.running = True
+            analysis_state.started_at = datetime.now(timezone.utc).isoformat()
+            analysis_state.completed_at = None
+            analysis_state.alerts_generated = None
+            analysis_state.error = None
         t = threading.Thread(target=_background_full_analysis, daemon=True)
         t.start()
-        return jsonify({
+        return api_ok({
             'message': 'Full risk analysis started in background.',
             'running': True,
             'mode': 'async'
-        }), 202
+        }, 202)
     except Exception as e:
-        print(f"ERROR in /api/run-analysis: {e}")
-        return jsonify({"error": str(e)}), 500
+        logger.error(f"ERROR in /api/run-analysis: {e}")
+        return api_err(str(e), 500)
+
+# Cached Alerts CSV loader
+_alerts_cache = {"mtime": None, "data": None}
+
+def _load_alerts_cached():
+    alerts_path = os.path.join(DATA_PATH, 'AlertScores.csv')
+    if not os.path.exists(alerts_path):
+        return alerts_path, None
+    mtime = os.path.getmtime(alerts_path)
+    if _alerts_cache["mtime"] == mtime and _alerts_cache["data"] is not None:
+        return alerts_path, _alerts_cache["data"]
+    df = pd.read_csv(alerts_path)
+    _alerts_cache["mtime"] = mtime
+    _alerts_cache["data"] = df
+    return alerts_path, df
 
 @app.route('/api/alerts', methods=['GET'])
 @token_required
 def get_alerts():
     try:
-        # Debug: Print all request parameters
-        print(f"[ALERTS] Request args: {dict(request.args)}")
-        print(f"[ALERTS] Headers: {dict(request.headers)}")
-        
-        # Always load from AlertScores.csv directly
-        alerts_path = os.path.join(DATA_PATH, 'AlertScores.csv')
-        print(f"[ALERTS] Looking for alerts at: {alerts_path}")
-        
-        if not os.path.exists(alerts_path):
-            print("[ALERTS] AlertScores.csv not found")
+        alerts_path, alerts_df = _load_alerts_cached()
+        logger.debug(f"[ALERTS] Looking for alerts at: {alerts_path}")
+        if alerts_df is None:
+            logger.info("[ALERTS] AlertScores.csv not found")
             return jsonify([]), 200
-            
-        # Load the alerts data directly
-        alerts_df = pd.read_csv(alerts_path)
-        print(f"[ALERTS] Loaded alerts DataFrame with shape: {alerts_df.shape}")
-        print(f"[ALERTS] Columns: {list(alerts_df.columns)}")
-        
+
         # If final_risk_score missing but risk_score present, align columns
         if 'final_risk_score' not in alerts_df.columns and 'risk_score' in alerts_df.columns:
             alerts_df['final_risk_score'] = alerts_df['risk_score']
@@ -490,12 +527,12 @@ def get_alerts():
 
         # Check if there's actual data (rows) after normalization
         if len(alerts_df) == 0:
-            print("[ALERTS] AlertScores.csv is empty (no data rows)")
+            logger.info("[ALERTS] AlertScores.csv is empty (no data rows)")
             # Check if demo mode is requested
             demo_mode = request.args.get('demo', 'false').lower() == 'true'
-            
+
             if demo_mode:
-                print("No alert data found, returning mock data for demo")
+                logger.info("No alert data found, returning mock data for demo")
                 # Return mock alert data for demonstration
                 mock_alerts = [
                     {
@@ -551,66 +588,52 @@ def get_alerts():
                 ]
                 return jsonify(mock_alerts), 200
             else:
-                print("No alert data found, returning empty array")
+                logger.info("No alert data found, returning empty array")
                 return jsonify([]), 200
-        
+
         # We have data, proceed normally
-        print(f"[ALERTS] Found {len(alerts_df)} alerts in CSV file")
-        
+        logger.info(f"[ALERTS] Found {len(alerts_df)} alerts in CSV file")
+
         # Get limit parameter
         limit = int(request.args.get('limit', 50))
-        
+
         # Sort by risk_score and get top alerts
         top_alerts_df = alerts_df.nlargest(limit, 'risk_score')
         alerts = top_alerts_df.to_dict(orient='records')
-        
-        print(f"[ALERTS] Returning {len(alerts)} alerts (limited to {limit})")
+        logger.info(f"[ALERTS] Returning {len(alerts)} alerts (limited to {limit})")
         return jsonify(alerts), 200
-        
+
     except Exception as e:
-        print(f"[ALERTS] ERROR in /api/alerts: {e}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({"error": "Failed to retrieve alerts."}), 500
+        logger.error(f"[ALERTS] ERROR in /api/alerts: {e}")
+        return api_err("Failed to retrieve alerts.", 500)
 
 
 # Add a simple alerts endpoint without authentication for debugging
 @app.route('/api/alerts-debug', methods=['GET'])
 def get_alerts_debug():
     try:
-        print(f"[ALERTS-DEBUG] Request received")
-        
-        # Always load from AlertScores.csv directly
-        alerts_path = os.path.join(DATA_PATH, 'AlertScores.csv')
-        print(f"[ALERTS-DEBUG] Looking for alerts at: {alerts_path}")
-        
-        if not os.path.exists(alerts_path):
-            print("[ALERTS-DEBUG] AlertScores.csv not found")
+        logger.debug(f"[ALERTS-DEBUG] Request received")
+        alerts_path, alerts_df = _load_alerts_cached()
+        logger.debug(f"[ALERTS-DEBUG] Looking for alerts at: {alerts_path}")
+        if alerts_df is None:
+            logger.info("[ALERTS-DEBUG] AlertScores.csv not found")
             return jsonify([]), 200
-            
-        # Load the alerts data directly
-        alerts_df = pd.read_csv(alerts_path)
-        print(f"[ALERTS-DEBUG] Loaded alerts DataFrame with shape: {alerts_df.shape}")
-        
+        logger.debug(f"[ALERTS-DEBUG] Loaded alerts DataFrame with shape: {alerts_df.shape}")
+
         if len(alerts_df) == 0:
-            print("[ALERTS-DEBUG] No alerts found")
+            logger.info("[ALERTS-DEBUG] No alerts found")
             return jsonify([]), 200
-        
+
         # Get limit parameter
         limit = int(request.args.get('limit', 10))
-        
+
         # Sort by risk_score and get top alerts
         top_alerts_df = alerts_df.nlargest(limit, 'risk_score')
         alerts = top_alerts_df.to_dict(orient='records')
-        
-        print(f"[ALERTS-DEBUG] Returning {len(alerts)} alerts")
-        return jsonify(alerts), 200
-        
+        logger.debug(f"[ALERTS-DEBUG] Returning {len(alerts)} alerts")
     except Exception as e:
-        print(f"[ALERTS-DEBUG] ERROR: {e}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({"error": "Failed to retrieve alerts."}), 500
+        logger.error(f"[ALERTS-DEBUG] ERROR: {e}")
+        return api_err("Failed to retrieve alerts.", 500)
 
 @app.route('/api/test-alerts', methods=['GET'])
 def test_alerts():
@@ -656,56 +679,62 @@ def test_alerts():
 @token_required
 def investigate_person(person_id):
     try:
+        logger.info(f"[INVESTIGATE] Fetching risk details for {person_id}")
         risk_details = risk_scorer.get_person_risk_details(person_id)
         if not risk_details:
-            return jsonify({"error": "Person ID not found or has no risk score."}), 404
+            logger.warning(f"[INVESTIGATE] No risk details for {person_id}")
+            return api_err("Person ID not found or has no risk score.", 404)
         summary = ai_summarizer.generate_summary_from_details(risk_details)
         response_data = {
             "person_id": person_id, "risk_profile": risk_details, "ai_summary": summary
         }
+        logger.info(f"[INVESTIGATE] Returning investigation bundle for {person_id}")
         return jsonify(response_data), 200
     except Exception as e:
-        print(f"ERROR in /api/investigate/{person_id}: {e}")
-        return jsonify({"error": "Failed to fetch investigation data."}), 500
+        logger.error(f"ERROR in /api/investigate/{person_id}: {e}")
+        return api_err("Failed to fetch investigation data.", 500)
 
 @app.route('/api/cases', methods=['GET', 'POST'])
 @token_required
 def handle_cases():
     if request.method == 'GET':
         try:
+            logger.info("[CASES] Listing all cases")
             all_cases = case_manager.get_all_cases()
             return jsonify(all_cases), 200
         except Exception as e:
-            print(f"ERROR in /api/cases [GET]: {e}")
-            return jsonify({"error": "An unexpected error occurred while fetching cases."}), 500
+            logger.error(f"ERROR in /api/cases [GET]: {e}")
+            return api_err("An unexpected error occurred while fetching cases.", 500)
             
     elif request.method == 'POST':
         case_data = request.get_json()
         if not case_data:
-            return jsonify({"error": "Invalid request body."}), 400
+            return api_err("Invalid request body.", 400)
         try:
+            logger.info("[CASES] Creating new case")
             case_id = case_manager.create_case(case_data)
             if case_id:
-                print(f"Successfully created case {case_id} in Firestore.")
+                logger.info(f"[CASES] Created case {case_id}")
                 return jsonify({"message": "Case created successfully.", "case_id": case_id}), 201
             else:
-                return jsonify({"error": "Failed to create case in database."}), 500
+                return api_err("Failed to create case in database.", 500)
         except Exception as e:
-            print(f"ERROR in /api/cases [POST]: {e}")
-            return jsonify({"error": "An unexpected error occurred."}), 500
+            logger.error(f"ERROR in /api/cases [POST]: {e}")
+            return api_err("An unexpected error occurred.", 500)
 
 @app.route('/api/cases/<string:case_id>', methods=['GET'])
 @token_required
 def get_case(case_id):
     try:
+        logger.info(f"[CASES] Fetching case {case_id}")
         case = case_manager.get_case(case_id)
         if case:
             return jsonify(case), 200
         else:
-            return jsonify({"error": "Case not found."}), 404
+            return api_err("Case not found.", 404)
     except Exception as e:
-        print(f"ERROR in /api/cases/{case_id} GET: {e}")
-        return jsonify({"error": "An unexpected error occurred."}), 500
+        logger.error(f"ERROR in /api/cases/{case_id} GET: {e}")
+        return api_err("An unexpected error occurred.", 500)
 
 NOTES_STORE_PATH = os.path.join(os.path.dirname(__file__), 'generated-data', 'case_notes.json')
 
@@ -715,7 +744,7 @@ def _read_local_notes():
             with open(NOTES_STORE_PATH, 'r', encoding='utf-8') as f:
                 return json.load(f)
     except Exception as e:
-        print(f"WARN: Failed reading local notes store: {e}")
+        logger.warning(f"Failed reading local notes store: {e}")
     return {}
 
 def _write_local_notes(data):
@@ -725,14 +754,15 @@ def _write_local_notes(data):
             json.dump(data, f, ensure_ascii=False, indent=2)
         return True
     except Exception as e:
-        print(f"WARN: Failed writing local notes store: {e}")
-        return False
+        logger.warning(f"Failed writing local notes store: {e}")
+    return False
 
 @app.route('/api/cases/<string:case_id>/notes', methods=['GET', 'PUT'])
 @token_required
 def case_notes(case_id):
     try:
         if request.method == 'GET':
+            logger.info(f"[NOTES] Get notes for case {case_id}")
             case = case_manager.get_case(case_id)
             firestore_notes = case.get('notes') if case else None
             if firestore_notes is not None:
@@ -741,13 +771,14 @@ def case_notes(case_id):
             local_notes_map = _read_local_notes()
             notes_text = local_notes_map.get(case_id, '')
             if case is None and not notes_text:
-                return jsonify({"error": "Case not found."}), 404
+                return api_err("Case not found.", 404)
             return jsonify({"case_id": case_id, "notes": notes_text, "source": "local"}), 200
         else:  # PUT
             body = request.get_json() or {}
             notes = body.get('notes')
             if notes is None:
-                return jsonify({"error": "'notes' field is required."}), 400
+                return api_err("'notes' field is required.", 400)
+            logger.info(f"[NOTES] Update notes for case {case_id}")
             updated = case_manager.update_case_notes(case_id, notes)
             # Always also persist locally as fallback
             local_notes_map = _read_local_notes()
@@ -758,8 +789,8 @@ def case_notes(case_id):
                 return jsonify({"message": "Notes saved locally (Firestore unavailable).", "fallback": True}), 200
             return jsonify({"message": "Notes saved successfully.", "fallback": False}), 200
     except Exception as e:
-        print(f"ERROR in /api/cases/{case_id}/notes: {e}")
-        return jsonify({"error": "Failed to process notes request."}), 500
+        logger.error(f"ERROR in /api/cases/{case_id}/notes: {e}")
+        return api_err("Failed to process notes request.", 500)
 
 @app.route('/api/graph/<string:person_id>', methods=['GET'])
 @token_required
@@ -852,16 +883,17 @@ def get_graph_data(person_id):
         network_data["person_id"] = person_id
         return jsonify(network_data), 200
     except Exception as e:
-        print(f"ERROR in /api/graph/{person_id}: {e}")
-        return jsonify({"error": "Failed to fetch graph data from Neo4j."}), 500
+        logger.error(f"ERROR in /api/graph/{person_id}: {e}")
+        return api_err("Failed to fetch graph data from Neo4j.", 500)
 
 @app.route('/api/report/<string:person_id>', methods=['GET'])
 @token_required
 def generate_report(person_id):
     try:
+        logger.info(f"[REPORT] Generate report for {person_id}")
         risk_details = risk_scorer.get_person_risk_details(person_id)
         if not risk_details:
-            return jsonify({"error": "Cannot generate report. Person ID not found."}), 404
+            return api_err("Cannot generate report. Person ID not found.", 404)
         # Harmonize: ensure we use the canonical alert score (from AlertScores.csv) so PDF matches dashboard
         try:
             alerts_path = os.path.join(DATA_PATH, 'AlertScores.csv')
@@ -873,11 +905,11 @@ def generate_report(person_id):
                     # Only override if canonical differs; keep recalculated score accessible for debugging
                     risk_details['final_risk_score'] = canonical_score
                     risk_details['canonical_alert_score'] = canonical_score
-                    print(f"[REPORT] Using canonical score {canonical_score} for {person_id} (recalc {risk_details.get('recalculated_risk_score')})")
+                    logger.info(f"[REPORT] Using canonical score {canonical_score} for {person_id} (recalc {risk_details.get('recalculated_risk_score')})")
                 else:
-                    print(f"[REPORT] No canonical alert row found for {person_id}, using recalculated {risk_details.get('final_risk_score')}")
+                    logger.info(f"[REPORT] No canonical alert row found for {person_id}, using recalculated {risk_details.get('final_risk_score')}")
         except Exception as _harm_err:
-            print(f"WARN: Failed to harmonize PDF score for {person_id}: {_harm_err}")
+            logger.warning(f"Failed to harmonize PDF score for {person_id}: {_harm_err}")
         summary = ai_summarizer.generate_summary_from_details(risk_details)
         pdf_path = report_generator.generate_pdf(person_id, risk_details, summary)
         if not pdf_path or not os.path.exists(pdf_path):
@@ -888,7 +920,7 @@ def generate_report(person_id):
             return jsonify(msg), 500
         return send_file(pdf_path, as_attachment=True, download_name=f"Investigation_Report_{person_id}.pdf", mimetype='application/pdf')
     except Exception as e:
-        print(f"ERROR in /api/report/{person_id}: {e}")
+        logger.error(f"ERROR in /api/report/{person_id}: {e}")
         debug = request.args.get('debug') == '1' or os.environ.get('NETRA_REPORT_DEBUG') == '1'
         msg = {"error": "Failed to generate PDF report."}
         if debug:
@@ -904,7 +936,7 @@ def regenerate_data():
     Triggers the data generation script to create a new synthetic dataset.
     """
     try:
-        print("Received request to regenerate dataset...")
+        logger.info("[SETTINGS] Regenerate dataset requested")
         # We use subprocess to run the script in a way that doesn't block the server
         # for too long. For a hackathon, this is a very effective demonstration.
         process = subprocess.Popen(['python', DATA_GENERATION_SCRIPT_PATH], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -912,20 +944,20 @@ def regenerate_data():
         
         if process.returncode == 0:
             # Important: After generating new data, we must reload it into our services
-            print("Data regeneration successful. Reloading services...")
+            logger.info("[SETTINGS] Data regeneration successful. Reloading services...")
             global all_datasets, risk_scorer, report_generator
             all_datasets = data_loader.load_all_data()
             risk_scorer = HybridRiskScorer(all_datasets)
             report_generator = ReportGenerator(all_datasets)
-            print("Services reloaded with new data.")
+            logger.info("[SETTINGS] Services reloaded with new data.")
             return jsonify({"message": "New synthetic dataset generated and loaded successfully."}), 200
         else:
-            print(f"ERROR during data regeneration: {stderr.decode()}")
-            return jsonify({"error": "Failed to regenerate dataset.", "details": stderr.decode()}), 500
+            logger.error(f"ERROR during data regeneration: {stderr.decode()}")
+            return api_err("Failed to regenerate dataset.", 500)
             
     except Exception as e:
-        print(f"ERROR in /api/settings/regenerate-data: {e}")
-        return jsonify({"error": "An unexpected error occurred during data regeneration."}), 500
+        logger.error(f"ERROR in /api/settings/regenerate-data: {e}")
+        return api_err("An unexpected error occurred during data regeneration.", 500)
 
 @app.route('/api/settings/clear-cases', methods=['POST'])
 @token_required
@@ -934,12 +966,12 @@ def clear_all_cases():
     Deletes all case files from the Firestore database.
     """
     try:
-        print("Received request to clear all cases from Firestore...")
+        logger.info("[SETTINGS] Clear all cases requested")
         deleted_count = case_manager.clear_all_cases()
         return jsonify({"message": f"Successfully deleted {deleted_count} cases from Firestore."}), 200
     except Exception as e:
-        print(f"ERROR in /api/settings/clear-cases: {e}")
-        return jsonify({"error": "An unexpected error occurred while clearing cases."}), 500
+        logger.error(f"ERROR in /api/settings/clear-cases: {e}")
+        return api_err("An unexpected error occurred while clearing cases.", 500)
 
 @app.route('/api/settings/profile', methods=['GET','POST'])
 @token_required
@@ -948,18 +980,18 @@ def settings_profile():
     if request.method == 'GET':
         return jsonify(settings.get('profile', {})), 200
     body = request.get_json(force=True, silent=True) or {}
-    print(f"[PROFILE] Incoming profile update body: {body}")
+    logger.debug(f"[PROFILE] Incoming profile update body: {body}")
     missing = [k for k in ['displayName','email'] if k not in body]
     if missing:
-        return jsonify({"error": f"Missing required fields: {', '.join(missing)}"}), 400
+        return api_err(f"Missing required fields: {', '.join(missing)}", 400)
     profile = settings.get('profile', {})
     for k in ['displayName','email','department','badge']:
         if k in body:
             profile[k] = body[k]
     settings['profile'] = profile
     if not _save_settings(settings):
-        return jsonify({"error": "Failed to persist profile settings"}), 500
-    print(f"[PROFILE] Updated profile saved: {profile}")
+        return api_err("Failed to persist profile settings", 500)
+    logger.info(f"[PROFILE] Updated profile saved for {profile.get('email','unknown')}")
     return jsonify({"message": "Profile updated", "profile": profile}), 200
 
 @app.route('/api/settings/api-key', methods=['GET','POST'])
@@ -987,7 +1019,7 @@ def settings_theme():
     body = request.get_json(force=True, silent=True) or {}
     theme = body.get('theme','dark')
     if theme not in ['dark','light']:
-        return jsonify({"error": "Invalid theme"}), 400
+        return api_err("Invalid theme", 400)
     settings['theme'] = theme
     _save_settings(settings)
     return jsonify({"message": "Theme updated", "theme": theme}), 200
@@ -1023,7 +1055,7 @@ def get_notifications():
                             'read': False
                         })
         except Exception as e:
-            print(f"WARN: Failed to synthesize notifications: {e}")
+            logger.warning(f"Failed to synthesize notifications: {e}")
         _save_notifications(items)
     else:
         # Opportunistically append any new high risk alerts not already represented
@@ -1050,7 +1082,7 @@ def get_notifications():
                             })
                     _save_notifications(items)
         except Exception as e:
-            print(f"WARN: Failed to augment notifications: {e}")
+            logger.warning(f"Failed to augment notifications: {e}")
     # Sort newest first
     try:
         items.sort(key=lambda x: x.get('created_at',''), reverse=True)
@@ -1117,7 +1149,7 @@ def update_notification(notif_id):
             updated = n
             break
     if updated is None:
-        return jsonify({"error": "Notification not found"}), 404
+        return api_err("Notification not found", 404)
     _save_notifications(items)
     return jsonify({"message": "Notification updated", "notification": updated}), 200
 
@@ -1127,7 +1159,7 @@ def delete_notification(notif_id):
     items = _load_notifications()
     new_items = [n for n in items if n.get('id') != notif_id]
     if len(new_items) == len(items):
-        return jsonify({"error": "Notification not found"}), 404
+        return api_err("Notification not found", 404)
     _save_notifications(new_items)
     return jsonify({"message": "Notification deleted"}), 200
 
