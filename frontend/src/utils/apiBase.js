@@ -1,23 +1,23 @@
 // Centralized API base URL resolution
 // Priority:
-// 1. Explicit env VITE_API_URL
-// 2. Runtime override window.__NETRA_API_BASE
-// 3. If running on localhost (any port) -> local backend http://localhost:5001/api
-// 4. Deployed backend default
-const DEFAULT_PROD = 'https://netra-8j8n.onrender.com/api';
-const RUNTIME_OVERRIDE = (typeof window !== 'undefined' && window.__NETRA_API_BASE) || '';
-const ENV_BASE = import.meta.env?.VITE_API_URL || '';
-let derived = (ENV_BASE || RUNTIME_OVERRIDE || '').trim();
+// 1) VITE_API_URL from environment (Vercel/local .env)
+// 2) Runtime override via window.__NETRA_API_BASE (for debugging)
+// 3) If localhost -> default to local backend http://localhost:5001/api
+// 4) Else same-origin '/api' (for reverse-proxied deployments)
+const ENV_BASE = (import.meta.env?.VITE_API_URL || '').trim();
+const RUNTIME_OVERRIDE = (typeof window !== 'undefined' && window.__NETRA_API_BASE ? String(window.__NETRA_API_BASE) : '').trim();
 
-if (!derived) {
-	// Auto dev detection: hostname indicates local environment
-	const isLocal = typeof window !== 'undefined' && /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname);
+let derived = ENV_BASE || RUNTIME_OVERRIDE;
+
+if (!derived && typeof window !== 'undefined') {
+	const isLocal = /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname);
 	if (isLocal) {
 		derived = 'http://localhost:5001/api';
+	} else {
+		// Fallback to same-origin '/api' if running behind a proxy
+		derived = `${window.location.origin}/api`;
 	}
 }
-
-if (!derived) derived = DEFAULT_PROD;
 
 derived = derived.replace(/\/$/, '');
 export const API_BASE = derived;

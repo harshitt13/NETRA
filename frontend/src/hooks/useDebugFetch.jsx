@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-
-const API_BASE_URL = "https://netra-8j8n.onrender.com/api";
+import { API_BASE } from "../utils/apiBase";
+const API_BASE_URL = API_BASE;
 
 /**
  * A debug version of useFetchData that bypasses authentication
