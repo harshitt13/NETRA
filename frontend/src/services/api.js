@@ -151,15 +151,7 @@ export const setTheme = (theme) => apiRequest('/settings/theme', { method: 'POST
 export const getCaseNotes = (caseId) => apiRequest(`/cases/${caseId}/notes`);
 export const updateCaseNotes = (caseId, notes) => apiRequest(`/cases/${caseId}/notes`, { method: 'PUT', body: { notes } });
 
-// --- Notifications ---
-export const getNotifications = (params = {}) => {
-  const qs = new URLSearchParams(params).toString();
-  return apiRequest(`/notifications${qs ? `?${qs}` : ''}`);
-};
-export const markAllNotificationsRead = () => apiRequest('/notifications/mark-read', { method: 'POST' });
-export const updateNotification = (id, payload) => apiRequest(`/notifications/${id}`, { method: 'PATCH', body: payload });
-export const deleteNotification = (id) => apiRequest(`/notifications/${id}`, { method: 'DELETE' });
-export const createNotification = (payload) => apiRequest('/notifications', { method: 'POST', body: payload });
+// Notifications feature removed
 
 
 // --- Authentication Mock ---

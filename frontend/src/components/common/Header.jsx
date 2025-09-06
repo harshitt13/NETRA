@@ -1,7 +1,7 @@
-import { UserCircle, Bell, Menu, X, Settings } from "lucide-react";
+import { UserCircle, Menu, X, Settings } from "lucide-react";
 import { useState, useEffect } from "react";
 import LogoutButton from "./LogoutButton.jsx";
-import NotificationBell from "./NotificationBell.jsx";
+// Notifications removed
 import { getProfile } from "../../services/api.js";
 import { useAuth } from "../../hooks/useAuth.jsx";
 import { useNavigate } from "react-router-dom";
@@ -103,17 +103,7 @@ const MobileMenu = ({ isOpen, onClose, navigate, profile }) => (
             <span>Settings</span>
           </button>
           
-          <button 
-            className="w-full flex items-center space-x-3 p-3 text-gray-300 hover:text-cyan-400 
-                       hover:bg-gray-800/50 rounded-lg transition-colors relative"
-          >
-            <Bell size={20} />
-            <span>Notifications</span>
-            <span className="absolute right-3 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-            </span>
-          </button>
+          {/* Notifications removed */}
         </div>
         
         {/* Logout Button */}
@@ -174,7 +164,7 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
-          <NotificationBell />
+          {/* Notifications removed */}
 
           {/* Settings */}
           <button 
