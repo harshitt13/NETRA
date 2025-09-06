@@ -166,9 +166,7 @@ export const updateProfile = (profile) => apiRequest('/settings/profile', { meth
  */
 export const getApiKeyMasked = () => apiRequest('/settings/api-key');
 export const updateApiKey = (apiKey) => apiRequest('/settings/api-key', { method: 'POST', body: { apiKey } });
-/** Theme settings */
-export const getTheme = () => apiRequest('/settings/theme');
-export const setTheme = (theme) => apiRequest('/settings/theme', { method: 'POST', body: { theme } });
+// Theme endpoints removed from frontend
 
 // --- Case notes ---
 export const getCaseNotes = (caseId) => apiRequest(`/cases/${caseId}/notes`);

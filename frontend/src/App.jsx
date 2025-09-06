@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './hooks/useAuth.jsx';
-import { ThemeProvider } from './contexts/ThemeContext.jsx';
 
 // Page Components
 import LoginPage from './pages/LoginPage.jsx';
@@ -77,13 +76,11 @@ function AppLayout() {
 // This is the main App component that wraps everything in the AuthProvider
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <Router>
-          <AppLayout />
-        </Router>
-      </AuthProvider>
-    </ThemeProvider>
+    <AuthProvider>
+      <Router>
+        <AppLayout />
+      </Router>
+    </AuthProvider>
   );
 }
 

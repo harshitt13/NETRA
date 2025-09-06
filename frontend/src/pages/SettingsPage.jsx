@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import Header from '../components/common/Header.jsx';
 import Sidebar from '../components/common/Sidebar.jsx';
-import { useTheme } from '../contexts/useTheme.js';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { getProfile, updateProfile, getApiKeyMasked, updateApiKey, regenerateDataset, clearAllCases, getDatasetMetadata, uploadDataset } from '../services/api.js';
 import LoadingOverlay from '../components/common/LoadingOverlay.jsx';
-import { Settings, User, Key, Database, Sun, Moon, Save, RefreshCw, Trash2 } from 'lucide-react';
+import { Settings, User, Key, Database, Save, RefreshCw, Trash2 } from 'lucide-react';
 
 // A reusable card component for different settings sections
 const SettingsCard = ({ title, icon: Icon, children }) => (
@@ -66,8 +65,7 @@ const Button = ({ children, onClick, variant = 'primary', disabled = false, isLo
 };
 
 const SettingsPage = () => {
-    // --- Theme Management ---
-    const { theme, setTheme, themeSaving } = useTheme();
+    // ...existing code...
     const { user } = useAuth();
     // Ensure a mock token exists in localStorage for mock auth environments (non-destructive)
     useEffect(() => {
@@ -426,61 +424,7 @@ const SettingsPage = () => {
                                 )}
                             </SettingsCard>
 
-                            {/* Appearance Settings */}
-                            <SettingsCard title="Appearance" icon={theme === 'dark' ? Moon : Sun}>
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="text-gray-300 font-medium">Theme Preference</p>
-                                            <p className="text-sm text-gray-400 flex items-center gap-2">Choose your preferred color scheme {themeSaving && <span className="text-xs text-yellow-400">(saving...)</span>}</p>
-                                        </div>
-                                        <div className="flex bg-gray-700 p-1 rounded-lg">
-                                            <button 
-                                                onClick={() => setTheme('dark')} 
-                                                disabled={themeSaving}
-                                                className={`px-4 py-2 text-sm rounded-md transition-all duration-200 flex items-center space-x-2 ${
-                                                    theme === 'dark' 
-                                                        ? 'bg-purple-600 text-white shadow-lg' 
-                                                        : 'text-gray-400 hover:text-gray-300'
-                                                }`}
-                                            >
-                                                <Moon className="h-4 w-4" />
-                                                <span>Dark</span>
-                                            </button>
-                                            <button 
-                                                onClick={() => setTheme('light')} 
-                                                disabled={themeSaving}
-                                                className={`px-4 py-2 text-sm rounded-md transition-all duration-200 flex items-center space-x-2 ${
-                                                    theme === 'light' 
-                                                        ? 'bg-purple-600 text-white shadow-lg' 
-                                                        : 'text-gray-400 hover:text-gray-300'
-                                                }`}
-                                            >
-                                                <Sun className="h-4 w-4" />
-                                                <span>Light</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    
-                                    {/* Theme Preview */}
-                                    <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
-                                        <p className="text-sm text-gray-400 mb-2">Theme Preview:</p>
-                                        <div className="flex items-center space-x-2">
-                                            <div className={`w-4 h-4 rounded ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} border`}></div>
-                                            <span className="text-sm text-gray-300">
-                                                Current: {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
-                                        <p className="text-xs text-yellow-400">
-                                            💡 Theme changes are applied instantly and saved automatically.
-                                            {theme === 'light' && ' Light theme is experimental and may not be fully supported yet.'}
-                                        </p>
-                                    </div>
-                                </div>
-                            </SettingsCard>
+                            {/* Appearance settings removed: dark/light mode switching is no longer available. */}
                         </div>
                     </div>
                 </main>
