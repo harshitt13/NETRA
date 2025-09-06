@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { API_BASE } from '../utils/apiBase.js';
+import { createContext, useState, useEffect, useRef } from 'react';
+import { getTheme as apiGetTheme, setTheme as apiSetTheme } from '../services/api.js';
 
 // Create the theme context
 const ThemeContext = createContext();
@@ -24,21 +24,14 @@ export const ThemeProvider = ({ children }) => {
       try {
         const stored = localStorage.getItem('netra-theme-fetched');
         if (stored) return; // already synced once this session
-        const token = window?.currentUser?.getIdToken ? await window.currentUser.getIdToken() : null; // optional
-        const res = await fetch(`${API_BASE}/settings/theme`, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
-        });
-        if (res.ok) {
-          const data = await res.json();
-            if (data.theme && (data.theme === 'dark' || data.theme === 'light')) {
-              setTheme(data.theme);
-              localStorage.setItem('netra-theme', data.theme);
-            }
-          localStorage.setItem('netra-theme-fetched', '1');
+        const data = await apiGetTheme();
+        if (data?.theme && (data.theme === 'dark' || data.theme === 'light')) {
+          setTheme(data.theme);
+          localStorage.setItem('netra-theme', data.theme);
         }
-      } catch (e) {
+        localStorage.setItem('netra-theme-fetched', '1');
+      } catch {
         // Silent fail – backend theme not critical
-        console.warn('Theme fetch skipped:', e);
       }
     };
     fetchRemoteTheme();
@@ -56,7 +49,7 @@ export const ThemeProvider = ({ children }) => {
       // Save theme to localStorage
       localStorage.setItem('netra-theme', theme);
     } catch (error) {
-      console.warn('Could not apply theme:', error);
+      if (import.meta.env?.DEV) console.warn('Could not apply theme:', error);
     }
   }, [theme]);
 
@@ -69,17 +62,9 @@ export const ThemeProvider = ({ children }) => {
     saveTimer.current = setTimeout(async () => {
       try {
         setLoading(true);
-        const token = window?.currentUser?.getIdToken ? await window.currentUser.getIdToken() : null;
-        await fetch(`${API_BASE}/settings/theme`, {
-          method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              ...(token ? { Authorization: `Bearer ${token}` } : {})
-            },
-            body: JSON.stringify({ theme: newTheme })
-        });
-      } catch (e) {
-        console.warn('Failed to persist theme:', e);
+        await apiSetTheme(newTheme);
+      } catch {
+        // ignore persistence errors
       } finally {
         setLoading(false);
       }
@@ -99,15 +84,6 @@ export const ThemeProvider = ({ children }) => {
       {children}
     </ThemeContext.Provider>
   );
-};
-
-// Custom hook to use the theme context
-export const useTheme = () => {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider');
-  }
-  return context;
 };
 
 export default ThemeContext;

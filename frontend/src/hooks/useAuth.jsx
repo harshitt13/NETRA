@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useCallback,
 } from "react";
 import {
   onAuthStateChanged,
@@ -12,6 +13,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
 import Loader from "../components/common/Loader";
+import { setTokenProvider } from "../services/api";
 
 // Mock user data
 const MOCK_USER = {
@@ -37,7 +39,7 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   // Determine if mock authentication should be used (e.g., based on environment variable)
-  const useMockAuth = process.env.REACT_APP_USE_MOCK_AUTH === "true" || true; // Default to mock auth
+  const useMockAuth = (import.meta.env?.VITE_USE_MOCK_AUTH === "true") || true; // Default to mock auth
 
   // Firebase auth state listener
   useEffect(() => {
@@ -59,19 +61,13 @@ export const AuthProvider = ({ children }) => {
   }, [useMockAuth]);
 
   // Firebase login
-  const login = async (email, password) => {
-    console.log("Login attempt:", email, password); // Debug log
+  const login = useCallback(async (email, password) => {
     setLoading(true);
     setError(null);
     try {
       if (useMockAuth) {
         // Simulate API call delay for mock auth
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        console.log(
-          "Checking credentials:",
-          email === ROOT_CREDENTIALS.email,
-          password === ROOT_CREDENTIALS.password
-        ); // Debug
         if (
           email === ROOT_CREDENTIALS.email &&
           password === ROOT_CREDENTIALS.password
@@ -80,10 +76,7 @@ export const AuthProvider = ({ children }) => {
           sessionStorage.setItem("netra_user", JSON.stringify(MOCK_USER));
           return { success: true };
         } else {
-          const errorMsg =
-            "Invalid credentials. Use admin@netra.com / netra123";
-          console.log("Throwing error:", errorMsg); // Debug
-          throw new Error(errorMsg);
+          throw new Error("Invalid credentials. Use admin@netra.com / netra123");
         }
       } else {
         // Firebase auth
@@ -97,15 +90,14 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       setError(err.message);
-      console.error("Login Error:", err.message);
       throw err;
     } finally {
       setLoading(false);
     }
-  };
+  }, [useMockAuth]);
 
   // Logout function
-  const logout = async () => {
+  const logout = useCallback(async () => {
     setLoading(true);
     try {
       if (useMockAuth) {
@@ -120,7 +112,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [useMockAuth]);
 
   // Use useMemo to prevent unnecessary re-renders
   const value = useMemo(
@@ -131,8 +123,19 @@ export const AuthProvider = ({ children }) => {
       login,
       logout,
     }),
-    [user, loading, error]
+    [user, loading, error, login, logout]
   );
+
+  // Register token provider for api.js to unify auth headers
+  useEffect(() => {
+    setTokenProvider(async () => {
+      try {
+        return await (user?.getIdToken?.() || null);
+      } catch {
+        return null;
+      }
+    });
+  }, [user]);
 
   // Render a loader while checking auth state
   if (loading) {

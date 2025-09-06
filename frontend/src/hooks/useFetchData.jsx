@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./useAuth.jsx";
-import { API_BASE } from "../utils/apiBase.js";
-const API_BASE_URL = API_BASE;
+import { apiRequest } from "../services/api.js";
 
 /**
  * A custom React hook for fetching data from the backend API.
@@ -42,31 +41,9 @@ const useFetchData = (initialUrl) => {
     setError(null);
 
     try {
-      // Get the token from the now-confirmed authenticated user
-      const token = await user.getIdToken();
-
-      const response = await fetch(`${API_BASE_URL}${url}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        let errorMessage = `HTTP error! Status: ${response.status}`;
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.error || errorMessage;
-        } catch (e) {
-          // If response body is not JSON, use the default HTTP error
-        }
-        throw new Error(errorMessage);
-      }
-
-      const result = await response.json();
+      const result = await apiRequest(url);
       setData(result);
     } catch (err) {
-      console.error("Fetch Error:", err);
       setError(err);
     } finally {
       setLoading(false);

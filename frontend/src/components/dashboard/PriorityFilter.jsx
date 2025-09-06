@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Filter } from 'lucide-react';
 
 const PriorityFilter = ({ onFilterChange }) => {
@@ -9,8 +9,7 @@ const PriorityFilter = ({ onFilterChange }) => {
     setActiveFilter(filter);
     // In a real application, this function would trigger a refetch of the data
     // with the selected filter as a query parameter.
-    onFilterChange(filter);
-    console.log(`Filter changed to: ${filter}`);
+  onFilterChange(filter);
   };
 
   return (

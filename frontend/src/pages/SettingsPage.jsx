@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import Header from '../components/common/Header.jsx';
 import Sidebar from '../components/common/Sidebar.jsx';
-import { useTheme } from '../contexts/ThemeContext.jsx';
-import { API_BASE } from '../utils/apiBase.js';
+import { useTheme } from '../contexts/useTheme.js';
 import { useAuth } from '../hooks/useAuth.jsx';
+import { getProfile, updateProfile, getApiKeyMasked, updateApiKey, regenerateDataset, clearAllCases } from '../services/api.js';
 import { Settings, User, Key, Database, Sun, Moon, Save, RefreshCw, Trash2 } from 'lucide-react';
 
 // A reusable card component for different settings sections
@@ -90,46 +90,25 @@ const SettingsPage = () => {
         setTimeout(() => setFeedback({ message: '', type: '' }), 5000);
     };
 
-    const authHeaders = useCallback(async () => {
-        if (!user) return {};
-        try { const token = await user.getIdToken(); return { Authorization: `Bearer ${token}` }; } catch { return {}; }
-    }, [user]);
-
     const fetchSettings = useCallback(async () => {
         setLoadingSettings(true);
         try {
-            const headers = await authHeaders();
-            // Profile
-            const pRes = await fetch(`${API_BASE}/settings/profile`, { headers });
-            if (pRes.ok) {
-                const pData = await pRes.json();
-                setProfile(prev => ({ ...prev, ...pData }));
-            }
-            // API key (masked)
-            const kRes = await fetch(`${API_BASE}/settings/api-key`, { headers });
-            if (kRes.ok) {
-                const kData = await kRes.json();
-                setApiKeyMasked(kData.apiKeyMasked || '');
-            }
+        const pData = await getProfile();
+        if (pData) setProfile(prev => ({ ...prev, ...pData }));
+        const kData = await getApiKeyMasked();
+        if (kData && typeof kData.apiKeyMasked === 'string') setApiKeyMasked(kData.apiKeyMasked);
         } catch (e) {
-            console.warn('Failed to load settings', e);
+            if (import.meta.env?.DEV) console.warn('Failed to load settings', e);
         } finally {
             setLoadingSettings(false);
         }
-    }, [authHeaders]);
+    }, []);
 
     useEffect(() => { if (user) fetchSettings(); }, [user, fetchSettings]);
 
     const handleSaveProfile = async () => {
         try {
-            const headers = { 'Content-Type': 'application/json', ...(await authHeaders()) };
-            const res = await fetch(`${API_BASE}/settings/profile`, { method: 'POST', headers, body: JSON.stringify(profile) });
-            if (!res.ok) {
-                let errTxt = '';
-                try { errTxt = await res.text(); } catch { /* ignore body parse error */ }
-                console.warn('Profile save failed', res.status, errTxt);
-                throw new Error('Failed');
-            }
+            await updateProfile(profile);
             showFeedback('Profile updated successfully!', 'success');
         } catch {
             showFeedback('Failed to update profile.', 'error');
@@ -138,11 +117,8 @@ const SettingsPage = () => {
 
     const handleSaveApiKey = async () => {
         try {
-            const headers = { 'Content-Type': 'application/json', ...(await authHeaders()) };
-            const res = await fetch(`${API_BASE}/settings/api-key`, { method: 'POST', headers, body: JSON.stringify({ apiKey }) });
-            if (!res.ok) throw new Error('Failed');
+            await updateApiKey(apiKey);
             showFeedback('API Key updated successfully!', 'success');
-            // Refresh masked view
             fetchSettings();
             setApiKey('');
         } catch {
@@ -155,9 +131,7 @@ const SettingsPage = () => {
         
         setIsRegenerating(true);
         try {
-            const headers = await authHeaders();
-            const res = await fetch(`${API_BASE}/settings/regenerate-data`, { method: 'POST', headers });
-            if (!res.ok) throw new Error();
+            await regenerateDataset();
             showFeedback('Dataset regenerated successfully. Reload alerts to see changes.', 'success');
         } catch (error) {
             showFeedback('Failed to regenerate dataset. Please try again.', 'error');
@@ -171,9 +145,7 @@ const SettingsPage = () => {
 
         setIsClearing(true);
         try {
-            const headers = await authHeaders();
-            const res = await fetch(`${API_BASE}/settings/clear-cases`, { method: 'POST', headers });
-            if (!res.ok) throw new Error();
+            await clearAllCases();
             showFeedback('All cases cleared successfully!', 'success');
         } catch (error) {
             showFeedback('Failed to clear cases. Please try again.', 'error');

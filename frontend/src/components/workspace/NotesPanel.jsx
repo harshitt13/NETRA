@@ -1,4 +1,3 @@
-import React from 'react';
 import { BookMarked } from 'lucide-react';
 import Button from '../common/Button.jsx';
 
@@ -11,8 +10,7 @@ const NotesPanel = ({ notes, setNotes, onSave }) => {
   const handleSave = () => {
     // This function would be passed down from the parent component
     // to trigger an API call to save the notes.
-    onSave(notes);
-    console.log("Saving notes:", notes);
+  onSave(notes);
   };
 
   return (
@@ -20,7 +18,7 @@ const NotesPanel = ({ notes, setNotes, onSave }) => {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
             <BookMarked className="h-6 w-6 text-cyan-300 mr-3" />
-            <h2 className="text-xl font-bold text-cyan-300">Investigator's Notes</h2>
+            <h2 className="text-xl font-bold text-cyan-300">Investigator&apos;s Notes</h2>
         </div>
         <Button onClick={handleSave} variant="primary" className="h-10 px-4">
           Save Notes
@@ -37,29 +35,6 @@ const NotesPanel = ({ notes, setNotes, onSave }) => {
     </div>
   );
 };
-
-// Example parent component showing how to use NotesPanel
-const NotesPanelWrapper = () => {
-    const [caseNotes, setCaseNotes] = React.useState(
-`Initial observation:
-- Subject Arjun Verma's financial activity shows clear signs of structuring in early November 2024.
-- The high-value property purchase directly correlates with funds received from Zenith Global Exports.
-- Need to investigate the corporate structure of Zenith Global and its other directors.`
-    );
-
-    const handleSaveNotes = (updatedNotes) => {
-        // Here you would make an API call to your backend
-        // e.g., api.post('/cases/PER-001/notes', { content: updatedNotes });
-        console.log("API call to save notes would happen here.", updatedNotes);
-    };
-
-    return (
-        <div className="p-10 bg-gray-900 min-h-screen">
-             <NotesPanel notes={caseNotes} setNotes={setCaseNotes} onSave={handleSaveNotes} />
-        </div>
-    );
-};
-
 
 export default NotesPanel;
 

@@ -1,20 +1,17 @@
-import React from 'react';
 import { ShieldCheck, XCircle } from 'lucide-react';
 import Button from '../common/Button';
 
-const TriageActions = ({ caseId }) => {
+const TriageActions = () => {
 
   const handleEscalate = () => {
     // In a real app, this would trigger a POST request to '/api/cases/escalate'
     // and then navigate the user to the investigation workspace.
-    console.log(`Escalating case for ID: ${caseId}`);
     // e.g., navigate(`/workspace/${caseId}`);
   };
 
   const handleDismiss = () => {
     // This would trigger a POST request to '/api/alerts/dismiss'
     // and likely show a modal asking for a reason.
-    console.log(`Dismissing alert for ID: ${caseId}`);
   };
 
   return (

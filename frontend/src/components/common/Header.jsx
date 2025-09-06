@@ -2,7 +2,7 @@ import { UserCircle, Bell, Menu, X, Settings } from "lucide-react";
 import { useState, useEffect } from "react";
 import LogoutButton from "./LogoutButton.jsx";
 import NotificationBell from "./NotificationBell.jsx";
-import { API_BASE } from "../../utils/apiBase.js";
+import { getProfile } from "../../services/api.js";
 import { useAuth } from "../../hooks/useAuth.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -142,17 +142,14 @@ const Header = () => {
     const fetchProfile = async () => {
       if (!user) return;
       try {
-        const token = await user.getIdToken();
-  const res = await fetch(`${API_BASE}/settings/profile`, { headers: { Authorization: `Bearer ${token}` } });
-        if (!res.ok) return;
-        const data = await res.json();
+        const data = await getProfile();
         if (!aborted) {
           setProfile(data);
           try { localStorage.setItem('netra-profile', JSON.stringify(data)); } catch (e) { /* ignore storage errors */ }
         }
       } catch (e) {
         // non-fatal
-        console.warn('Profile fetch failed', e);
+        if (import.meta.env?.DEV) console.warn('Profile fetch failed', e);
       }
     };
     fetchProfile();
@@ -185,6 +182,7 @@ const Header = () => {
             className="p-2 text-gray-400 hover:text-cyan-400 
                        transition-all duration-300 hover:scale-110
                        rounded-lg hover:bg-gray-800/30"
+            aria-label="Open settings"
           >
             <Settings size={24} />
           </button>
@@ -217,6 +215,7 @@ const Header = () => {
           className="md:hidden p-2 text-gray-400 hover:text-cyan-400 
                      transition-all duration-300 hover:scale-110
                      rounded-lg hover:bg-gray-800/30"
+          aria-label="Open menu"
         >
           <Menu size={24} />
         </button>

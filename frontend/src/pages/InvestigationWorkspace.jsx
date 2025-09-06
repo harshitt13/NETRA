@@ -1,14 +1,15 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
-import { API_BASE } from "../utils/apiBase.js";
+// API base is resolved by centralized api services
+import { updateCaseNotes } from "../services/api.js";
 import Header from "../components/common/Header";
 import Sidebar from "../components/common/Sidebar";
 import Loader from "../components/common/Loader";
+import ErrorBanner from "../components/common/ErrorBanner.jsx";
 import useFetchData from "../hooks/useFetchData";
 import {
   Files,
   User,
-  ShieldX,
   BrainCircuit,
   Users,
   StickyNote,
@@ -34,11 +35,7 @@ import "reactflow/dist/style.css";
 // --- Enhanced Network Graph with Advanced Features ---
 const NetworkGraph = ({ personId }) => {
   // Fetch more data to make filters more effective
-  const {
-    data: graphData,
-    loading,
-    error,
-  } = useFetchData(`/graph/${personId}?limit=100`);
+  const { data: graphData, loading, error } = useFetchData(`/graph/${personId}?limit=100`);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState(null);
@@ -48,48 +45,42 @@ const NetworkGraph = ({ personId }) => {
   const [direction, setDirection] = useState("all"); // 'all', 'outgoing', 'incoming'
   const [visibleTypes, setVisibleTypes] = useState(["Person", "Company"]);
 
-  const applyFilters = useCallback(() => {
-    if (!graphData || !graphData.nodes) return;
-
-    // Filter edges based on amount + direction
-    const filteredEdges = graphData.edges.filter((edge) => {
+  // Memoized transforms for performance
+  const filteredEdges = useMemo(() => {
+    if (!graphData?.edges) return [];
+    return graphData.edges.filter((edge) => {
       const amount = parseInt(edge.label.replace(/[^0-9]/g, "")) || 0;
       if (amount < filterAmount) return false;
       if (direction === "outgoing" && !edge.isOutgoing) return false;
       if (direction === "incoming" && edge.isOutgoing) return false;
       return true;
     });
+  }, [graphData, filterAmount, direction]);
 
-    // Identify (single) center node
-    let centerNode = graphData.nodes.find((n) => n.isCenter);
-    if (!centerNode && graphData.nodes.length) {
-      centerNode = { ...graphData.nodes[0], isCenter: true }; // fallback
-    }
+  const centerNode = useMemo(() => {
+    if (!graphData?.nodes || graphData.nodes.length === 0) return null;
+    const c = graphData.nodes.find((n) => n.isCenter);
+    return c || { ...graphData.nodes[0], isCenter: true };
+  }, [graphData]);
 
-    // Collect node IDs that appear in filtered edges
+  const filteredNodes = useMemo(() => {
+    if (!graphData?.nodes || !centerNode) return [];
     const connectedIds = new Set();
     filteredEdges.forEach((e) => {
       connectedIds.add(e.source);
       connectedIds.add(e.target);
     });
-    if (centerNode) connectedIds.add(centerNode.id);
+    connectedIds.add(centerNode.id);
+    const candidateNodes = graphData.nodes.filter((n) => connectedIds.has(n.id));
+    return candidateNodes.filter((n) => n.id === centerNode.id || visibleTypes.includes(n.type));
+  }, [graphData, filteredEdges, visibleTypes, centerNode]);
 
-    // Apply visible type filter but always keep center
-    const candidateNodes = graphData.nodes.filter((n) =>
-      connectedIds.has(n.id)
-    );
-    const filteredNodes = candidateNodes.filter(
-      (n) => n.id === centerNode.id || visibleTypes.includes(n.type)
-    );
-
-    // Separate center and peers
+  const formattedNodes = useMemo(() => {
+    if (!centerNode) return [];
     const peers = filteredNodes.filter((n) => n.id !== centerNode.id);
-
-    // Positioning
-    // Place center at origin; peers arranged symmetrically so ReactFlow fitView centers correctly
     const centerPos = { x: 0, y: 0 };
     const radius = 350;
-    const formattedNodes = [
+    return [
       {
         id: centerNode.id,
         position: centerPos,
@@ -115,7 +106,7 @@ const NetworkGraph = ({ personId }) => {
         },
       },
       ...peers.map((node, i) => {
-        const angle = (i / (peers.length || 1)) * 2 * Math.PI; // even distribution
+        const angle = (i / (peers.length || 1)) * 2 * Math.PI;
         return {
           id: node.id,
           position: {
@@ -145,39 +136,42 @@ const NetworkGraph = ({ personId }) => {
         };
       }),
     ];
+  }, [filteredNodes, centerNode]);
 
+  const formattedEdges = useMemo(() => {
+    return filteredEdges.map((edge, i) => ({
+      id: `e${i}`,
+      source: edge.source,
+      target: edge.target,
+      label: edge.label,
+      type: "smoothstep",
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        color: edge.isOutgoing ? "#10b981" : "#ef4444",
+        width: 18,
+        height: 18,
+      },
+      style: {
+        stroke: edge.isOutgoing ? "#10b981" : "#ef4444",
+        strokeWidth: 2.5,
+        opacity: 0.9,
+      },
+      labelStyle: { fill: "white", fontWeight: "600" },
+      labelBgStyle: {
+        fill: "#1f2937",
+        padding: "3px 6px",
+        borderRadius: "4px",
+      },
+    }));
+  }, [filteredEdges]);
+
+  useEffect(() => {
+    if (!graphData) return;
     setNodes(formattedNodes);
-    setEdges(
-      filteredEdges.map((edge, i) => ({
-        id: `e${i}`,
-        source: edge.source,
-        target: edge.target,
-        label: edge.label,
-        type: "smoothstep",
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          color: edge.isOutgoing ? "#10b981" : "#ef4444",
-          width: 18,
-          height: 18,
-        },
-        style: {
-          stroke: edge.isOutgoing ? "#10b981" : "#ef4444",
-          strokeWidth: 2.5,
-          opacity: 0.9,
-        },
-        labelStyle: { fill: "white", fontWeight: "600" },
-        labelBgStyle: {
-          fill: "#1f2937",
-          padding: "3px 6px",
-          borderRadius: "4px",
-        },
-      }))
-    );
-  }, [graphData, filterAmount, direction, visibleTypes, setNodes, setEdges]);
+    setEdges(formattedEdges);
+  }, [graphData, formattedNodes, formattedEdges, setNodes, setEdges]);
 
-  useEffect(() => applyFilters(), [applyFilters]);
-
-  const onNodeClick = (event, node) => setSelectedNode(node);
+  const onNodeClick = useCallback((event, node) => setSelectedNode(node), []);
 
   if (loading)
     return (
@@ -187,7 +181,7 @@ const NetworkGraph = ({ personId }) => {
     );
   if (error)
     return (
-      <p className="text-red-400 p-4">Error loading graph: {error.message}</p>
+      <div className="p-4"><ErrorBanner message={`Error loading graph: ${error.message}`} /></div>
     );
 
   return (
@@ -350,19 +344,11 @@ const InvestigationWorkspace = () => {
   const [notes, setNotes] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
   const [notesStatus, setNotesStatus] = useState(null); // {type, message}
-  const API_URL = API_BASE;
+  // API base available if needed, but requests use centralized api.js helpers
 
   useEffect(() => {
     if (notesData && typeof notesData.notes === "string") {
-      setNotes(notesData.notes);
-      console.log(
-        "Loaded notes for case",
-        caseId,
-        "length",
-        notesData.notes.length,
-        "source",
-        notesData.source
-      );
+  setNotes(notesData.notes);
     }
   }, [notesData, caseId]);
 
@@ -371,18 +357,7 @@ const InvestigationWorkspace = () => {
     setSavingNotes(true);
     setNotesStatus(null);
     try {
-      // Using mock token fallback (align with backend auth decorator behavior)
-      const token = "mock-jwt-token-12345";
-  const resp = await fetch(`${API_URL}/cases/${caseId}/notes`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ notes }),
-      });
-      const result = await resp.json().catch(() => ({}));
-      if (!resp.ok) throw new Error(result.error || "Failed to save notes");
+  await updateCaseNotes(caseId, notes);
       setNotesStatus({ type: "success", message: "Notes saved" });
       refetchNotes();
     } catch (e) {
@@ -426,13 +401,7 @@ const InvestigationWorkspace = () => {
   if (error)
     return (
       <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
-        <div className="text-center">
-          <ShieldX className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-red-400">
-            Failed to Load Case Data
-          </h2>
-          <p className="text-gray-400 mt-2">{error.message}</p>
-        </div>
+        <div className="w-full max-w-xl px-6"><ErrorBanner message={`Failed to load case data: ${error.message}`} /></div>
       </div>
     );
 
@@ -463,6 +432,7 @@ const InvestigationWorkspace = () => {
                 onClick={() => setIsGraphFullscreen(!isGraphFullscreen)}
                 className="bg-gray-700/50 hover:bg-gray-600 p-2 rounded-lg transition"
                 title="Toggle Graph Fullscreen"
+                aria-label="Toggle graph fullscreen"
               >
                 {isGraphFullscreen ? (
                   <Minimize2 className="h-5 w-5" />

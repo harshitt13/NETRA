@@ -4,14 +4,44 @@ import { API_BASE } from '../utils/apiBase.js';
 const API_BASE_URL = API_BASE;
 
 /**
+ * Optional async token provider registered by Auth layer.
+ * If set, apiRequest will await this to get a fresh JWT for each request.
+ * Fallback: localStorage 'authToken'.
+ */
+let tokenProvider = null;
+
+/**
+ * Register a token provider function.
+ * @param {() => Promise<string|null|undefined>} provider
+ */
+export function setTokenProvider(provider) {
+  tokenProvider = typeof provider === 'function' ? provider : null;
+}
+
+async function getAuthToken() {
+  try {
+    if (tokenProvider) {
+      const t = await tokenProvider();
+      if (t) return t;
+    }
+  } catch {
+    // ignore provider errors and fall back
+  }
+  try {
+    return localStorage.getItem('authToken') || null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * A generic helper function to handle API requests with authentication.
  * @param {string} endpoint - The API endpoint to call (e.g., '/alerts').
  * @param {object} options - Optional fetch options (method, body, headers).
  * @returns {Promise<any>} - The JSON response from the API.
  */
-const apiRequest = async (endpoint, options = {}) => {
-  // In a real app, the token is stored in localStorage after a successful login.
-  const token = localStorage.getItem('authToken');
+export const apiRequest = async (endpoint, options = {}) => {
+  const token = await getAuthToken();
 
   const headers = {
     'Content-Type': 'application/json',
@@ -24,7 +54,7 @@ const apiRequest = async (endpoint, options = {}) => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: options.method || 'GET',
       headers: headers,
       body: options.body ? JSON.stringify(options.body) : null,
@@ -55,12 +85,30 @@ const apiRequest = async (endpoint, options = {}) => {
 
 // --- Core API Service Functions ---
 
-export const getAlerts = () => apiRequest('/alerts');
+/** Fetch alerts list */
+export const getAlerts = (params = {}) => {
+  const qs = new URLSearchParams(params).toString();
+  return apiRequest(`/alerts${qs ? `?${qs}` : ''}`);
+};
+/** Investigate a person */
 export const getInvestigationData = (personId) => apiRequest(`/investigate/${personId}`);
+/** Create a new case */
 export const createCase = (caseData) => apiRequest('/cases', { method: 'POST', body: caseData });
+/** Get a single case */
 export const getCase = (caseId) => apiRequest(`/cases/${caseId}`);
-export const generatePdfReport = (personId) => apiRequest(`/report/${personId}`);
-export const getGraphData = (personId) => apiRequest(`/graph/${personId}`);
+/** Get all cases */
+export const getCases = () => apiRequest('/cases');
+/** Download/generate a PDF report (returns Blob) */
+export const generatePdfReport = (caseId) => apiRequest(`/report/${caseId}`);
+/** Graph data */
+export const getGraphData = (personId, params = {}) => {
+  const qs = new URLSearchParams(params).toString();
+  return apiRequest(`/graph/${personId}${qs ? `?${qs}` : ''}`);
+};
+
+// --- Analysis controls ---
+export const runAnalysis = () => apiRequest('/run-analysis', { method: 'POST' });
+export const getAnalysisStatus = () => apiRequest('/run-analysis/status');
 
 
 // --- NEW: API Functions for the Settings Page ---
@@ -83,11 +131,38 @@ export const clearAllCases = () => {
   });
 };
 
+/** Profile settings */
+export const getProfile = () => apiRequest('/settings/profile');
+export const updateProfile = (profile) => apiRequest('/settings/profile', { method: 'POST', body: profile });
+/**
+ * Returns masked API key info
+ * { apiKeyMasked: 'AIza...XYZ' }
+ */
+export const getApiKeyMasked = () => apiRequest('/settings/api-key');
+export const updateApiKey = (apiKey) => apiRequest('/settings/api-key', { method: 'POST', body: { apiKey } });
+/** Theme settings */
+export const getTheme = () => apiRequest('/settings/theme');
+export const setTheme = (theme) => apiRequest('/settings/theme', { method: 'POST', body: { theme } });
+
+// --- Case notes ---
+export const getCaseNotes = (caseId) => apiRequest(`/cases/${caseId}/notes`);
+export const updateCaseNotes = (caseId, notes) => apiRequest(`/cases/${caseId}/notes`, { method: 'PUT', body: { notes } });
+
+// --- Notifications ---
+export const getNotifications = (params = {}) => {
+  const qs = new URLSearchParams(params).toString();
+  return apiRequest(`/notifications${qs ? `?${qs}` : ''}`);
+};
+export const markAllNotificationsRead = () => apiRequest('/notifications/mark-read', { method: 'POST' });
+export const updateNotification = (id, payload) => apiRequest(`/notifications/${id}`, { method: 'PATCH', body: payload });
+export const deleteNotification = (id) => apiRequest(`/notifications/${id}`, { method: 'DELETE' });
+export const createNotification = (payload) => apiRequest('/notifications', { method: 'POST', body: payload });
+
 
 // --- Authentication Mock ---
 // In a real app, this would make a POST request to a /login endpoint.
-export const loginUser = async (email, password) => {
-    console.log("Simulating login for:", email, password);
+export const loginUser = async () => {
+  // Simulated login for demo only
     // This is a dummy token for demonstration purposes. Your backend would generate a real one.
     const dummyToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
     localStorage.setItem('authToken', dummyToken);

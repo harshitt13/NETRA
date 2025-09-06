@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
-import { API_BASE } from "../utils/apiBase.js";
+// API base handled by centralized api service
 import Sidebar from "../components/common/Sidebar";
 import Loader from "../components/common/Loader";
 import {
@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import useFetchData from "../hooks/useFetchData";
 import { useAuth } from "../hooks/useAuth";
+import { createCase } from "../services/api.js";
 
 // Enhanced RiskFactorSummary: always show all categories in consistent order (including 0 scores)
 const RiskFactorSummary = ({ riskProfile, aiSummary }) => {
@@ -89,7 +90,7 @@ const RiskFactorSummary = ({ riskProfile, aiSummary }) => {
 const Triage = () => {
   const { personId } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  useAuth();
   const [isEscalating, setIsEscalating] = useState(false);
   const [escalationStatus, setEscalationStatus] = useState({
     message: "",
@@ -101,8 +102,6 @@ const Triage = () => {
     error,
   } = useFetchData(`/investigate/${personId}`);
 
-  const API_URL = API_BASE;
-
   const handleEscalate = async () => {
     if (!triageData) return;
 
@@ -113,25 +112,7 @@ const Triage = () => {
     });
 
     try {
-      const token = await user.getIdToken();
-      const response = await fetch(`${API_URL}/cases`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(triageData),
-      });
-
-      let result = {};
-      try {
-        result = await response.json();
-      } catch (_) {
-        // Non-JSON response
-      }
-      if (!response.ok) {
-        throw new Error(result.error || "Failed to create case.");
-      }
+      const result = await createCase(triageData);
 
       setEscalationStatus({
         message: "Case created successfully! Redirecting...",

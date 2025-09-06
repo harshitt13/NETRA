@@ -1,23 +1,23 @@
+import ErrorBanner from "../components/common/ErrorBanner.jsx";
 import { useState, useEffect, useRef } from "react";
-import { API_BASE } from "../utils/apiBase.js";
+// API base handled in services/api
 import Header from "../components/common/Header.jsx";
 import Sidebar from "../components/common/Sidebar.jsx";
 import AlertsList from "../components/dashboard/AlertsList.jsx";
 import useFetchData from "../hooks/useFetchData.jsx";
 import { useAuth } from "../hooks/useAuth.jsx";
+import { runAnalysis, getAnalysisStatus } from "../services/api.js";
 import {
   LayoutDashboard,
   Search,
   User,
   FileText,
   Zap,
-  AlertCircle,
-  CheckCircle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
-  const { user } = useAuth(); // Hook to get the current user for auth tokens
+  useAuth(); // Ensure auth is initialized for token provider
   const [searchQuery, setSearchQuery] = useState("");
   const [analysisStatus, setAnalysisStatus] = useState({
     loading: false,
@@ -57,14 +57,11 @@ const Dashboard = () => {
     }
   };
 
-  const pollAnalysisStatus = async (token, initialDelay = 1500) => {
+  const pollAnalysisStatus = async (initialDelay = 1500) => {
     clearPollTimer();
     pollTimerRef.current = setTimeout(async () => {
       try {
-        const res = await fetch(`${API_BASE}/run-analysis/status`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const statusJson = await res.json();
+        const statusJson = await getAnalysisStatus();
         if (statusJson.running) {
           setAnalysisStatus({
             loading: true,
@@ -73,7 +70,7 @@ const Dashboard = () => {
           });
           // continue polling (exponential-ish backoff up to 5s)
           const nextDelay = Math.min(initialDelay * 1.5, 5000);
-          pollAnalysisStatus(token, nextDelay);
+          pollAnalysisStatus(nextDelay);
         } else {
           if (statusJson.error) {
             setAnalysisStatus({
@@ -109,37 +106,14 @@ const Dashboard = () => {
       type: "info",
     });
     try {
-      const token = await user.getIdToken();
-      const response = await fetch(`${API_BASE}/run-analysis`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      // Try parse JSON (may be empty on some error conditions)
-      let result = {};
-      try { result = await response.json(); } catch (_) { /* ignore */ }
-
-      if (response.status === 202) {
-        setAnalysisStatus({
-          loading: true,
-          message: "Analysis launched (async). Monitoring progress...",
-          type: "info",
-        });
-        pollAnalysisStatus(token);
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error(result.error || `Analysis failed (HTTP ${response.status}).`);
-      }
-
+      await runAnalysis();
       setAnalysisStatus({
-        loading: false,
-        message: result.message || "Full analysis complete.",
-        type: "success",
+        loading: true,
+        message: "Analysis launched (async). Monitoring progress...",
+        type: "info",
       });
-      setRefetchCounter((prev) => prev + 1);
+      pollAnalysisStatus();
+      return;
     } catch (err) {
       setAnalysisStatus({
         loading: false,
@@ -195,23 +169,11 @@ const Dashboard = () => {
 
             {/* Analysis Status Message */}
             {analysisStatus.message && (
-              <div
-                className={`mb-4 p-3 rounded-lg flex items-center space-x-2 text-sm animate-fadeInUp ${
-                  analysisStatus.type === "success"
-                    ? "bg-green-500/20 text-green-300"
-                    : analysisStatus.type === "error"
-                    ? "bg-red-500/20 text-red-300"
-                    : "bg-blue-500/20 text-blue-300"
-                }`}
-              >
-                {analysisStatus.type === "success" && (
-                  <CheckCircle className="h-5 w-5" />
-                )}
-                {analysisStatus.type === "error" && (
-                  <AlertCircle className="h-5 w-5" />
-                )}
-                <span>{analysisStatus.message}</span>
-              </div>
+              <ErrorBanner
+                message={analysisStatus.message}
+                variant={analysisStatus.type === 'error' ? 'error' : analysisStatus.type === 'success' ? 'info' : 'info'}
+                className="mb-4 animate-fadeInUp"
+              />
             )}
 
             {/* Search Bar */}

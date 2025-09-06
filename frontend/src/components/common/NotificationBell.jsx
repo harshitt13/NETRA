@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Bell, Check, Loader2, Trash2, Eye, EyeOff, Plus } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth.jsx';
-import { API_BASE } from '../../utils/apiBase.js';
+import { getNotifications, markAllNotificationsRead, updateNotification, deleteNotification as apiDeleteNotification, createNotification } from '../../services/api.js';
 
 export default function NotificationBell() {
   const { user } = useAuth();
@@ -18,15 +18,10 @@ export default function NotificationBell() {
     try {
       setLoading(true);
       setError(null);
-      const token = await user.getIdToken();
-      const params = new URLSearchParams();
-      if (force) params.append('force','1');
-      if (showUnreadOnly) params.append('unread','1');
-      const qs = params.toString();
-      const url = `${API_BASE}/notifications${qs ? `?${qs}` : ''}`;
-      const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` }});
-      if (!res.ok) throw new Error('Failed to load notifications');
-      const data = await res.json();
+      const params = {};
+      if (force) params.force = '1';
+      if (showUnreadOnly) params.unread = '1';
+      const data = await getNotifications(params);
       setItems(data.notifications || []);
       setUnread(data.unread || 0);
     } catch (e) {
@@ -41,8 +36,7 @@ export default function NotificationBell() {
   const markAllRead = async () => {
     if (!user) return;
     try {
-      const token = await user.getIdToken();
-      await fetch(`${API_BASE}/notifications/mark-read`, { method: 'POST', headers: { 'Content-Type':'application/json', Authorization: `Bearer ${token}` }});
+      await markAllNotificationsRead();
       setItems(prev => prev.map(n => ({ ...n, read: true, read_at: n.read_at || new Date().toISOString() })));
       setUnread(0);
     } catch (e) {
@@ -53,8 +47,7 @@ export default function NotificationBell() {
   const toggleRead = async (id, read) => {
     if (!user) return; 
     try {
-      const token = await user.getIdToken();
-      await fetch(`${API_BASE}/notifications/${id}`, { method: 'PATCH', headers: { 'Content-Type':'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ read })});
+      await updateNotification(id, { read });
       setItems(prev => prev.map(n => n.id === id ? { ...n, read, read_at: read ? new Date().toISOString() : undefined } : n));
       setUnread(prev => read ? Math.max(0, prev - 1) : prev + 1);
     } catch(e) { /* ignore */ }
@@ -63,8 +56,7 @@ export default function NotificationBell() {
   const deleteNotification = async (id) => {
     if (!user) return;
     try {
-      const token = await user.getIdToken();
-      await fetch(`${API_BASE}/notifications/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` }});
+      await apiDeleteNotification(id);
       setItems(prev => prev.filter(n => n.id !== id));
       setUnread(prev => prev - 1 < 0 ? 0 : prev - 1);
     } catch(e) { /* ignore */ }
@@ -74,10 +66,9 @@ export default function NotificationBell() {
     if (!user) return;
     try {
       setCreating(true);
-      const token = await user.getIdToken();
       const severities = ['info','low','medium','high','critical'];
       const sev = severities[Math.floor(Math.random()*severities.length)];
-      await fetch(`${API_BASE}/notifications`, { method: 'POST', headers: { 'Content-Type':'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ title: `Test ${sev} event`, message: `Generated at ${new Date().toLocaleTimeString()}`, severity: sev }) });
+      await createNotification({ title: `Test ${sev} event`, message: `Generated at ${new Date().toLocaleTimeString()}`, severity: sev });
       fetchNotifications(true);
     } catch(e) { /* ignore */ } finally { setCreating(false);} }
 
@@ -87,6 +78,7 @@ export default function NotificationBell() {
         onClick={() => setOpen(o => !o)}
         className="relative p-2 text-gray-400 hover:text-cyan-400 transition-all duration-300 hover:scale-110 rounded-lg hover:bg-gray-800/30"
         title="Notifications"
+        aria-label="Notifications"
       >
         <Bell size={24} />
         {unread > 0 && (

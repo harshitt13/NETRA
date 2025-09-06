@@ -4,45 +4,22 @@ import Sidebar from '../components/common/Sidebar';
 import { FileDown, BookCheck, Loader2 } from 'lucide-react';
 import useFetchData from '../hooks/useFetchData';
 import { useAuth } from '../hooks/useAuth';
-import { API_BASE } from '../utils/apiBase.js';
+import { generatePdfReport } from '../services/api.js';
+import ErrorBanner from '../components/common/ErrorBanner.jsx';
+import EmptyState from '../components/common/EmptyState.jsx';
 
 const Reporting = () => {
     // --- THIS IS THE FIX: The URL no longer includes the '/api' prefix ---
     const { data: cases, loading: isLoading, error } = useFetchData('/cases');
     const [loadingStates, setLoadingStates] = useState({});
-    const { user } = useAuth(); // Get user to provide token for downloads
+    useAuth(); // Initialize auth for token provider
 
     // --- A functional report generation handler ---
         const handleGenerateReport = async (caseId, subjectName) => {
         setLoadingStates(prev => ({ ...prev, [caseId]: true }));
         
         try {
-            if (!user) throw new Error("Authentication required.");
-            const token = await user.getIdToken();
-                        const reportUrl = `${API_BASE}/report/${caseId}`;
-                        const response = await fetch(reportUrl, {
-                            headers: { 'Authorization': `Bearer ${token}` }
-                        });
-
-            if (!response.ok) {
-                                // Try to parse JSON error; if not possible use status text
-                                let serverErr = '';
-                                try { serverErr = (await response.json()).error; } catch(_) { /* ignore */ }
-                                throw new Error(serverErr || `Report generation failed (HTTP ${response.status}).`);
-            }
-
-            // Handle the file download
-                        const contentType = response.headers.get('Content-Type') || '';
-                        if (!contentType.includes('application/pdf')) {
-                            // Unexpected content type, attempt to parse error
-                            try {
-                                const errData = await response.json();
-                                throw new Error(errData.error || 'Server returned non-PDF response.');
-                            } catch(parseErr) {
-                                throw new Error('Server returned unexpected non-PDF content.');
-                            }
-                        }
-                        const blob = await response.blob();
+            const blob = await generatePdfReport(caseId);
             const downloadUrl = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.style.display = 'none';
@@ -55,7 +32,7 @@ const Reporting = () => {
             document.body.removeChild(a);
 
         } catch (err) {
-            console.error('Report generation failed:', err);
+            if (import.meta.env?.DEV) console.error('Report generation failed:', err);
             alert(`Failed to generate report: ${err.message}`);
         } finally {
             setLoadingStates(prev => ({ ...prev, [caseId]: false }));
@@ -86,9 +63,7 @@ const Reporting = () => {
                                     <span className="ml-4 text-lg text-gray-300">Loading Completed Cases...</span>
                                 </div>
                             ) : error ? (
-                                <div className="p-8 text-center text-red-400">
-                                    <p>Failed to load cases: {error.message}</p>
-                                </div>
+                                <div className="p-6"><ErrorBanner message={`Failed to load cases: ${error.message}`} /></div>
                             ) : (
                                 <table className="w-full text-left">
                                     <thead className="bg-gray-800/50">
@@ -101,6 +76,11 @@ const Reporting = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-700/50">
+                                        {(!cases || cases.length === 0) && (
+                                            <tr>
+                                                <td colSpan="5" className="p-6"><EmptyState title="No completed cases" subtitle="Once cases are escalated and completed, they will appear here." /></td>
+                                            </tr>
+                                        )}
                                         {cases && cases.map((caseItem) => (
                                             <tr key={caseItem.caseId} className="hover:bg-gray-800/40 transition-colors">
                                                 <td className="p-4 text-cyan-400 font-mono text-sm">{caseItem.caseId}</td>

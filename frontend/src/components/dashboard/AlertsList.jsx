@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../common/Loader";
-import { AlertCircle, User, ArrowRight } from "lucide-react";
+import ErrorBanner from "../common/ErrorBanner";
+import EmptyState from "../common/EmptyState";
+import { User, ArrowRight } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth.jsx";
-import { API_BASE } from "../../utils/apiBase.js";
+import { getAlerts } from "../../services/api.js";
 
 const AlertsList = ({ refetchTrigger }) => {
   const { user } = useAuth();
@@ -15,21 +17,14 @@ const AlertsList = ({ refetchTrigger }) => {
     try {
       setLoading(true);
       setError(null);
-      const token = await user.getIdToken();
-  const res = await fetch(`${API_BASE}/alerts?limit=30`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) {
-        throw new Error(`Failed to load alerts (${res.status})`);
-      }
-      const data = await res.json();
+      const data = await getAlerts({ limit: 30 });
       setAlerts(data);
     } catch (e) {
       setError(e);
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     if (user) fetchAlerts();
@@ -50,27 +45,10 @@ const AlertsList = ({ refetchTrigger }) => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="bg-red-500/20 text-red-300 p-4 rounded-lg flex items-center space-x-3">
-        <AlertCircle className="h-6 w-6" />
-        <div>
-          <h3 className="font-bold">Failed to load alerts.</h3>
-          <p className="text-sm">{error.message}</p>
-        </div>
-      </div>
-    );
-  }
+  if (error) return <ErrorBanner message={`Failed to load alerts. ${error.message}`} />;
 
   if (!alerts || alerts.length === 0) {
-    return (
-      <div className="bg-gray-800/50 text-gray-400 p-4 rounded-lg text-center">
-        <p>
-          No high-priority alerts found. Run the analysis to generate new
-          alerts.
-        </p>
-      </div>
-    );
+    return <EmptyState title="No high-priority alerts" subtitle="Run analysis to generate new alerts." />;
   }
 
   return (
