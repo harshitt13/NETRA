@@ -90,6 +90,101 @@ flowchart LR
   API -->|JSON| FE
 ```
 
+## Connection Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant FE as Frontend (React)
+    participant API as Flask API (/api)
+    participant Risk as Risk Scoring
+    participant Graph as Graph Analysis
+    participant Report as Report Generator
+    participant Store as Firestore (optional)
+    participant Neo4j as Neo4j (optional)
+    participant CSV as CSV Data
+
+    User->>FE: Open app / Login
+    FE->>API: GET /alerts (Bearer token)
+    API->>Risk: Load scores
+    Risk->>CSV: Read AlertScores.csv
+    API-->>FE: Alerts JSON
+
+    User->>FE: Upload dataset (CSV/ZIP)
+    FE->>API: POST /datasets/upload
+    API->>CSV: Replace files
+    API->>Risk: Re-run analysis
+    API-->>FE: Upload OK
+
+    User->>FE: Create case
+    FE->>API: POST /cases
+    API->>Store: Create/Update case (if configured)
+    API-->>FE: Case created (caseId)
+
+    User->>FE: Investigate person/case
+    FE->>API: GET /graph/:personId
+    API->>Graph: Build graph
+    Graph->>Neo4j: Query (if available)
+    Graph->>CSV: Synthesize fallback
+    API-->>FE: Graph JSON
+
+    User->>FE: Generate report
+    FE->>API: GET /report/:id
+    API->>Report: Compile PDF
+    Report->>Risk: Pull scores
+    Report->>CSV: Fetch details
+    API-->>FE: PDF (blob)
+
+    FE-->>User: Render views / Download report
+```
+
+## Detailed Application Flow
+
+```mermaid
+flowchart TD
+    Start([User opens app]) --> AuthCheck[Auth check via AuthProvider]
+    AuthCheck -->|Authenticated| GoDashboard[Route to /dashboard]
+    AuthCheck -->|No auth| GoLogin[Route to /login]
+
+    subgraph Dashboard
+      GoDashboard --> FetchAlerts[GET /alerts]
+      FetchAlerts --> ShowAlerts[Render alerts & metrics]
+      ShowAlerts --> ActionTriage[Open Triage]
+      ShowAlerts --> ActionInvestigate[Open Investigation]
+      ShowAlerts --> ActionReporting[Open Reporting]
+    end
+
+    subgraph Triage
+      ActionTriage --> CreateCase[POST /cases]
+      CreateCase --> CaseCreated[(caseId)]
+      CaseCreated --> NavWorkspace[Go to /workspace/:caseId]
+    end
+
+    subgraph Investigation_Workspace
+      ActionInvestigate --> LoadGraph[GET /graph/:personId]
+      NavWorkspace --> LoadGraph
+      LoadGraph --> ViewGraph[React Flow graph + details]
+      ViewGraph --> UpdateNotes[PUT /cases/:id/notes]
+      UpdateNotes --> NotesSaved[Notes persisted (Firestore/local)]
+    end
+
+    subgraph Reporting
+      ActionReporting --> GetReport[GET /report/:id]
+      GetReport --> PDF[PDF blob]
+      PDF --> Download[Trigger download]
+    end
+
+    subgraph Settings_and_Datasets
+      Settings[Open Settings] --> Upload[POST /datasets/upload (CSV/ZIP)]
+      Upload --> Reanalyze[Run analysis]
+      Reanalyze --> AlertsUpdated[Updated AlertScores.csv]
+      AlertsUpdated --> FetchAlerts
+    end
+
+    GoLogin --> LoginFlow[Login (Firebase/mock token)]
+    LoginFlow --> AuthCheck
+```
+
 Backend (Flask):
 - Data loader with schema validation (CSVs under `backend/generated-data/`).
 - Risk scoring (`services/risk_scoring.py`), AI summarizer, report generator, optional graph analyzer.
