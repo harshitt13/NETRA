@@ -43,4 +43,3 @@ const PriorityFilter = ({ onFilterChange }) => {
 };
 
 export default PriorityFilter;
-
